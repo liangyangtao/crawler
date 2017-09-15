@@ -37,6 +37,9 @@ public class WenshuCrawler {
 			driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
 			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 			driver.get(homeurl);
+			if (!checkPeopleYzm(driver)) {
+				return;
+			}
 			// 输入搜索框
 			WebElement inputElement = driver.findElement(By.id("gover_search_key"));
 			if (inputElement == null) {
@@ -81,7 +84,9 @@ public class WenshuCrawler {
 						new WenshucourtDataStore().saveWenshucourtData(wenshucourtDataWithBLOBs);
 						driver.get(detailurl);
 						Thread.sleep(BIGGER_DELAY);
-						// sleepAndCheck(driver);
+						if (!checkPeopleYzm(driver)) {
+							continue;
+						}
 						WenshucourtContentWithBLOBs wenshucourtContent = new WenshuParser()
 								.parserContent(driver.getPageSource());
 						wenshucourtContent.setCreatetime(new Date());
@@ -137,6 +142,34 @@ public class WenshuCrawler {
 		Thread.sleep(BIGGER_DELAY);
 		new CodeCrack().processingVerificationCodeForTime(driver);
 		Thread.sleep(BIGGER_DELAY);
+
+	}
+
+	/***
+	 * 访问量比较大，亲输入验证码
+	 * 
+	 * @param driver
+	 */
+	private boolean checkPeopleYzm(WebDriver driver) {
+		try {
+			Thread.sleep(BIGGER_DELAY);
+			String html = driver.getPageSource();
+			Document document = Jsoup.parse(html);
+			Elements warnElements = document.select(".warncontenter");
+			if (warnElements.size() > 0) {
+				new CodeCrack().processingVerificationCodeForPeople(driver);
+				html = driver.getPageSource();
+				document = Jsoup.parse(html);
+				warnElements = document.select(".warncontenter");
+				if (warnElements.size() > 0) {
+					return false;
+				}
+			}
+			Thread.sleep(BIGGER_DELAY);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
 
 	}
 

@@ -37,9 +37,9 @@ public class CodeCrack {
 			if (!file.exists()) {
 				file.mkdirs();
 			}
-			String path = file.getAbsolutePath() + File.separator + "code" + ".jpg";
+			String path = file.getAbsolutePath() + File.separator + "peoplecode" + ".jpg";
 			WenshuUtil.screenShotForElement(driver, imageElement, path, 1, 1);
-			String verifycode = new ChaoJiYingOCRService().getVerifycode(new File(path), "1902");
+			String verifycode = new ChaoJiYingOCRService().getVerifycode(new File(path), "1004");
 			System.out.println("----------->>>验证码：" + verifycode);
 			WebElement inputElement = driver.findElement(By.xpath("/html/body/div/div/div[2]/form/div[2]/input"));
 			inputElement.click();
@@ -65,12 +65,12 @@ public class CodeCrack {
 		System.out.println("------->>>正在处理数字验证码。。。");
 		try {
 			WebElement imageElement = driver.findElement(By.name("validateCode"));
-			String codepath = CodeCrack.class.getResource("").toURI().getPath();
+			String codepath = CodeCrack.class.getClassLoader().getResource("").toURI().getPath();
 			File file = new File(codepath + File.separator + "imgCode");
 			if (!file.exists()) {
 				file.mkdirs();
 			}
-			String path = file.getAbsolutePath() + File.separator + "code" + ".jpg";
+			String path = file.getAbsolutePath() + File.separator + "timecode" + ".jpg";
 			WenshuUtil.screenShotForElement(driver, imageElement, path, 1, 1);
 			String verifycode = new ChaoJiYingOCRService().getVerifycode(new File(path), "1004");
 			System.out.println("----------->>>验证码：" + verifycode);
