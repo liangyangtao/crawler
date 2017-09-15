@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<!-- 数据库驱动 -->
+	<classPathEntry
+		location="C:\Users\meidi\.m2\repository\mysql\mysql-connector-java\5.1.39\mysql-connector-java-5.1.39.jar"></classPathEntry>
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+		<property name="autoDelimitKeywords" value="true" />
+		<property name="beginningDelimiter" value="`" />
+		<property name="endingDelimiter" value="`" />
+		<!--数据库链接URL，用户名、密码 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://10.24.193.86:3306/crawler?autoReconnect=true"
+			userId="meidi" password="12qwaszx" />
+		<!-- 生成模型的包名和位置 -->
+		<javaModelGenerator targetPackage="com.kf.data.mybatis.entity"
+			targetProject="common-mybatis\src\main\java">
+		</javaModelGenerator>
+		<!--生成映射文件存放位置 -->
+		<sqlMapGenerator targetPackage="com.kf.data.mybatis.mapper"
+			targetProject="common-mybatis\src\main\java">
+		</sqlMapGenerator>
+		<!--生成Dao类存放位置 -->
+		<javaClientGenerator targetPackage="com.kf.data.mybatis.mapper"
+			targetProject="common-mybatis\src\main\java" type="XMLMAPPER">
+		</javaClientGenerator>
+
+
+		<table schema="crawler" tableName="wenshucourt_data"
+			domainObjectName="WenshucourtData">
+			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" type="post" />
+		</table>
+
+		<table schema="crawler" tableName="wenshucourt_content"
+			domainObjectName="WenshucourtContent">
+			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" type="post" />
+		</table>
+
+
+
+	</context>
+</generatorConfiguration>
