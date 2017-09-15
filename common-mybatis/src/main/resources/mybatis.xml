@@ -4,6 +4,7 @@
     "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<typeAliases>
+		<typeAlias alias="SqlAdapter" type="com.kf.data.mybatis.entity.SqlAdapter" />
 		<typeAlias alias="WenshucourtData"
 			type="com.kf.data.mybatis.entity.WenshucourtData" />
 		<typeAlias alias="WenshucourtContent"
@@ -62,6 +63,7 @@
 		</environment>
 	</environments>
 	<mappers>
+		<mapper resource="com/kf/data/mybatis/mapper/SqlAdapterMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/WenshucourtDataMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/WenshucourtContentMapper.xml" />
 	</mappers>
