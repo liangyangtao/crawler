@@ -40,6 +40,7 @@ public class WenshuCrawler {
 			if (!checkPeopleYzm(driver)) {
 				return;
 			}
+			Thread.sleep(LITTLE_DELAY);
 			// 输入搜索框
 			WebElement inputElement = driver.findElement(By.id("gover_search_key"));
 			if (inputElement == null) {
@@ -87,6 +88,7 @@ public class WenshuCrawler {
 						if (!checkPeopleYzm(driver)) {
 							continue;
 						}
+						Thread.sleep(LITTLE_DELAY);
 						WenshucourtContentWithBLOBs wenshucourtContent = new WenshuParser()
 								.parserContent(driver.getPageSource());
 						wenshucourtContent.setCreatetime(new Date());
