@@ -31,6 +31,8 @@ public class WenshuCrawler {
 
 	String homeurl = "http://wenshu.court.gov.cn/";
 
+	String codeurl = "http://wenshu.court.gov.cn/waf_verify.htm";
+
 	public void crawlerWenshuByCompanyName(String companyName) {
 		WebDriver driver = createWebDrive();
 		try {
@@ -155,14 +157,11 @@ public class WenshuCrawler {
 	private boolean checkPeopleYzm(WebDriver driver) {
 		try {
 			Thread.sleep(BIGGER_DELAY);
-			String html = driver.getPageSource();
-			Document document = Jsoup.parse(html);
-			Elements warnElements = document.select(".warncontenter");
-			if (warnElements.size() > 0) {
+			if (driver.getCurrentUrl().contains("codeurl")) {
 				new CodeCrack().processingVerificationCodeForPeople(driver);
-				html = driver.getPageSource();
-				document = Jsoup.parse(html);
-				warnElements = document.select(".warncontenter");
+				String html = driver.getPageSource();
+				Document document = Jsoup.parse(html);
+				Elements warnElements = document.select(".warncontenter");
 				if (warnElements.size() > 0) {
 					return false;
 				}
