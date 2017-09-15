@@ -76,9 +76,9 @@ public class WenshuCrawler {
 						String uuid = UUIDTools.getUUID();
 						wenshucourtDataWithBLOBs.setUuid(uuid);
 						wenshucourtDataWithBLOBs.setCompanyName(companyName);
-						new WenshucourtDataStore().saveWenshucourtData(wenshucourtDataWithBLOBs);
 						wenshucourtDataWithBLOBs.setCreateTime(new Date());
 						wenshucourtDataWithBLOBs.setCompleteTime(new Date());
+						new WenshucourtDataStore().saveWenshucourtData(wenshucourtDataWithBLOBs);
 						driver.get(detailurl);
 						Thread.sleep(BIGGER_DELAY);
 						// sleepAndCheck(driver);
