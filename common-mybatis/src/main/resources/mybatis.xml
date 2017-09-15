@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE configuration   
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias alias="WenshucourtData"
+			type="com.kf.data.mybatis.entity.WenshucourtData" />
+		<typeAlias alias="WenshucourtContent"
+			type="com.kf.data.mybatis.entity.WenshucourtContent" />
+	</typeAliases>
+	<!--数据源配置 这块用 BD2数据库 -->
+	<environments default="localMysql">
+		<!--采集数据库 -->
+		<environment id="onLineMysql">
+			<transactionManager type="jdbc" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url"
+					value="jdbc:mysql://10.26.84.23:3306/neeq?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnect=true&amp;allowMultiQueries=true" />
+				<property name="username" value="etler" />
+				<property name="password" value="iVqpEAs6" />
+				<property name="poolPingQuery" value="SELECT  1+2" />
+				<property name="poolPingEnabled" value="true" />
+			</dataSource>
+		</environment>
+		<environment id="crawlerMysql">
+			<transactionManager type="jdbc" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url"
+					value="jdbc:mysql://10.24.193.86:3306/crawler?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnect=true&amp;allowMultiQueries=true" />
+				<property name="username" value="meidi" />
+				<property name="password" value="12qwaszx" />
+				<property name="poolPingQuery" value="SELECT  1+2" />
+				<property name="poolPingEnabled" value="true" />
+			</dataSource>
+		</environment>
+		<environment id="crawlerHisMysql">
+			<transactionManager type="jdbc" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url"
+					value="jdbc:mysql://10.24.193.86:3306/crawler_his?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnect=true&amp;allowMultiQueries=true" />
+				<property name="username" value="meidi" />
+				<property name="password" value="12qwaszx" />
+				<property name="poolPingQuery" value="SELECT  1+2" />
+				<property name="poolPingEnabled" value="true" />
+			</dataSource>
+		</environment>
+		<environment id="neeqetl">
+			<transactionManager type="jdbc" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url"
+					value="jdbc:mysql://10.46.173.184:3306/kafka?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnect=true&amp;allowMultiQueries=true" />
+				<property name="username" value="etler" />
+				<property name="password" value="12qwaszx!" />
+				<property name="poolPingQuery" value="SELECT  1+2" />
+				<property name="poolPingEnabled" value="true" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="com/kf/data/mybatis/mapper/WenshucourtDataMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/WenshucourtContentMapper.xml" />
+	</mappers>
+</configuration> 
