@@ -5,10 +5,27 @@
 <configuration>
 	<typeAliases>
 		<typeAlias alias="SqlAdapter" type="com.kf.data.mybatis.entity.SqlAdapter" />
+		<!-- 文书网 -->
 		<typeAlias alias="WenshucourtData"
 			type="com.kf.data.mybatis.entity.WenshucourtData" />
 		<typeAlias alias="WenshucourtContent"
 			type="com.kf.data.mybatis.entity.WenshucourtContent" />
+		<!-- 年报解析 -->
+		<typeAlias alias="PdfCodeLink" type="com.kf.data.mybatis.entity.PdfCodeLink" />
+		<typeAlias alias="PdfCodeTemporary"
+			type="com.kf.data.mybatis.entity.PdfCodeTemporary" />
+		<typeAlias alias="PdfCodeTable" type="com.kf.data.mybatis.entity.PdfCodeTable" />
+		<typeAlias alias="NeeqCompanyNotice"
+			type="com.kf.data.mybatis.entity.NeeqCompanyNotice" />
+		<typeAlias alias="PdfCodeChapter" type="com.kf.data.mybatis.entity.PdfCodeChapter" />
+		<typeAlias alias="PdfReportLinks" type="com.kf.data.mybatis.entity.PdfReportLinks" />
+		<typeAlias alias="PdfReportLinkText"
+			type="com.kf.data.mybatis.entity.PdfReportLinkText" />
+		<typeAlias alias="NeeqNotice" type="com.kf.data.mybatis.entity.NeeqNotice" />
+		<typeAlias alias="PdfErrorRecord" type="com.kf.data.mybatis.entity.PdfErrorRecord" />
+
+
+
 	</typeAliases>
 	<!--数据源配置 这块用 BD2数据库 -->
 	<environments default="localMysql">
@@ -66,5 +83,14 @@
 		<mapper resource="com/kf/data/mybatis/mapper/SqlAdapterMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/WenshucourtDataMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/WenshucourtContentMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/PdfCodeLinkMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/PdfCodeTemporaryMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/PdfCodeTableMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/NeeqCompanyNoticeMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/PdfCodeChapterMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/PdfReportLinksMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/PdfReportLinkTextMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/NeeqNoticeMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/PdfErrorRecordMapper.xml" />
 	</mappers>
 </configuration> 

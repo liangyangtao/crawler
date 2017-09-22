@@ -26,17 +26,13 @@
 		</javaClientGenerator>
 
 
-		<table schema="crawler" tableName="wenshucourt_data"
-			domainObjectName="WenshucourtData">
+		<table schema="crawler" tableName="pdf_code_chapter"
+			domainObjectName="PdfCodeChapter">
 			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
 				identity="true" type="post" />
 		</table>
 
-		<table schema="crawler" tableName="wenshucourt_content"
-			domainObjectName="WenshucourtContent">
-			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
-				identity="true" type="post" />
-		</table>
+
 
 
 
