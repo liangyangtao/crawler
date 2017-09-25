@@ -1,0 +1,8 @@
+<root>
+	<serverip>http://101.201.111.214:8097/company/getNeeqComapny</serverip>
+	<esClusterName>kaifengdata</esClusterName>
+	<esPort>9300</esPort>
+	<esUrl>10.27.32.236</esUrl>
+	<esIndexName>crawler_pdflink</esIndexName>
+	<esDataType>pdfLink</esDataType>
+</root>

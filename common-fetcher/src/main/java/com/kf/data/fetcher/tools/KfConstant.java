@@ -19,6 +19,11 @@ import org.w3c.dom.NodeList;
 public class KfConstant {
 
 	public static String serverIp = "";
+	public static String esClusterName = "";
+	public static int esPort = 9300;
+	public static String esUrl = "";
+	public static String esIndexName = "";
+	public static String esDataType = "";
 
 	public KfConstant() {
 		super();
@@ -37,6 +42,13 @@ public class KfConstant {
 			NodeList serverNode = doc.getElementsByTagName("root");
 			for (int i = 0; i < serverNode.getLength(); i++) {
 				serverIp = doc.getElementsByTagName("serverip").item(i).getFirstChild().getNodeValue();
+				esClusterName = doc.getElementsByTagName("esClusterName").item(i).getFirstChild().getNodeValue().trim();
+				esPort = Integer
+						.parseInt(doc.getElementsByTagName("esPort").item(i).getFirstChild().getNodeValue().trim());
+				esUrl = doc.getElementsByTagName("esUrl").item(i).getFirstChild().getNodeValue().trim();
+				esIndexName = doc.getElementsByTagName("esIndexName").item(i).getFirstChild().getNodeValue().trim();
+				esDataType = doc.getElementsByTagName("esDataType").item(i).getFirstChild().getNodeValue().trim();
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
