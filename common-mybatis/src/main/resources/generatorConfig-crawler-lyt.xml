@@ -26,8 +26,18 @@
 		</javaClientGenerator>
 
 
-		<table schema="crawler" tableName="pdf_code_chapter"
-			domainObjectName="PdfCodeChapter">
+		<table schema="crawler" tableName="pdf_report_model_notice"
+			domainObjectName="PdfReportModelNotice">
+			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" type="post" />
+		</table>
+		<table schema="crawler" tableName="pdf_report_table_model"
+			domainObjectName="PdfReportTableModel">
+			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
+				identity="true" type="post" />
+		</table>
+		<table schema="crawler" tableName="pdf_report_table_value"
+			domainObjectName="PdfReportTableValue">
 			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
 				identity="true" type="post" />
 		</table>

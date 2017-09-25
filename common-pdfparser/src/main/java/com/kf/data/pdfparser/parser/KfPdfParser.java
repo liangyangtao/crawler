@@ -51,7 +51,8 @@ public class KfPdfParser {
 	 * @param link
 	 * @return
 	 */
-	public String parserPdfHtmlByPdfTypeAndLink(PdfCodeTable pdfCodeTable, PdfReportLinks pdfReportLinks, Document document) {
+	public String parserPdfHtmlByPdfTypeAndLink(PdfCodeTable pdfCodeTable, PdfReportLinks pdfReportLinks,
+			Document document) {
 		if (pdfReportLinks.getReportDate() == null) {
 			pdfReportLinks.setReportDate(new Date());
 		}
@@ -60,6 +61,11 @@ public class KfPdfParser {
 			// 读取所有某个类别下的所有解析规则
 			List<PdfCodeTemporary> pdfCodeTemporarys = new PdfCodeTemporaryReader()
 					.readerPdfCodeTemporaryByPdfType(pdfCodeTable.getPdfType());
+			String pdfType = pdfCodeTable.getPdfType();
+			if (pdfType.startsWith("半年报")) {
+				pdfType = pdfType.replace("半年报", "年报");
+				pdfCodeTemporarys.addAll(new PdfCodeTemporaryReader().readerPdfCodeTemporaryByPdfType(pdfType));
+			}
 			if (pdfCodeTemporarys.size() == 0) {
 				resultMap.put("state", "error");
 			} else {

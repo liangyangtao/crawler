@@ -26,7 +26,7 @@ public class PdfReportLinksReader {
 				pdftype = pdftype.split("_")[0];
 			}
 			example.or().andPdfTypeEqualTo(pdftype).andRankEqualTo(rank);
-			example.setOrderByClause("id desc limit 100");
+			example.setOrderByClause("id desc limit 32");
 			pdfReportLinks = pdfReportLinksMapper.selectByExample(example);
 			sqlSession.commit();
 		} catch (Exception e) {

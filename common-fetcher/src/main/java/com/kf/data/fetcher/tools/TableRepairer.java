@@ -40,7 +40,7 @@ public class TableRepairer {
 		for (int i = 0; i < trElements.size(); i++) {
 			Element trElement = trElements.get(i);
 			Elements tdElements = trElement.select("td");
-			if (tdElements.size() <= 1) {
+			if (tdElements.size() == 0) {
 				trElement.remove();
 				continue;
 			}
@@ -547,7 +547,6 @@ public class TableRepairer {
 		if (trElements.size() == 0) {
 			return;
 		}
-
 		for (int i = 0; i < trElements.size(); i++) {
 			Element trElement = trElements.get(i);
 			if (trElement.hasAttr("height")) {

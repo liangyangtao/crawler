@@ -25,6 +25,14 @@
 		<typeAlias alias="PdfErrorRecord" type="com.kf.data.mybatis.entity.PdfErrorRecord" />
 
 
+		<typeAlias alias="PdfReportModelNotice"
+			type="com.kf.data.mybatis.entity.PdfReportModelNotice" />
+		<typeAlias alias="PdfReportTableModel"
+			type="com.kf.data.mybatis.entity.PdfReportTableModel" />
+		<typeAlias alias="PdfReportTableValue"
+			type="com.kf.data.mybatis.entity.PdfReportTableValue" />
+
+
 
 	</typeAliases>
 	<!--数据源配置 这块用 BD2数据库 -->
@@ -92,5 +100,9 @@
 		<mapper resource="com/kf/data/mybatis/mapper/PdfReportLinkTextMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/NeeqNoticeMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/PdfErrorRecordMapper.xml" />
+
+		<mapper resource="com/kf/data/mybatis/mapper/PdfReportModelNoticeMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/PdfReportTableModelMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/PdfReportTableValueMapper.xml" />
 	</mappers>
 </configuration> 

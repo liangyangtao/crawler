@@ -170,6 +170,7 @@
 		<module>common-pdfparser</module>
 		<module>common-elasticsearch</module>
     <module>common-pdf2Elasticsearch</module>
+    <module>common-pdfparser2</module>
   </modules>
 
 	<build>

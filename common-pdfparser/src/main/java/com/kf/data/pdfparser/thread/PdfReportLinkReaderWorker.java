@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.kf.data.mybatis.entity.PdfCodeTable;
 import com.kf.data.mybatis.entity.PdfReportLinks;
-import com.kf.data.pdfparser.jdbc.PdfCodeLinkWriter;
 import com.kf.data.pdfparser.jdbc.PdfCodetableReader;
 import com.kf.data.pdfparser.jdbc.PdfReportLinksReader;
+import com.kf.data.pdfparser.jdbc.PdfReportLinksWriter;
 
 /**
  * @Title: PdfLinkReaderWorker.java
@@ -42,7 +42,7 @@ public class PdfReportLinkReaderWorker implements Runnable {
 								0);
 						for (PdfReportLinks pdfReportLinks : links) {
 							pdfcodeLinkQueue.add(pdfReportLinks);
-							new PdfCodeLinkWriter().updatePdfCodeRankById(pdfReportLinks.getId(), 3);
+							new PdfReportLinksWriter().updatePdfReportRankById(pdfReportLinks.getId(), 3);
 						}
 					}
 				}

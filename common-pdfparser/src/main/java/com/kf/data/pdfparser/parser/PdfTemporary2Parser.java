@@ -92,7 +92,7 @@ public class PdfTemporary2Parser extends KfPdfParser {
 				// 每个字段比带的属性
 				// id
 				Map<String, String> companyidMap = new HashMap<String, String>();
-				companyidMap.put("value",  pdfCodeLink.getId() + "");
+				companyidMap.put("value", pdfCodeLink.getId() + "");
 				companyidMap.put("tableName", tableName);
 				companyidMap.put("property", "source_id");
 				// link
@@ -112,7 +112,7 @@ public class PdfTemporary2Parser extends KfPdfParser {
 				timeMap.put("property", "up_time");
 				// noticeId
 				Map<String, String> noticeIdMap = new HashMap<String, String>();
-				noticeIdMap.put("value", pdfCodeLink.getNoticeId()+"");
+				noticeIdMap.put("value", pdfCodeLink.getNoticeId() + "");
 				noticeIdMap.put("tableName", tableName);
 				noticeIdMap.put("property", "notice_id");
 
@@ -128,11 +128,10 @@ public class PdfTemporary2Parser extends KfPdfParser {
 				reportDateMap.put("tableName", tableName);
 				reportDateMap.put("property", "report_date");
 
-				String pdfType  = pdfCodeTable.getPdfType();
-				
+				String pdfType = pdfCodeTable.getPdfType();
+
 				if (propertys.size() > 0) {
-					Element bodyElement = new DocumentSimpler().simpleDocument(document);
-					Elements pElements = bodyElement.select("div").first().children();
+					Elements pElements = document.select("div").first().children();
 					String property = propertys.iterator().next();
 					String table_property = tableName + "@@@" + property;
 					List<String> begins = beginRules.get(table_property);
@@ -141,24 +140,22 @@ public class PdfTemporary2Parser extends KfPdfParser {
 					for (int i = 0; i < begins.size(); i++) {
 						String preText = begins.get(i);
 						String endText = ends.get(i);
-						if (bodyElement.toString().contains(preText)
-								&& bodyElement.toString().contains(endText)) {
+						if (document.toString().contains(preText) && document.toString().contains(endText)) {
 						} else {
 							continue;
 						}
 						int preIndex = 0;
 						int endIndex = pElements.size();
 						LinkedHashMap<Integer, Integer> indexs = new LinkedHashMap<Integer, Integer>();
-						
+
 						for (int j = 0; j < pElements.size(); j++) {
 							Element pElement = pElements.get(j);
 							if (pElement.tagName().equals("p")) {
 								String pText = pElement.text();
-								if (pdfType.contains("负债表") || pdfType.contains("利润表")
-										|| pdfType.contains("现金流量表")) {
+								if (pdfType.contains("负债表") || pdfType.contains("利润表") || pdfType.contains("现金流量表")) {
 
-									if (pText.contains("续") || pText.contains("表主要数据")
-											|| pText.contains("表项目变动分析表") || pText.contains("表日后事项")) {
+									if (pText.contains("续") || pText.contains("表主要数据") || pText.contains("表项目变动分析表")
+											|| pText.contains("表日后事项")) {
 										continue;
 									}
 									for (String finance : finances) {
@@ -496,8 +493,7 @@ public class PdfTemporary2Parser extends KfPdfParser {
 											infoEntity.add(categoryMap);
 
 											String value = tdElements.get(k).text().trim();
-											String public_time = trElements.get(0).select("td").get(k)
-													.text().trim();
+											String public_time = trElements.get(0).select("td").get(k).text().trim();
 											if (public_time.isEmpty()) {
 												continue;
 											}
@@ -658,8 +654,8 @@ public class PdfTemporary2Parser extends KfPdfParser {
 													if (elementText.equals(string)) {
 														isLeft = true;
 														Map<String, String> resultInfoMap = new HashMap<String, String>();
-														resultInfoMap.put("value", leftThElement
-																.select("td").get(1).text().trim());
+														resultInfoMap.put("value",
+																leftThElement.select("td").get(1).text().trim());
 														resultInfoMap.put("tableName", tableName);
 														resultInfoMap.put("property", propertyTemp);
 														infoEntity.add(resultInfoMap);
@@ -714,8 +710,7 @@ public class PdfTemporary2Parser extends KfPdfParser {
 												}
 												int index = keyIndex.get(propertyTemp);
 												String value = tdElements.get(index).text().trim();
-												String unit = trElements.get(0).select("td").get(index)
-														.text().trim();
+												String unit = trElements.get(0).select("td").get(index).text().trim();
 												if (unit.contains("（元）") || unit.contains("(元)")) {
 													unit = "元";
 												} else if (unit.contains("（万元）") || unit.contains("(万元)")) {
@@ -767,7 +762,6 @@ public class PdfTemporary2Parser extends KfPdfParser {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 
 		return resultMap;
 	}

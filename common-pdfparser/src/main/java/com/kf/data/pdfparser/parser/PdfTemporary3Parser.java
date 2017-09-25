@@ -57,8 +57,7 @@ public class PdfTemporary3Parser extends KfPdfParser {
 				propertyRules.put(table_property, pdfCodeTemporaryTempList);
 			}
 			List<List<Map<String, String>>> infoList = new ArrayList<List<Map<String, String>>>();
-			Element bodyElement = new DocumentSimpler().simpleDocument2(document);
-			Elements pElements = bodyElement.select("div").first().children();
+			Elements pElements = document.select("div").first().children();
 			Set<String> tablekeys = tables.keySet();
 			for (String tableName : tablekeys) {
 				Set<String> propertys = tables.get(tableName);
@@ -84,7 +83,7 @@ public class PdfTemporary3Parser extends KfPdfParser {
 				timeMap.put("property", "up_time");
 				// noticeId
 				Map<String, String> noticeIdMap = new HashMap<String, String>();
-				noticeIdMap.put("value", pdfCodeLink.getNoticeId()+"");
+				noticeIdMap.put("value", pdfCodeLink.getNoticeId() + "");
 				noticeIdMap.put("tableName", tableName);
 				noticeIdMap.put("property", "notice_id");
 
@@ -104,7 +103,7 @@ public class PdfTemporary3Parser extends KfPdfParser {
 					for (PdfCodeTemporary pdfCodeTemporary : table_property_Rules) {
 						preText = pdfCodeTemporary.getBeginPosition().trim();
 						endText = pdfCodeTemporary.getEndPosition().trim();
-						if (bodyElement.toString().contains(preText) && bodyElement.toString().contains(endText)) {
+						if (document.toString().contains(preText) && document.toString().contains(endText)) {
 						} else {
 							continue;
 						}
@@ -148,13 +147,12 @@ public class PdfTemporary3Parser extends KfPdfParser {
 							for (int j = preIn + 1; j < endIn; j++) {
 								Element childElement = pElements.get(j);
 								if (childElement.tagName().equals("table")) {
-									Elements tbodyElements = childElement.children();
-									for (Element element : tbodyElements) {
-										Elements trElements = element.children();
-										for (Element trElement : trElements) {
-											Elements tdElements = trElement.children();
-											for (Element tdElement : tdElements) {
-												Elements tdChildElements = tdElement.children();
+									Elements trElements = childElement.children();
+									for (Element trElement : trElements) {
+										Elements tdElements = trElement.children();
+										for (Element tdElement : tdElements) {
+											Elements tdChildElements = tdElement.children();
+											if (tdChildElements.size() > 0) {
 												for (Element tdChildElement : tdChildElements) {
 													if (tdChildElement.tagName().equals("table")) {
 														sb.append("	暂无表格	");
@@ -164,12 +162,15 @@ public class PdfTemporary3Parser extends KfPdfParser {
 														sb.append(tdChildElement.text().trim());
 													}
 												}
-
+											} else {
+												sb.append(tdElement.text().trim());
 											}
 
 										}
 
 									}
+
+									// }
 								} else if (childElement.tagName().equals("img")) {
 									sb.append("	暂无图片	");
 								} else {

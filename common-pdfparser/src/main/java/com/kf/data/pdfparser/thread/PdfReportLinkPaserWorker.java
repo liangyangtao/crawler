@@ -8,13 +8,14 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.kf.data.fetcher.tools.DocumentSimpler;
 import com.kf.data.mybatis.entity.PdfCodeTable;
 import com.kf.data.mybatis.entity.PdfReportLinks;
 import com.kf.data.pdfparser.entity.PdfLinkEsEntity;
 import com.kf.data.pdfparser.es.PdfReportTextReader;
 import com.kf.data.pdfparser.jdbc.DynamicDataStore;
-import com.kf.data.pdfparser.jdbc.PdfCodeLinkWriter;
 import com.kf.data.pdfparser.jdbc.PdfCodetableReader;
+import com.kf.data.pdfparser.jdbc.PdfReportLinksWriter;
 import com.kf.data.pdfparser.parser.KfPdfParser;
 
 /**
@@ -54,14 +55,16 @@ public class PdfReportLinkPaserWorker implements Runnable {
 						continue;
 					}
 					Document document = Jsoup.parse(html);
+					document = new DocumentSimpler().simpleDocument(document);
 					List<PdfCodeTable> pdftables = new PdfCodetableReader().readPdfTable();
 					for (PdfCodeTable pdfCodeTable : pdftables) {
 						if (pdfCodeTable.getTask() == 1) {
 							new Thread(new PdfTableThread(pdfCodeTable, pdfReportLinks, document.clone())).start();
 						}
 					}
+					new PdfReportLinksWriter().updatePdfReportRankById(pdfReportLinks.getId(), 2);
 					document = null;
-					new PdfCodeLinkWriter().updatePdfCodeRankById(pdfReportLinks.getId(), 2);
+					pdfLinkEsEntities.clear();
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
@@ -98,7 +101,7 @@ class PdfTableThread implements Runnable {
 		String linkPdfType = pdfReportLinks.getPdfType();
 		String pdfType = pdfCodeTable.getPdfType();
 		System.out.println("解析" + pdfType);
-		if (pdfType.startsWith(linkPdfType)) {
+		if (pdfType.startsWith(linkPdfType) ) {
 			try {
 				String json = null;
 				json = new KfPdfParser().parserPdfHtmlByPdfTypeAndLink(pdfCodeTable, pdfReportLinks, document);
