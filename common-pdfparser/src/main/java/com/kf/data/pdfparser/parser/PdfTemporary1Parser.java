@@ -34,6 +34,9 @@ public class PdfTemporary1Parser extends KfPdfParser {
 			for (PdfCodeTemporary pdfCodeTemporary : pdfCodeTemporarys1) {
 				// 先看下有多少张表
 				String tableName = pdfCodeTemporary.getTableName();
+				if (pdfCodeTable.getPdfType().startsWith("半年报")) {
+					tableName = tableName.replace("_year_", "_semiannual_");
+				}
 				String property = pdfCodeTemporary.getProperty();
 				Set<String> propertys = null;
 				if (tables.get(tableName) == null) {

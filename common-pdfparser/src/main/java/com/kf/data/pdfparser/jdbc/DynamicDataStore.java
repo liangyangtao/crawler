@@ -25,7 +25,6 @@ import net.sf.json.JSONObject;
  */
 public class DynamicDataStore {
 
-//	private static ReadWriteLock lock = new ReentrantReadWriteLock(false);
 
 	public void doStore(String json, String temppdfType) {
 
@@ -36,7 +35,6 @@ public class DynamicDataStore {
 		}
 		if (state != null && state.equals("ok")) {
 			JSONArray infoArray = results.getJSONArray("info");
-
 			if (infoArray != null && infoArray.size() > 0) {
 				for (Object infoobject : infoArray) {
 					JSONArray info = JSONArray.fromObject(infoobject);
@@ -46,34 +44,8 @@ public class DynamicDataStore {
 						JSONObject obj = JSONObject.fromObject(object);
 						tableName = obj.getString("tableName");
 						String property = obj.getString("property");
-						// 判断表是否存在，否则建表
-						// lock.writeLock().lock();
-						// String showTable = "show TABLES;";
-						// List<String> showTables = ShowData(showTable);
-						// if (!showTables.contains(tableName)) {
-						// String createTableSql = "create table " + tableName
-						// + "( id bigint(20) NOT NULL AUTO_INCREMENT ,PRIMARY
-						// KEY (id) ) ;";
-						// new BaseDao().executeSql(createTableSql);
-						// }
-						// 判断字段是否存在
-						// String showColumn = "SHOW COLUMNS FROM " + tableName
-						// + ";";
-						// List<String> showColumns = ShowData(showColumn);
-						// if (!showColumns.contains(property)) {
-						// String alterColumn = null;
-						// if (property.equals("value")) {
-						// alterColumn = "alter table " + tableName + " add " +
-						// property + " text ";
-						// } else {
-						// alterColumn = "alter table " + tableName + " add " +
-						// property + " varchar(255)";
-						// }
-						// new BaseDao().executeSql(alterColumn);
-						// }
 						String value = obj.getString("value");
 						map.put(property, value);
-						// lock.writeLock().unlock();
 					}
 					if (temppdfType.equals("半年报")) {
 						tableName = tableName.replace("_year_", "_semiannual_");
@@ -87,7 +59,6 @@ public class DynamicDataStore {
 				}
 
 			} else {
-
 				// do not thing
 			}
 		}

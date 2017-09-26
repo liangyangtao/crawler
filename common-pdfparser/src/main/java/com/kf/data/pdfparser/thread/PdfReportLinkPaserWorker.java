@@ -1,5 +1,6 @@
 package com.kf.data.pdfparser.thread;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -10,11 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import com.kf.data.fetcher.tools.DocumentSimpler;
 import com.kf.data.mybatis.entity.PdfCodeTable;
+import com.kf.data.mybatis.entity.PdfErrorRecord;
 import com.kf.data.mybatis.entity.PdfReportLinks;
 import com.kf.data.pdfparser.entity.PdfLinkEsEntity;
 import com.kf.data.pdfparser.es.PdfReportTextReader;
 import com.kf.data.pdfparser.jdbc.DynamicDataStore;
 import com.kf.data.pdfparser.jdbc.PdfCodetableReader;
+import com.kf.data.pdfparser.jdbc.PdfErrorRecordStore;
 import com.kf.data.pdfparser.jdbc.PdfReportLinksWriter;
 import com.kf.data.pdfparser.parser.KfPdfParser;
 
@@ -52,6 +55,13 @@ public class PdfReportLinkPaserWorker implements Runnable {
 						html = pdfLinkEsEntities.get(0).getContent();
 					}
 					if (html == null) {
+						PdfErrorRecord pdfErrorRecord = new PdfErrorRecord();
+						pdfErrorRecord.setLink(pdfReportLinks.getLink());
+						pdfErrorRecord.setNoticeId(noticeId);
+						pdfErrorRecord.setPdfType(pdfReportLinks.getPdfType());
+						pdfErrorRecord.setTask(0);
+						pdfErrorRecord.setuTime(new Date());
+						new PdfErrorRecordStore().savePdfErrorRecord(pdfErrorRecord);
 						continue;
 					}
 					Document document = Jsoup.parse(html);
@@ -85,9 +95,9 @@ public class PdfReportLinkPaserWorker implements Runnable {
 
 class PdfTableThread implements Runnable {
 
-	PdfCodeTable pdfCodeTable;
-	PdfReportLinks pdfReportLinks;
-	Document document;
+	private PdfCodeTable pdfCodeTable;
+	private PdfReportLinks pdfReportLinks;
+	private Document document;
 
 	public PdfTableThread(PdfCodeTable pdfCodeTable, PdfReportLinks pdfReportLinks, Document document) {
 		super();
@@ -101,13 +111,20 @@ class PdfTableThread implements Runnable {
 		String linkPdfType = pdfReportLinks.getPdfType();
 		String pdfType = pdfCodeTable.getPdfType();
 		System.out.println("解析" + pdfType);
-		if (pdfType.startsWith(linkPdfType) ) {
+		if (pdfType.startsWith(linkPdfType)) {
 			try {
 				String json = null;
 				json = new KfPdfParser().parserPdfHtmlByPdfTypeAndLink(pdfCodeTable, pdfReportLinks, document);
 				System.out.println(json);
 				if (json.equals("{}") || json.equals("{\"state\":\"ok\",\"info\":[]}")
 						|| json.equals("{\"state\":\"erro\"}") || json.equals("{\"state\":\"ok\",\"info\":[]}")) {
+					PdfErrorRecord pdfErrorRecord = new PdfErrorRecord();
+					pdfErrorRecord.setLink(pdfReportLinks.getLink());
+					pdfErrorRecord.setNoticeId(pdfReportLinks.getNoticeId());
+					pdfErrorRecord.setPdfType(pdfReportLinks.getPdfType());
+					pdfErrorRecord.setTask(0);
+					pdfErrorRecord.setuTime(new Date());
+					new PdfErrorRecordStore().savePdfErrorRecord(pdfErrorRecord);
 				} else {
 					try {
 						new DynamicDataStore().doStore(json, linkPdfType);
