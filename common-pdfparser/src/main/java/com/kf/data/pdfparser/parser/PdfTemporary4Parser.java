@@ -47,6 +47,9 @@ public class PdfTemporary4Parser extends KfPdfParser {
 				List<PdfCodeTemporary> table_property_Rules = propertyRules.get(propertyName_property);
 				// 判断解析规则的类型
 				String tableName = table_property_Rules.get(0).getTableName();
+				if (pdfCodeTable.getPdfType().startsWith("半年报")) {
+					tableName = tableName.replace("_year_", "_semiannual_");
+				}
 				String content = document.body().text();
 				content = replacekong(content);
 				/////////////////

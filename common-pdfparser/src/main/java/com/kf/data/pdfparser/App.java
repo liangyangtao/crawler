@@ -25,7 +25,7 @@ public class App {
 		KfConstant.init();
 		ExecutorService executor = Executors.newCachedThreadPool();
 		executor.execute(new PdfReportLinkReaderWorker(pdfcodeLinkQueue));
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 16; i++) {
 			executor.execute(new PdfReportLinkPaserWorker(pdfcodeLinkQueue));
 		}
 		executor.shutdown();

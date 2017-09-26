@@ -2,26 +2,29 @@ package com.kf.data.pdfparser;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import com.kf.data.fetcher.Fetcher;
 import com.kf.data.fetcher.tools.DocumentSimpler;
+import com.kf.data.fetcher.tools.KfConstant;
 import com.kf.data.mybatis.entity.PdfCodeTable;
 import com.kf.data.mybatis.entity.PdfReportLinks;
+import com.kf.data.pdfparser.entity.PdfLinkEsEntity;
+import com.kf.data.pdfparser.es.PdfReportTextReader;
 import com.kf.data.pdfparser.parser.KfPdfParser;
 
 public class ParserTest {
 
 	public static void main(String[] args) {
-		String url = "https://static.kaifengdata.com/neeq/8fe7de8929fef3b563e9758221d5e6ea/[%E5%AE%9A%E6%9C%9F%E6%8A%A5%E5%91%8A]%E8%89%BE%E8%8A%AC%E8%BE%BE%202017%E5%B9%B4%E5%8D%8A%E5%B9%B4%E5%BA%A6%E6%8A%A5%E5%91%8A.pdf.html";
-		url = changeHanzi(url);
-		String html = Fetcher.getInstance().get(url);
+		KfConstant.init();
+		List<PdfLinkEsEntity> pdfLinkEsEntities = new PdfReportTextReader().readPdfLinkInEsByNoticId(2624467);
+		String html = pdfLinkEsEntities.get(0).getContent();
 		Document document = Jsoup.parse(html);
 		document = new DocumentSimpler().simpleDocument(document);
 		PdfCodeTable pdfCodeTable = new PdfCodeTable();
-		pdfCodeTable.setPdfType("半年报_股东");
+		pdfCodeTable.setPdfType("半年报_商业模式");
 		PdfReportLinks pdfReportLinks = new PdfReportLinks();
 		System.out.println(new KfPdfParser().parserPdfHtmlByPdfTypeAndLink(pdfCodeTable, pdfReportLinks, document));
 

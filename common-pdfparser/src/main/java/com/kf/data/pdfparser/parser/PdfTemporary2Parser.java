@@ -17,8 +17,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
-import com.kf.data.fetcher.tools.DocumentSimpler;
-import com.kf.data.fetcher.tools.TableRepairer;
 import com.kf.data.fetcher.tools.TableSpliter;
 import com.kf.data.mybatis.entity.PdfCodeTable;
 import com.kf.data.mybatis.entity.PdfCodeTemporary;
@@ -45,6 +43,9 @@ public class PdfTemporary2Parser extends KfPdfParser {
 			for (PdfCodeTemporary pdfCodeTemporary : pdfCodeTemporarys2) {
 				// 先看下有多少张表
 				String tableName = pdfCodeTemporary.getTableName().trim();
+				if (pdfCodeTable.getPdfType().startsWith("半年报")) {
+					tableName = tableName.replace("_year_", "_semiannual_");
+				}
 				String property = pdfCodeTemporary.getProperty().trim();
 				Set<String> propertys = null;
 				if (tables.get(tableName) == null) {
@@ -251,7 +252,6 @@ public class PdfTemporary2Parser extends KfPdfParser {
 						Elements childElements = newBody.children();
 						for (Element element : childElements) {
 							if (element.tagName().equals("table")) {
-								element = new TableRepairer().repairTable(element);
 								result.add(element);
 							}
 						}
@@ -303,7 +303,6 @@ public class PdfTemporary2Parser extends KfPdfParser {
 									// 如果是多行的表头,就合并一下，
 									if (titleNum > 1) {
 										// istop=true;
-										element = new TableRepairer().repairTable(element);
 									}
 									if (element.select("tr").size() == 0) {
 										continue;
