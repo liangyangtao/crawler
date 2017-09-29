@@ -31,7 +31,7 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 					String trademark_type = tdElements.get(4).text();
 
 					String application_date = tdElements.get(0).text();
-
+					application_date =application_date.replace("-", "");
 					String trademark_status = null;
 					try {
 						trademark_status = tdElements.get(5).text();
@@ -60,6 +60,8 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 //					tycCompanyTrademarkCrawler.setTrademarkName(trademark_name);
 					tycCompanyTrademarkCrawler.setTrademarkImgUrl(trademark_img_url);
 //					tycCompanyTrademarkCrawler.setKfImgUrl(kfImgUrl);
+					tycCompanyTrademarkCrawler.setTrademarkId("trademark_id");
+					tycCompanyTrademarkCrawler.setStatus(false);
 					sendJson(tycCompanyTrademarkCrawler, "tyc_company_trademark");
 				} catch (Exception e) {
 					e.printStackTrace();

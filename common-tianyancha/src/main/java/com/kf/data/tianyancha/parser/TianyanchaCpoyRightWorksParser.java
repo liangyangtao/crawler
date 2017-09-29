@@ -49,6 +49,7 @@ public class TianyanchaCpoyRightWorksParser extends TianyanchaBasePaser {
 						tycCompanyCopyrightCrawler.setRegistrationNumber(registration_number);
 						tycCompanyCopyrightCrawler.setType(type);
 						tycCompanyCopyrightCrawler.setCreateDate(create_date);
+						tycCompanyCopyrightCrawler.setStatus(false);
 						sendJson(tycCompanyCopyrightCrawler, "tyc_company_copyright");
 
 					}

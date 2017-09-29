@@ -8,7 +8,6 @@ import org.jsoup.select.Elements;
 
 import com.kf.data.mybatis.entity.TycCompanyExecutiveCrawler;
 
-
 public class TianyanchaStaffParser extends TianyanchaBasePaser {
 	// <!--[高管信息]-->
 	// <!-- ngIf: items2.staffCount.show&&dataItemCount.staffCount>0 -->
@@ -58,13 +57,13 @@ public class TianyanchaStaffParser extends TianyanchaBasePaser {
 				tycCompanyExecutive.setName(name);
 				tycCompanyExecutive.setTitle(persionTitle);
 				// tycCompanyExecutive.setPersonId(personId);
-				tycCompanyExecutive.setStatus(true);
+				tycCompanyExecutive.setStatus(false);
 				// tycCompanyExecutive.setTel(tel);
 				// tycCompanyExecutive.setTerm(term);
 				// tycCompanyExecutive.setUpdatedAt(updatedAt);
 				// tycCompanyExecutive.setWeibo(weibo);
 				//
-                   sendJson(tycCompanyExecutive, "tyc_company_executive");
+				sendJson(tycCompanyExecutive, "tyc_company_executive");
 			} catch (Exception e) {
 				e.printStackTrace();
 				continue;

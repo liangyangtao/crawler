@@ -26,8 +26,8 @@ public class TianyanchaMortgageParser extends TianyanchaBasePaser {
 			for (Element element : nodes) {
 				try {
 					Elements tdElements = element.select("td");
-					if (tdElements.size() == 6) {
-						String text = tdElements.get(5).select("span").attr("onclick");
+					if (tdElements.size() == 7) {
+						String text = tdElements.get(6).select("span").attr("onclick");
 						text = StringUtils.substringBetween(text, "openMortgagePopup({", "})");
 						text = "{" + text + "}";
 						// openMortgagePopup({"baseInfo":{"overviewAmount":"55万元","scope":"融资租赁合同项下所有应付款项，包括但不限于租金，租赁费用，逾期利息，违约金，损害赔偿金和实现地债券的费用等。","status":"无效","remark":"","regDate":"2999-08-28","overviewType":"融资租赁合同","type":"融资租赁合同","overviewScope":"融资租赁合同项下所有应付款项，包括但不限于租金，租赁费用，逾期利息，违约金，损害赔偿金和实现地债券的费用等。","id":8775083,"amount":"55万元","overviewRemark":"","overviewTerm":"自
@@ -84,6 +84,7 @@ public class TianyanchaMortgageParser extends TianyanchaBasePaser {
 							String licenseNum = objs.getString("licenseNum");
 							tycCompanyChattelMortgage.setMortgageeIdNumber(licenseNum);
 						}
+						tycCompanyChattelMortgage.setStatus(false);
 						sendJson(tycCompanyChattelMortgage, "tyc_company_chattel_mortgage");
 					}
 

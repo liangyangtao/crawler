@@ -44,11 +44,12 @@ public class TianyanchaBranchParser extends TianyanchaBasePaser {
 					tycCompanyBranch.setCreatedAt(new Date());
 					// tycCompanyBranch.setId(company.getId());
 					// tycCompanyBranch.setOrganizationCode(obj.getString("estiblishTime"));
-					tycCompanyBranch.setStatus(true);
+					tycCompanyBranch.setStatus(false);
 					tycCompanyBranch.setUpdatedAt(new Date());
 					sendJson(tycCompanyBranch, "tyc_company_branch");
 
 				} catch (Exception e) {
+					e.printStackTrace();
 					continue;
 				}
 

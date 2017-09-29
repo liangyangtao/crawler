@@ -73,6 +73,7 @@ public class TianyanchaRecruitParser extends TianyanchaBasePaser {
 						tycCompanyRecruitmentCrawler.setUpdateDate(update);
 						tycCompanyRecruitmentCrawler.setJobDescription(job_description);
 						tycCompanyRecruitmentCrawler.setCreatedAt(new Date());
+						tycCompanyRecruitmentCrawler.setStatus(false);
 						sendJson(tycCompanyRecruitmentCrawler, "tyc_company_recruitment");
 
 					}

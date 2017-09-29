@@ -46,18 +46,18 @@ public class TycApiCompanyReaderWorker extends BaseWorker implements Runnable {
 	}
 
 	private void fillCompanyQueue() {
-		String url = KfConstant.serverIp;
-		String html = Fetcher.getInstance().get(url);
-		JSONObject jsonObject = JSONObject.fromObject(html);
-		int err_code = jsonObject.getInt("err_code");
-		if (err_code == 200) {
-			String companyName = jsonObject.getString("companyName").trim();
-			if (companyName.isEmpty()) {
-				return;
-			}
-			put(companyQueue, companyName);
-		}
-
+//		String url = KfConstant.serverIp;
+//		String html = Fetcher.getInstance().get(url);
+//		JSONObject jsonObject = JSONObject.fromObject(html);
+//		int err_code = jsonObject.getInt("err_code");
+//		if (err_code == 200) {
+//			String companyName = jsonObject.getString("companyName").trim();
+//			if (companyName.isEmpty()) {
+//				return;
+//			}
+//			put(companyQueue, companyName);
+//		}
+		put(companyQueue, "周宁县农村信用合作联社");
 	}
 
 }

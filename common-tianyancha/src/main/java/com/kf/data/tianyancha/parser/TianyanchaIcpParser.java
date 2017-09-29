@@ -32,7 +32,8 @@ public class TianyanchaIcpParser extends TianyanchaBasePaser {
 					TycCompanyDomainRecordCrawler tycCompanyDomainRecordCrawler = new TycCompanyDomainRecordCrawler();
 
 					String home_url = tdElements.get(2).text();// 网站首页
-					String release_date = tdElements.get(1).text();
+					String release_date = tdElements.get(0).text().trim();
+					release_date =release_date.replace("-", "");
 					String host_type = tdElements.get(6).text();// 单位性质
 					String site_name = tdElements.get(1).text();// 网站名称
 					String domain = tdElements.get(3).text();// 域名
@@ -47,8 +48,10 @@ public class TianyanchaIcpParser extends TianyanchaBasePaser {
 					tycCompanyDomainRecordCrawler.setDomain(domain);
 					tycCompanyDomainRecordCrawler.setCompanyName(companyName);
 					tycCompanyDomainRecordCrawler.setRecordNumber(record_number);
+					tycCompanyDomainRecordCrawler.setStatus(false);
 					sendJson(tycCompanyDomainRecordCrawler, "tyc_company_domain_record");
 				} catch (Exception e) {
+					e.printStackTrace();
 					continue;
 				}
 

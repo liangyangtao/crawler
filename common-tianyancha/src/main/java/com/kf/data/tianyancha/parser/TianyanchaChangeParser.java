@@ -53,7 +53,7 @@ public class TianyanchaChangeParser extends TianyanchaBasePaser {
 					tycCompanyChange.setCompanyName(companyName);
 					tycCompanyChange.setCreatedAt(new Date());
 					// tycCompanyChange.setId(company.getId());
-					tycCompanyChange.setStatus(true);
+					tycCompanyChange.setStatus(false);
 					tycCompanyChange.setUpdatedAt(new Date());
 					sendJson(tycCompanyChange, "tyc_company_change");
 				} catch (Exception e) {

@@ -26,6 +26,7 @@ import com.kf.data.tianyancha.parser.TianyanchaChangeParser;
 import com.kf.data.tianyancha.parser.TianyanchaCompanyParser;
 import com.kf.data.tianyancha.parser.TianyanchaCpoyRightWorksParser;
 import com.kf.data.tianyancha.parser.TianyanchaEquityParser;
+import com.kf.data.tianyancha.parser.TianyanchaHolderParser;
 import com.kf.data.tianyancha.parser.TianyanchaIcpParser;
 import com.kf.data.tianyancha.parser.TianyanchaMortgageParser;
 import com.kf.data.tianyancha.parser.TianyanchaPatentCountParser;
@@ -48,6 +49,7 @@ public class TianyanchaCrawler {
 
 	private TianyanchaCompanyParser tianyanchaCompanyParser = new TianyanchaCompanyParser();
 	TianyanchaStaffParser tianyanchaStaffParser = new TianyanchaStaffParser();
+	TianyanchaHolderParser tianyanchaHolderParser = new TianyanchaHolderParser();
 
 	/***
 	 * 输入名称进行数据采集入库
@@ -100,16 +102,16 @@ public class TianyanchaCrawler {
 			}
 
 			Document listDocument = Jsoup.parse(html);
-			Elements aElements = listDocument
-					.select("//*[@id=\"web-content\"]/div/div/div/div[1]/div[3]/div[1]/div[2]/div[1]/a");
+			Elements aElements = listDocument.select(
+					"div.search_result_single:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)");
 			if (aElements.size() > 0) {
 			} else {
 				logger.info(companyName + "没有搜索到结果异常");
 			}
 			String operatingStatus = null;
 			try {
-				Elements typeElements = listDocument
-						.select("//*[@id=\"web-content\"]/div/div/div/div[1]/div[3]/div[1]/div[2]/div[1]/div");
+				Elements typeElements = listDocument.select(
+						"div.search_result_single:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)");
 
 				if (typeElements.size() > 0) {
 					operatingStatus = typeElements.get(0).text();
@@ -153,8 +155,7 @@ public class TianyanchaCrawler {
 			// 主要人员
 			tianyanchaStaffParser.paseNode(document, companyName, companyId);
 			// 股东信息
-			// tianyanchaHolderParser.paseNode(document, tycBaseCompanyCrawler,
-			// companyID);
+			tianyanchaHolderParser.paseNode(document, companyName, companyId);
 
 			Map<String, Integer> zhibiaoNums = new HashMap<String, Integer>();
 			fillZhibiaoNums(zhibiaoNums, document);
@@ -209,7 +210,6 @@ public class TianyanchaCrawler {
 			e.printStackTrace();
 		} finally {
 			if (childDriver != null) {
-				// childDriver.manage().deleteAllCookies();
 				childDriver.close();
 			}
 			closeWebDrive(driver);
