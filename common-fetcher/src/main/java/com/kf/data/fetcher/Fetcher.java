@@ -174,7 +174,7 @@ public class Fetcher {
 		return null;
 	}
 
-	public String post1(String url, Map<String, String> params, Map<String, String> headers, String charset) {
+	public String postSave(String url, Map<String, String> params, Map<String, String> headers, String charset) {
 		HttpClientContext context = HttpClientContext.create();
 		context.setCookieStore(cookieStore);
 		String useCharset = charset;
@@ -190,6 +190,7 @@ public class Fetcher {
 			} else {
 				fillHeader(url, httpPost);
 			}
+			httpPost.setHeader("token", "kfsave");
 			List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 			if (params != null) {
 				for (String key : params.keySet()) {
@@ -197,7 +198,7 @@ public class Fetcher {
 				}
 				httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 			}
-			// httpPost.setConfig(requestConfig());
+			httpPost.setConfig(requestConfig());
 			CloseableHttpResponse response = httpClient.execute(httpPost, context);
 			try {
 				HttpEntity entity = response.getEntity();

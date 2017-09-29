@@ -19,10 +19,12 @@ public class ParserTest {
 
 	public static void main(String[] args) {
 		KfConstant.init();
-		List<PdfLinkEsEntity> pdfLinkEsEntities = new PdfReportTextReader().readPdfLinkInEsByNoticId(2624467);
+		List<PdfLinkEsEntity> pdfLinkEsEntities = new PdfReportTextReader().readPdfLinkInEsByNoticId(2670640);
 		String html = pdfLinkEsEntities.get(0).getContent();
 		Document document = Jsoup.parse(html);
 		document = new DocumentSimpler().simpleDocument(document);
+		
+		
 		PdfCodeTable pdfCodeTable = new PdfCodeTable();
 		pdfCodeTable.setPdfType("半年报_商业模式");
 		PdfReportLinks pdfReportLinks = new PdfReportLinks();
