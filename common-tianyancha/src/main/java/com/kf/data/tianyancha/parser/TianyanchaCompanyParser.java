@@ -2,6 +2,7 @@ package com.kf.data.tianyancha.parser;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -53,7 +54,6 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 				}
 				Elements inBlockElements = headerElement.select(".in-block.vertical-top:not(.sec-c3)");
 				for (Element element : inBlockElements) {
-					
 					if (element.text().contains("地址：")) {
 						address = element.text();
 						address = address.replace("地址：", "").trim();
@@ -79,10 +79,13 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 				if (secElements.size() > 0) {
 					Elements scriptElements = secElements.first().select("#company_base_info_detail");
 					if (scriptElements.size() > 0) {
-						companyDetail = scriptElements.get(0).text();
+						companyDetail = scriptElements.get(0).toString();
+						companyDetail = StringUtils.substringBetween(companyDetail, "company_base_info_detail\">",
+								"</script>");
 					} else {
 						companyDetail = secElements.first().text();
 					}
+					tycBaseCompanyCrawler.setCompanyAbout(companyDetail);
 				}
 
 			}
@@ -158,46 +161,38 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 				Elements nodes = infoElement.select("tr");
 				for (Element trElement : nodes) {
 					try {
-						Elements  leftElements  =trElement.select("table-left");
+						Elements leftElements = trElement.select(".table-left");
 						for (Element element : leftElements) {
-							if (element.text().contains("工商注册号")) {
-								registrationNumber = element.select("td").get(1).text().trim();
-							}
-							if (element.text().contains("组织机构代码")) {
-								organizationCode = element.select("td").get(3).text().trim();
-							}
-							if (element.text().contains("统一信用代码")) {
-								creditCode = element.select("td").get(1).text().trim();
-							}
-							if (element.text().contains("企业类型")) {
-								companyType = element.select("td").get(3).text().trim();
-							}
-							if (element.text().contains("行业")) {
-								industryRecruitment = element.select("td").get(3).text().trim();
-							}
-							if (element.text().contains("营业期限")) {
-								String operating = element.select("td").get(1).text().trim();
+							if (element.text().startsWith("工商注册号")) {
+								registrationNumber = trElement.select("td").get(1).text().trim();
+							} else if (element.text().startsWith("组织机构代码")) {
+								organizationCode = trElement.select("td").get(3).text().trim();
+							} else if (element.text().startsWith("统一信用代码")) {
+								creditCode = trElement.select("td").get(1).text().trim();
+							} else if (element.text().startsWith("企业类型")) {
+								companyType = trElement.select("td").get(3).text().trim();
+							} else if (element.text().startsWith("行业")) {
+								industryRecruitment = trElement.select("td").get(3).text().trim();
+							} else if (element.text().startsWith("营业期限")) {
+								String operating = trElement.select("td").get(1).text().trim();
 								String temp[] = operating.split("至");
 								if (temp.length == 2) {
 									operatingBeginDate = temp[0].trim().trim();
 									operatingEndDate = temp[1].trim().trim();
 								}
-							}
-							if (element.text().contains("核准日期")) {
-								approvedDate = element.select("td").get(3).text().trim();
+							} else if (element.text().startsWith("核准日期")) {
+								approvedDate = trElement.select("td").get(3).text().trim();
 								approvedDate = approvedDate.replace("-", "").trim().trim();
-							}
-							if (element.text().contains("登记机关")) {
-								registrationAuthority = element.select("td").get(1).text().trim();
-							}
-							if (element.text().contains("注册地址")) {
-								registeredAddress = element.select("td").get(3).text().trim();
-							}
-							if (element.text().contains("经营范围")) {
-								businessScope = element.select("td").get(1).text().trim();
+							} else if (element.text().startsWith("登记机关")) {
+								registrationAuthority = trElement.select("td").get(1).text().trim();
+							} else if (element.text().startsWith("注册地址")) {
+								registeredAddress = trElement.select("td").get(3).text().trim();
+							} else if (element.text().startsWith("经营范围")) {
+								businessScope = trElement.select("td").get(1).text().trim();
 								businessScope = businessScope.replace("收起", "").trim();
 								businessScope = businessScope.replace("详细", "").trim();
 							}
+
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

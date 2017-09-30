@@ -15,7 +15,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,16 +22,22 @@ import org.slf4j.LoggerFactory;
 import com.kf.data.fetcher.tools.Md5Tools;
 import com.kf.data.tianyancha.parser.TianyanchaBranchParser;
 import com.kf.data.tianyancha.parser.TianyanchaChangeParser;
+import com.kf.data.tianyancha.parser.TianyanchaCommonstockChangeParser;
+import com.kf.data.tianyancha.parser.TianyanchaCommonstockParser;
 import com.kf.data.tianyancha.parser.TianyanchaCompanyParser;
 import com.kf.data.tianyancha.parser.TianyanchaCpoyRightWorksParser;
 import com.kf.data.tianyancha.parser.TianyanchaEquityParser;
 import com.kf.data.tianyancha.parser.TianyanchaHolderParser;
 import com.kf.data.tianyancha.parser.TianyanchaIcpParser;
+import com.kf.data.tianyancha.parser.TianyanchaImExPortParser;
 import com.kf.data.tianyancha.parser.TianyanchaMortgageParser;
-import com.kf.data.tianyancha.parser.TianyanchaPatentCountParser;
+import com.kf.data.tianyancha.parser.TianyanchaPatentParser;
 import com.kf.data.tianyancha.parser.TianyanchaRecruitParser;
+import com.kf.data.tianyancha.parser.TianyanchaRongziParser;
+import com.kf.data.tianyancha.parser.TianyanchaSfpmParser;
 import com.kf.data.tianyancha.parser.TianyanchaStaffParser;
 import com.kf.data.tianyancha.parser.TianyanchaTmParser;
+import com.kf.data.tianyancha.parser.TianyanchaWechatParser;
 
 /**
  * @Title: TianyanchaCrawler.java
@@ -45,11 +50,12 @@ import com.kf.data.tianyancha.parser.TianyanchaTmParser;
 public class TianyanchaCrawler {
 	private final static Logger logger = LoggerFactory.getLogger(TianyanchaCrawler.class);
 	private static final String url = "http://www.tianyancha.com";
-	private boolean isProxy = false;
-
 	private TianyanchaCompanyParser tianyanchaCompanyParser = new TianyanchaCompanyParser();
 	TianyanchaStaffParser tianyanchaStaffParser = new TianyanchaStaffParser();
 	TianyanchaHolderParser tianyanchaHolderParser = new TianyanchaHolderParser();
+	TianyanchaBranchParser tianyanchaBranchParser = new TianyanchaBranchParser();
+	TianyanchaChangeParser tianyanchaChangeParser = new TianyanchaChangeParser();
+	TianyanchaMortgageParser tianyanchaMortgageParser = new TianyanchaMortgageParser();
 
 	/***
 	 * 输入名称进行数据采集入库
@@ -152,58 +158,87 @@ public class TianyanchaCrawler {
 			String companyId = Md5Tools.GetMD5Code(companyName);
 			// 基本信息
 			companyName = tianyanchaCompanyParser.paseNode(document, operatingStatus, companyId);
-			// 主要人员
+			// 主要人员 高管
 			tianyanchaStaffParser.paseNode(document, companyName, companyId);
 			// 股东信息
 			tianyanchaHolderParser.paseNode(document, companyName, companyId);
 
 			Map<String, Integer> zhibiaoNums = new HashMap<String, Integer>();
 			fillZhibiaoNums(zhibiaoNums, document);
-			if (zhibiaoNums.get("branchCount") > 0) {
+			if (zhibiaoNums.get("branchCount") != null && zhibiaoNums.get("branchCount") > 0) {
 				// // 分支机构
-				new TianyanchaBranchParser().paseNode(document, companyName, companyId);
+				tianyanchaBranchParser.paseNode(document, companyName, companyId);
 			}
-			if (zhibiaoNums.get("changeCount") > 0) {
+			if (zhibiaoNums.get("changeCount") != null && zhibiaoNums.get("changeCount") > 0) {
 				// // 变更记录 没有去重
-				new TianyanchaChangeParser().paseNode(document, companyName, companyId);
+				tianyanchaChangeParser.paseNode(document, companyName, companyId);
 
 			}
 			// 《动产抵押 》栏目解析
-			if (zhibiaoNums.get("mortgageCount") > 0) {
-				new TianyanchaMortgageParser().paseNode(document, companyName, companyId);
+			if (zhibiaoNums.get("mortgageCount") != null && zhibiaoNums.get("mortgageCount") > 0) {
+				tianyanchaMortgageParser.paseNode(document, companyName, companyId);
 
 			}
-			if (zhibiaoNums.get("cpoyRCount") > 0) {
+			if (zhibiaoNums.get("cpoyRightWorksCount") != null && zhibiaoNums.get("cpoyRightWorksCount") > 0) {
 				// // 著作权 处理中
 				// // documentId);
 				new TianyanchaCpoyRightWorksParser().paseNode(document, companyName, companyId);
 
 			}
-			if (zhibiaoNums.get("icpCount") > 0) {
+			if (zhibiaoNums.get("icpCount") != null && zhibiaoNums.get("icpCount") > 0) {
 				// // 网站备案 处理中
 				new TianyanchaIcpParser().paseNode(document, companyName, companyId);
 
 			}
-			if (zhibiaoNums.get("equityCount") > 0) {
+			if (zhibiaoNums.get("equityCount") != null && zhibiaoNums.get("equityCount") > 0) {
 				// 股权出质 yx 网页
 				new TianyanchaEquityParser().paseNode(document, companyName, companyId);
 
 			}
-			if (zhibiaoNums.get("patentCount") > 0) {
+			if (zhibiaoNums.get("patentCount") != null && zhibiaoNums.get("patentCount") > 0) {
 
 				// // 专利
-				new TianyanchaPatentCountParser().paseNode(document, companyName, companyId);
+				new TianyanchaPatentParser().paseNode(document, companyName, companyId);
 
 			}
-			if (zhibiaoNums.get("recruitCount") > 0) {
+			if (zhibiaoNums.get("recruitCount") != null && zhibiaoNums.get("recruitCount") > 0) {
 				// // 招聘 处理中
 				new TianyanchaRecruitParser().paseNode(document, companyName, companyId);
 
 			}
-			if (zhibiaoNums.get("tmCount") > 0) {
+			if (zhibiaoNums.get("tmCount") != null && zhibiaoNums.get("tmCount") > 0) {
 				// // 商标信息 网页
 				new TianyanchaTmParser().paseNode(document, companyName, companyId);
 
+			}
+
+			if (zhibiaoNums.get("rongziCount") != null && zhibiaoNums.get("rongziCount") > 0) {
+				// 融资历史
+				new TianyanchaRongziParser().paseNode(document, companyName, companyId);
+
+			}
+			if (zhibiaoNums.get("commonstockCount") != null && zhibiaoNums.get("commonstockCount") > 0) {
+				// 股本结构
+				new TianyanchaCommonstockParser().paseNode(document, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("commonstockChangeCount") != null && zhibiaoNums.get("commonstockChangeCount") > 0) {
+				// 股本变动
+				new TianyanchaCommonstockChangeParser().paseNode(document, companyName, companyId);
+			}
+			if (zhibiaoNums.get("imExPortCount") != null && zhibiaoNums.get("imExPortCount") > 0) {
+				// 进出口信息
+				new TianyanchaImExPortParser().paseNode(document, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("sfpmCount") != null && zhibiaoNums.get("sfpmCount") > 0) {
+				// 司法拍卖
+				new TianyanchaSfpmParser().paseNode(document, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("wechatCount") != null && zhibiaoNums.get("wechatCount") > 0) {
+				// 微信公众号
+				new TianyanchaWechatParser().paseNode(document, companyName, companyId);
 			}
 
 		} catch (Exception e) {
@@ -284,13 +319,13 @@ public class TianyanchaCrawler {
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					zhibiaoNums.put("gbjgCount", Integer.parseInt(text));
+					zhibiaoNums.put("commonstockCount", Integer.parseInt(text));
 				} else if (text.contains("股本变动")) {
 					text = text.replace("股本变动", "");
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					zhibiaoNums.put("gbbdCount", Integer.parseInt(text));
+					zhibiaoNums.put("commonstockChangeCount", Integer.parseInt(text));
 				} else if (text.contains("分红情况")) {
 					text = text.replace("分红情况", "");
 					if (text.isEmpty()) {
@@ -357,7 +392,7 @@ public class TianyanchaCrawler {
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					zhibiaoNums.put("companyRongzi", Integer.parseInt(text));
+					zhibiaoNums.put("rongziCount", Integer.parseInt(text));
 				} else if (text.contains("核心团队")) {
 					text = text.replace("核心团队", "");
 					if (text.isEmpty()) {
@@ -501,13 +536,7 @@ public class TianyanchaCrawler {
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					zhibiaoNums.put("jckxyCount", Integer.parseInt(text));
-				} else if (text.contains("进出口信用")) {
-					text = text.replace("进出口信用", "");
-					if (text.isEmpty()) {
-						text = "0";
-					}
-					zhibiaoNums.put("jckxyCount", Integer.parseInt(text));
+					zhibiaoNums.put("imExPortCount", Integer.parseInt(text));
 				} else if (text.contains("资质证书")) {
 					text = text.replace("资质证书", "");
 					if (text.isEmpty()) {
@@ -519,7 +548,7 @@ public class TianyanchaCrawler {
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					zhibiaoNums.put("wxgzhCount", Integer.parseInt(text));
+					zhibiaoNums.put("wechatCount", Integer.parseInt(text));
 				} else if (text.contains("商标信息")) {
 					text = text.replace("商标信息", "");
 					if (text.isEmpty()) {
@@ -543,7 +572,7 @@ public class TianyanchaCrawler {
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					zhibiaoNums.put("zpzzqCount", Integer.parseInt(text));
+					zhibiaoNums.put("cpoyRightWorksCount", Integer.parseInt(text));
 				} else if (text.contains("网站备案")) {
 					text = text.replace("网站备案", "");
 					if (text.isEmpty()) {

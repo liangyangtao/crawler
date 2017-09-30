@@ -20,7 +20,7 @@ import net.sf.json.JSONObject;
  * @TianyanchaPatentCountParser
  * @注释：专利信息
  */
-public class TianyanchaPatentCountParser extends TianyanchaBasePaser {
+public class TianyanchaPatentParser extends TianyanchaBasePaser {
 
 	public void paseNode(Document document, String companyName, String companyId) {
 		Elements contentNodes = document.select("#_container_patent");
