@@ -46,22 +46,22 @@ public class TycApiCompanyReaderWorker extends BaseWorker implements Runnable {
 	}
 
 	private void fillCompanyQueue() {
-//		String url = KfConstant.serverIp;
-//		String html = Fetcher.getInstance().get(url);
-//		JSONObject jsonObject = JSONObject.fromObject(html);
-//		int err_code = jsonObject.getInt("err_code");
-//		if (err_code == 200) {
-//			String companyName = jsonObject.getString("companyName").trim();
-//			if (companyName.isEmpty()) {
-//				return;
-//			}
-//			put(companyQueue, companyName);
-//		}
+		String url = KfConstant.serverIp;
+		String html = Fetcher.getInstance().get(url);
+		JSONObject jsonObject = JSONObject.fromObject(html);
+		int err_code = jsonObject.getInt("err_code");
+		if (err_code == 200) {
+			String companyName = jsonObject.getString("companyName").trim();
+			if (companyName.isEmpty()) {
+				return;
+			}
+			put(companyQueue, companyName);
+		}
 		//中建材集团进出口公司
 		//周宁县农村信用合作联社
 		//杭州来拍网络科技有限公司
 		//
-		put(companyQueue, "北京百度网讯科技有限公司");
+//		put(companyQueue, "北京百度网讯科技有限公司");
 	}
 
 }
