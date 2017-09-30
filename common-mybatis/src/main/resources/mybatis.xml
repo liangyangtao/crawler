@@ -31,8 +31,38 @@
 			type="com.kf.data.mybatis.entity.PdfReportTableModel" />
 		<typeAlias alias="PdfReportTableValue"
 			type="com.kf.data.mybatis.entity.PdfReportTableValue" />
+		<typeAlias alias="TycHumans" type="com.kf.data.mybatis.entity.TycHumans" />
 
+		<!-- tyc -->
 
+		<typeAlias alias="TycBaseCompanyCrawler"
+			type="com.kf.data.mybatis.entity.TycBaseCompanyCrawler" />
+
+		<typeAlias alias="TycCompanyBranchCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyBranchCrawler" />
+		<typeAlias alias="TycCompanyChangeCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyChangeCrawler" />
+		<typeAlias alias="TycCompanyChattelMortgageCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyChattelMortgageCrawler" />
+		<typeAlias alias="TycCompanyCopyrightCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyCopyrightCrawler" />
+		<typeAlias alias="TycCompanyDomainRecordCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyDomainRecordCrawler" />
+		<typeAlias alias="TycCompanyEquityPledgedCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyEquityPledgedCrawler" />
+		<typeAlias alias="TycCompanyExecutiveCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyExecutiveCrawler" />
+		<typeAlias alias="TycCompanyPatentCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyPatentCrawler" />
+		<typeAlias alias="TycCompanyRecruitmentCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyRecruitmentCrawler" />
+		<typeAlias alias="TycCompanyShareholdersContributiveCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyShareholdersContributiveCrawler" />
+		<typeAlias alias="TycCompanyTrademarkCrawler"
+			type="com.kf.data.mybatis.entity.TycCompanyTrademarkCrawler" />
+		<typeAlias alias="TycEventsTenderBidCrawler"
+			type="com.kf.data.mybatis.entity.TycEventsTenderBidCrawler" />
+		<!-- tyc end -->
 
 	</typeAliases>
 	<!--数据源配置 这块用 BD2数据库 -->
@@ -104,5 +134,33 @@
 		<mapper resource="com/kf/data/mybatis/mapper/PdfReportModelNoticeMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/PdfReportTableModelMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/PdfReportTableValueMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/TycHumansMapper.xml" />
+
+		<!-- tyc start -->
+		<mapper resource="com/kf/data/mybatis/mapper/TycBaseCompanyCrawlerMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/TycCompanyBranchCrawlerMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/TycCompanyChangeCrawlerMapper.xml" />
+		<mapper
+			resource="com/kf/data/mybatis/mapper/TycCompanyChattelMortgageCrawlerMapper.xml" />
+		<mapper
+			resource="com/kf/data/mybatis/mapper/TycCompanyCopyrightCrawlerMapper.xml" />
+		<mapper
+			resource="com/kf/data/mybatis/mapper/TycCompanyDomainRecordCrawlerMapper.xml" />
+		<mapper
+			resource="com/kf/data/mybatis/mapper/TycCompanyEquityPledgedCrawlerMapper.xml" />
+		<mapper
+			resource="com/kf/data/mybatis/mapper/TycCompanyExecutiveCrawlerMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/TycCompanyPatentCrawlerMapper.xml" />
+		<mapper
+			resource="com/kf/data/mybatis/mapper/TycCompanyRecruitmentCrawlerMapper.xml" />
+		<mapper
+			resource="com/kf/data/mybatis/mapper/TycCompanyShareholdersContributiveCrawlerMapper.xml" />
+		<mapper
+			resource="com/kf/data/mybatis/mapper/TycCompanyTrademarkCrawlerMapper.xml" />
+		<mapper
+			resource="com/kf/data/mybatis/mapper/TycEventsTenderBidCrawlerMapper.xml" />
+
+		<!-- tyc end -->
+
 	</mappers>
 </configuration> 

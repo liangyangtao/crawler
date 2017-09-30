@@ -25,6 +25,8 @@ public class KfConstant {
 	public static String esIndexName = "";
 	public static String esDataType = "";
 
+	public static String saveJsonIp = "";
+
 	public KfConstant() {
 		super();
 		init();
@@ -49,6 +51,7 @@ public class KfConstant {
 				esIndexName = doc.getElementsByTagName("esIndexName").item(i).getFirstChild().getNodeValue().trim();
 				esDataType = doc.getElementsByTagName("esDataType").item(i).getFirstChild().getNodeValue().trim();
 
+				saveJsonIp = doc.getElementsByTagName("saveJsonIp").item(i).getFirstChild().getNodeValue();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

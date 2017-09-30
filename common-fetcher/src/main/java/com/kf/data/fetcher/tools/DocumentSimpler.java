@@ -64,6 +64,7 @@ public class DocumentSimpler {
 			}
 
 		}
+		document.empty();
 		document = null;
 		Document newdocument = new Document("");
 		newdocument.appendChild(newBody);
