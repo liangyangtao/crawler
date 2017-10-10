@@ -23,10 +23,18 @@ import com.kf.data.pdfparser.jdbc.PdfReportLinksWriter;
 public class PdfReportLinkReaderWorker implements Runnable {
 	static final Logger logger = LoggerFactory.getLogger(PdfReportLinkReaderWorker.class);
 	private LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue;
+	private PdfReportLinksReader pdfReportLinksReader;
+	private PdfReportLinksWriter pdfReportLinksWriter;
+	private PdfCodetableReader pdfCodetableReader;
 
-	public PdfReportLinkReaderWorker(LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue) {
-		super();
+	public PdfReportLinkReaderWorker(LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue,
+			PdfReportLinksReader pdfReportLinksReader, PdfReportLinksWriter pdfReportLinksWriter,
+			PdfCodetableReader pdfCodetableReader) {
 		this.pdfcodeLinkQueue = pdfcodeLinkQueue;
+		this.pdfReportLinksReader = pdfReportLinksReader;
+		this.pdfReportLinksWriter = pdfReportLinksWriter;
+		this.pdfCodetableReader = pdfCodetableReader;
+
 	}
 
 	@Override
@@ -34,16 +42,17 @@ public class PdfReportLinkReaderWorker implements Runnable {
 		while (true) {
 			if (pdfcodeLinkQueue.size() == 0) {
 				// 不管rank 是什麼的都得讀取
-				List<PdfCodeTable> pdftables = new PdfCodetableReader().readPdfTable();
+				List<PdfCodeTable> pdftables = pdfCodetableReader.readPdfTable();
 				for (PdfCodeTable pdfCodeTable : pdftables) {
 					String pdftype = pdfCodeTable.getPdfType();
 					if (pdfCodeTable.getTask() == 1) {
-						List<PdfReportLinks> links = new PdfReportLinksReader().readerPdfCodeLinkByTypeAndRank(pdftype,
-								0);
+						List<PdfReportLinks> links = pdfReportLinksReader.readerPdfCodeLinkByTypeAndRank(pdftype, 0);
 						for (PdfReportLinks pdfReportLinks : links) {
 							pdfcodeLinkQueue.add(pdfReportLinks);
-							new PdfReportLinksWriter().updatePdfReportRankById(pdfReportLinks.getId(), 3);
+							pdfReportLinksWriter.updatePdfReportRankById(pdfReportLinks.getId(), 3);
 						}
+						links.clear();
+						links = null;
 					}
 				}
 			} else {

@@ -166,11 +166,11 @@ public class TianyanchaCrawler {
 			Map<String, Integer> zhibiaoNums = new HashMap<String, Integer>();
 			fillZhibiaoNums(zhibiaoNums, document);
 			if (zhibiaoNums.get("branchCount") != null && zhibiaoNums.get("branchCount") > 0) {
-				// // 分支机构
+				// 分支机构
 				tianyanchaBranchParser.paseNode(document, companyName, companyId);
 			}
 			if (zhibiaoNums.get("changeCount") != null && zhibiaoNums.get("changeCount") > 0) {
-				// // 变更记录 没有去重
+				// 变更记录
 				tianyanchaChangeParser.paseNode(document, companyName, companyId);
 
 			}
@@ -180,13 +180,12 @@ public class TianyanchaCrawler {
 
 			}
 			if (zhibiaoNums.get("cpoyRightWorksCount") != null && zhibiaoNums.get("cpoyRightWorksCount") > 0) {
-				// // 著作权 处理中
-				// // documentId);
+				// 著作权 处理中
 				new TianyanchaCpoyRightWorksParser().paseNode(document, companyName, companyId);
 
 			}
 			if (zhibiaoNums.get("icpCount") != null && zhibiaoNums.get("icpCount") > 0) {
-				// // 网站备案 处理中
+				// 网站备案 处理中
 				new TianyanchaIcpParser().paseNode(document, companyName, companyId);
 
 			}
@@ -197,17 +196,17 @@ public class TianyanchaCrawler {
 			}
 			if (zhibiaoNums.get("patentCount") != null && zhibiaoNums.get("patentCount") > 0) {
 
-				// // 专利
+				// 专利
 				new TianyanchaPatentParser().paseNode(document, companyName, companyId);
 
 			}
 			if (zhibiaoNums.get("recruitCount") != null && zhibiaoNums.get("recruitCount") > 0) {
-				// // 招聘 处理中
+				// 招聘 处理中
 				new TianyanchaRecruitParser().paseNode(document, companyName, companyId);
 
 			}
 			if (zhibiaoNums.get("tmCount") != null && zhibiaoNums.get("tmCount") > 0) {
-				// // 商标信息 网页
+				// 商标信息 网页
 				new TianyanchaTmParser().paseNode(document, companyName, companyId);
 
 			}
