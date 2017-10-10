@@ -210,7 +210,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 
 			tycBaseCompanyCrawler.setBusinessScope(businessScope);
 
-			tycBaseCompanyCrawler.setCompanyAbout(companyAbout);
+//			tycBaseCompanyCrawler.setCompanyAbout(companyAbout);
 			tycBaseCompanyCrawler.setCompanyId(companyID);
 
 			tycBaseCompanyCrawler.setCompanyLogoUrl(companyLogoUrl);

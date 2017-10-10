@@ -38,6 +38,7 @@ import com.kf.data.tianyancha.parser.TianyanchaSfpmParser;
 import com.kf.data.tianyancha.parser.TianyanchaStaffParser;
 import com.kf.data.tianyancha.parser.TianyanchaTmParser;
 import com.kf.data.tianyancha.parser.TianyanchaWechatParser;
+import com.kf.data.tianyancha.parser.TianyanchaYearReportParser;
 
 /**
  * @Title: TianyanchaCrawler.java
@@ -153,7 +154,7 @@ public class TianyanchaCrawler {
 
 			baseHtml = childDriver.getPageSource();
 
-			Document document = Jsoup.parse(baseHtml);
+			Document document = Jsoup.parse(baseHtml, "https://www.tianyancha.com");
 			// 统一companyId
 			String companyId = Md5Tools.GetMD5Code(companyName);
 			// 基本信息
@@ -165,12 +166,39 @@ public class TianyanchaCrawler {
 
 			Map<String, Integer> zhibiaoNums = new HashMap<String, Integer>();
 			fillZhibiaoNums(zhibiaoNums, document);
+			// reportCount
+			if (zhibiaoNums.get("reportCount") != null && zhibiaoNums.get("reportCount") > 0) {
+				// 企业年报
+				Elements reportNodes = document.select(".report_item_2017");
+				for (Element element : reportNodes) {
+					try {
+						Element linkElement = element.select("a").first();
+						String reportLink = linkElement.absUrl("href");
+						System.out.println(reportLink);
+						driver.get(reportLink);
+						String reportHtml = driver.getPageSource();
+						Document reportDocument = Jsoup.parse(reportHtml);
+						new TianyanchaYearReportParser().paseNode(reportDocument, companyName, companyId);
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						driver.navigate().back();
+					}
+
+				}
+
+			}
+
 			if (zhibiaoNums.get("branchCount") != null && zhibiaoNums.get("branchCount") > 0) {
 				// 分支机构
 				tianyanchaBranchParser.paseNode(document, companyName, companyId);
 			}
 			if (zhibiaoNums.get("changeCount") != null && zhibiaoNums.get("changeCount") > 0) {
 				// 变更记录
+				
+				//  //*[@id="_container_changeinfo"]/div/div[2]/ul/li[6]
+				
+				
 				tianyanchaChangeParser.paseNode(document, companyName, companyId);
 
 			}
@@ -379,7 +407,7 @@ public class TianyanchaCrawler {
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					zhibiaoNums.put("qynbCount", Integer.parseInt(text));
+					zhibiaoNums.put("reportCount", Integer.parseInt(text));
 				} else if (text.contains("分支机构")) {
 					text = text.replace("分支机构", "");
 					if (text.isEmpty()) {
