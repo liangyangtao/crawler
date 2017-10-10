@@ -53,15 +53,16 @@ public class TycApiCompanyReaderWorker extends BaseWorker implements Runnable {
 		if (err_code == 200) {
 			String companyName = jsonObject.getString("companyName").trim();
 			if (companyName.isEmpty()) {
+				logger.info("获取公司名称为API为空");
 				return;
 			}
 			put(companyQueue, companyName);
 		}
-		//中建材集团进出口公司
-		//周宁县农村信用合作联社
-		//杭州来拍网络科技有限公司
+		// 中建材集团进出口公司
+		// 周宁县农村信用合作联社
+		// 杭州来拍网络科技有限公司
 		//
-//		put(companyQueue, "北京百度网讯科技有限公司");
+		// put(companyQueue, "北京百度网讯科技有限公司");
 	}
 
 }

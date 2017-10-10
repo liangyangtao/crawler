@@ -6,6 +6,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.kf.data.fetcher.tools.KfConstant;
 import com.kf.data.mybatis.entity.PdfReportLinks;
+import com.kf.data.pdfparser.jdbc.PdfCodetableReader;
+import com.kf.data.pdfparser.jdbc.PdfReportLinksReader;
+import com.kf.data.pdfparser.jdbc.PdfReportLinksWriter;
 import com.kf.data.pdfparser.thread.PdfReportLinkPaserWorker;
 import com.kf.data.pdfparser.thread.PdfReportLinkReaderWorker;
 
@@ -20,13 +23,17 @@ import com.kf.data.pdfparser.thread.PdfReportLinkReaderWorker;
 public class App {
 
 	private static LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue = new LinkedBlockingQueue<PdfReportLinks>();
+	private static PdfReportLinksReader pdfReportLinksReader = new PdfReportLinksReader();
+	private static PdfReportLinksWriter pdfReportLinksWriter = new PdfReportLinksWriter();
+	private static PdfCodetableReader pdfCodetableReader = new PdfCodetableReader();
 
 	public static void main(String[] args) {
 		KfConstant.init();
 		ExecutorService executor = Executors.newCachedThreadPool();
-		executor.execute(new PdfReportLinkReaderWorker(pdfcodeLinkQueue));
-		for (int i = 0; i < 1; i++) {
-			executor.execute(new PdfReportLinkPaserWorker(pdfcodeLinkQueue));
+		executor.execute(new PdfReportLinkReaderWorker(pdfcodeLinkQueue, pdfReportLinksReader, pdfReportLinksWriter,
+				pdfCodetableReader));
+		for (int i = 0; i < 16; i++) {
+			executor.execute(new PdfReportLinkPaserWorker(pdfcodeLinkQueue, pdfCodetableReader, pdfReportLinksWriter));
 		}
 		executor.shutdown();
 
