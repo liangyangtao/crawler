@@ -43,6 +43,8 @@ public class KfPdfParser {
 	static String[] finances = new String[] { "合并资产负债表", "合并利润表", "合并现金流量表", "合并所有者权益变动表", "合并股东权益变动表", "母公司资产负债表",
 			"母公司利润表", "母公司现金流量表", "母公司股东权益变动表", "母公司所有者权益变动表", "资产负债表", "利润表", "现金流量表", "所有者权益变动表", "股东权益变动表", };
 
+	private PdfCodeTemporaryReader pdfCodeTemporaryReader = new PdfCodeTemporaryReader();
+
 	/***
 	 * 
 	 * @param id
@@ -59,12 +61,12 @@ public class KfPdfParser {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			// 读取所有某个类别下的所有解析规则
-			List<PdfCodeTemporary> pdfCodeTemporarys = new PdfCodeTemporaryReader()
+			List<PdfCodeTemporary> pdfCodeTemporarys = pdfCodeTemporaryReader
 					.readerPdfCodeTemporaryByPdfType(pdfCodeTable.getPdfType());
 			String pdfType = pdfCodeTable.getPdfType();
 			if (pdfType.startsWith("半年报")) {
 				pdfType = pdfType.replace("半年报", "年报");
-				pdfCodeTemporarys.addAll(new PdfCodeTemporaryReader().readerPdfCodeTemporaryByPdfType(pdfType));
+				pdfCodeTemporarys.addAll(pdfCodeTemporaryReader.readerPdfCodeTemporaryByPdfType(pdfType));
 			}
 			if (pdfCodeTemporarys.size() == 0) {
 				resultMap.put("state", "error");
@@ -101,10 +103,22 @@ public class KfPdfParser {
 					resultMap = new PdfTemporary4Parser().parserDocument(pdfCodeTable, pdfReportLinks, document,
 							pdfCodeTemporarys4);
 				}
+				pdfCodeTemporarys1.clear();
+				pdfCodeTemporarys1 = null;
+				pdfCodeTemporarys2.clear();
+				pdfCodeTemporarys2 = null;
+				pdfCodeTemporarys3.clear();
+				pdfCodeTemporarys3 = null;
+				pdfCodeTemporarys4.clear();
+				pdfCodeTemporarys4 = null;
+
 			}
+			pdfCodeTemporarys.clear();
+			pdfCodeTemporarys = null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		return objectToJson(resultMap);
 
 	}

@@ -2,7 +2,6 @@ package com.kf.data.pdfparser.thread;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -14,11 +13,9 @@ import org.slf4j.LoggerFactory;
 import com.kf.data.fetcher.Fetcher;
 import com.kf.data.fetcher.tools.DocumentSimpler;
 import com.kf.data.mybatis.entity.PdfCodeTable;
-import com.kf.data.mybatis.entity.PdfErrorRecord;
 import com.kf.data.mybatis.entity.PdfReportLinks;
 import com.kf.data.pdfparser.jdbc.DynamicDataStore;
 import com.kf.data.pdfparser.jdbc.PdfCodetableReader;
-import com.kf.data.pdfparser.jdbc.PdfErrorRecordStore;
 import com.kf.data.pdfparser.jdbc.PdfReportLinksWriter;
 import com.kf.data.pdfparser.parser.KfPdfParser;
 
@@ -37,6 +34,7 @@ public class PdfReportLinkPaserWorker implements Runnable {
 	private LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue;
 	private PdfReportLinksWriter pdfReportLinksWriter;
 	private PdfCodetableReader pdfCodetableReader;
+	DocumentSimpler documentSimpler = new DocumentSimpler();
 
 	public PdfReportLinkPaserWorker(LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue,
 			PdfCodetableReader pdfCodetableReader, PdfReportLinksWriter pdfReportLinksWriter) {
@@ -54,7 +52,7 @@ public class PdfReportLinkPaserWorker implements Runnable {
 			if (pdfcodeLinkQueue.size() > 0) {
 				try {
 					PdfReportLinks pdfReportLinks = pdfcodeLinkQueue.take();
-					int noticeId = pdfReportLinks.getNoticeId();
+					// int noticeId = pdfReportLinks.getNoticeId();
 
 					// List<PdfLinkEsEntity> pdfLinkEsEntities = new
 					// PdfReportTextReader()
@@ -67,17 +65,18 @@ public class PdfReportLinkPaserWorker implements Runnable {
 					String chagelink = changeHanzi(pdfReportLinks.getLink());
 					html = Fetcher.getInstance().get(chagelink);
 					if (html == null) {
-						PdfErrorRecord pdfErrorRecord = new PdfErrorRecord();
-						pdfErrorRecord.setLink(pdfReportLinks.getLink());
-						pdfErrorRecord.setNoticeId(noticeId);
-						pdfErrorRecord.setPdfType(pdfReportLinks.getPdfType());
-						pdfErrorRecord.setTask(0);
-						pdfErrorRecord.setuTime(new Date());
-						new PdfErrorRecordStore().savePdfErrorRecord(pdfErrorRecord);
+						// PdfErrorRecord pdfErrorRecord = new PdfErrorRecord();
+						// pdfErrorRecord.setLink(pdfReportLinks.getLink());
+						// pdfErrorRecord.setNoticeId(noticeId);
+						// pdfErrorRecord.setPdfType(pdfReportLinks.getPdfType());
+						// pdfErrorRecord.setTask(0);
+						// pdfErrorRecord.setuTime(new Date());
+						// new
+						// PdfErrorRecordStore().savePdfErrorRecord(pdfErrorRecord);
 						continue;
 					}
 					Document document = Jsoup.parse(html);
-					document = new DocumentSimpler().simpleDocument(document);
+					document = documentSimpler.simpleDocument(document);
 					List<PdfCodeTable> pdftables = pdfCodetableReader.readPdfTable();
 					for (PdfCodeTable pdfCodeTable : pdftables) {
 						if (pdfCodeTable.getTask() == 1) {
@@ -86,6 +85,7 @@ public class PdfReportLinkPaserWorker implements Runnable {
 					}
 					pdfReportLinksWriter.updatePdfReportRankById(pdfReportLinks.getId(), 2);
 					document = null;
+					html = null;
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
@@ -186,6 +186,7 @@ class PdfTableThread implements Runnable {
 						e.printStackTrace();
 					}
 				}
+				json = null;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

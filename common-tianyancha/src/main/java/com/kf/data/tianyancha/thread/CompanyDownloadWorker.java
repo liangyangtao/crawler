@@ -27,7 +27,6 @@ public class CompanyDownloadWorker extends BaseWorker implements Runnable {
 	public void run() {
 		while (true) {
 			if (companyQueue.size() > 0) {
-				int id = 0;
 				try {
 					String companyName = (String) take(companyQueue);
 					fillTycQueue(companyName);

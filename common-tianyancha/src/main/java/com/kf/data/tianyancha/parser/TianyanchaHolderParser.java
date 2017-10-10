@@ -30,8 +30,6 @@ public class TianyanchaHolderParser extends TianyanchaBasePaser {
 
 		for (Element element : nodes) {
 			try {
-				Double money = null;
-				String moneyChar = null;
 				String name = null;
 				Double ratio = null;
 				Element nameElement = element.select("td > a").get(0);
@@ -68,7 +66,6 @@ public class TianyanchaHolderParser extends TianyanchaBasePaser {
 				// tycCompanyShareholdersContributive.setCurrenyName(currenyName);
 				// tycCompanyShareholdersContributive.setId(company.getId());
 
-				tycCompanyShareholdersContributive.setMoney(null);
 
 				tycCompanyShareholdersContributive.setMoneyChar(moneyStr);
 				tycCompanyShareholdersContributive.setMoney(ReportDataFormat.bigUnitChange(moneyStr));

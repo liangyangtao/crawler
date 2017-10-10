@@ -3,8 +3,6 @@ package com.kf.data.pdfparser.jdbc;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.ibatis.session.SqlSession;
 
@@ -24,7 +22,7 @@ import net.sf.json.JSONObject;
  * @注释：根据传入的json动态建表 建字段
  */
 public class DynamicDataStore {
-
+	BaseDao baseDao = new BaseDao();
 
 	public void doStore(String json, String temppdfType) {
 
@@ -93,7 +91,7 @@ public class DynamicDataStore {
 	 * @param map
 	 */
 	private void saveData(Map<String, Object> map, String sql) {
-		new BaseDao().executeMapSql(sql, map);
+		baseDao.executeMapSql(sql, map);
 	}
 
 }
