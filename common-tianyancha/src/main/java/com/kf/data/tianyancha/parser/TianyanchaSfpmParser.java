@@ -14,13 +14,20 @@ import com.kf.data.mybatis.entity.TycCompanySfpmCrawler;
  * 
  * @Title: TianyanchaSfpmParser.java
  * @Package com.kf.data.tianyancha.parser
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 司法拍卖信息解析
  * @author liangyt
  * @date 2017年9月30日 下午3:57:51
  * @version V1.0
  */
 public class TianyanchaSfpmParser extends TianyanchaBasePaser {
 
+	/***
+	 * 司法拍卖信息解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 		Elements contentNodes = document.select("#_container_judicialSale");
 		if (contentNodes.size() > 0) {
@@ -41,9 +48,9 @@ public class TianyanchaSfpmParser extends TianyanchaBasePaser {
 					if (threeElements.size() == 3) {
 						goods = threeElements.first().text();
 						startPrice = threeElements.get(1).text();
-						startPrice =startPrice.replace("起拍价格：", "");
+						startPrice = startPrice.replace("起拍价格：", "");
 						valuation = threeElements.get(2).text();
-						valuation =valuation.replace("评估价格：", "");
+						valuation = valuation.replace("评估价格：", "");
 					}
 
 					TycCompanySfpmCrawler tycCompanySfpmCrawler = new TycCompanySfpmCrawler();

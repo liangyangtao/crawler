@@ -11,6 +11,15 @@ import com.kf.data.mybatis.entity.TycCompanyRecruitmentCrawler;
 
 import net.sf.json.JSONObject;
 
+/***
+ * 
+ * @Title: TianyanchaRecruitParser.java
+ * @Package com.kf.data.tianyancha.parser
+ * @Description: 招聘信息解析
+ * @author liangyt
+ * @date 2017年10月11日 下午2:15:22
+ * @version V1.0
+ */
 public class TianyanchaRecruitParser extends TianyanchaBasePaser {
 	// <!--招聘信息oocss-->
 	// <!-- ngIf: items2.recruitCount.show&&dataItemCount.recruitCount>0 -->
@@ -20,6 +29,13 @@ public class TianyanchaRecruitParser extends TianyanchaBasePaser {
 	public static final String listCssPath = "tr[ng-repeat=check in changeinfoList.result]";
 	public static final String pageTotalCssPath = ".total";
 
+	/****
+	 * 招聘信息解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 		Elements contentNodes = document.select("#_container_recruit");
 		if (contentNodes.size() > 0) {

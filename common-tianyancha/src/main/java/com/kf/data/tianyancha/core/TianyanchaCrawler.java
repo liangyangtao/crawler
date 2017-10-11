@@ -49,14 +49,28 @@ import com.kf.data.tianyancha.parser.TianyanchaYearReportParser;
  * @version V1.0
  */
 public class TianyanchaCrawler {
+
 	private final static Logger logger = LoggerFactory.getLogger(TianyanchaCrawler.class);
 	private static final String url = "http://www.tianyancha.com";
 	private TianyanchaCompanyParser tianyanchaCompanyParser = new TianyanchaCompanyParser();
-	TianyanchaStaffParser tianyanchaStaffParser = new TianyanchaStaffParser();
-	TianyanchaHolderParser tianyanchaHolderParser = new TianyanchaHolderParser();
-	TianyanchaBranchParser tianyanchaBranchParser = new TianyanchaBranchParser();
-	TianyanchaChangeParser tianyanchaChangeParser = new TianyanchaChangeParser();
-	TianyanchaMortgageParser tianyanchaMortgageParser = new TianyanchaMortgageParser();
+	private TianyanchaStaffParser tianyanchaStaffParser = new TianyanchaStaffParser();
+	private TianyanchaHolderParser tianyanchaHolderParser = new TianyanchaHolderParser();
+	private TianyanchaBranchParser tianyanchaBranchParser = new TianyanchaBranchParser();
+	private TianyanchaChangeParser tianyanchaChangeParser = new TianyanchaChangeParser();
+	private TianyanchaMortgageParser tianyanchaMortgageParser = new TianyanchaMortgageParser();
+	private TianyanchaYearReportParser tianyanchaYearReportParser = new TianyanchaYearReportParser();
+	private TianyanchaWechatParser tianyanchaWechatParser = new TianyanchaWechatParser();
+	private TianyanchaCpoyRightWorksParser tianyanchaCpoyRightWorksParser = new TianyanchaCpoyRightWorksParser();
+	private TianyanchaIcpParser tianyanchaIcpParser = new TianyanchaIcpParser();
+	private TianyanchaEquityParser tianyanchaEquityParser = new TianyanchaEquityParser();
+	private TianyanchaPatentParser tianyanchaPatentParser = new TianyanchaPatentParser();
+	private TianyanchaRecruitParser tianyanchaRecruitParser = new TianyanchaRecruitParser();
+	private TianyanchaTmParser tianyanchaTmParser = new TianyanchaTmParser();
+	private TianyanchaRongziParser tianyanchaRongziParser = new TianyanchaRongziParser();
+	private TianyanchaCommonstockParser tianyanchaCommonstockParser = new TianyanchaCommonstockParser();
+	private TianyanchaCommonstockChangeParser tianyanchaCommonstockChangeParser = new TianyanchaCommonstockChangeParser();
+	private TianyanchaImExPortParser tianyanchaImExPortParser = new TianyanchaImExPortParser();
+	private TianyanchaSfpmParser tianyanchaSfpmParser = new TianyanchaSfpmParser();
 
 	/***
 	 * 输入名称进行数据采集入库
@@ -166,28 +180,6 @@ public class TianyanchaCrawler {
 
 			Map<String, Integer> zhibiaoNums = new HashMap<String, Integer>();
 			fillZhibiaoNums(zhibiaoNums, document);
-			// reportCount
-			if (zhibiaoNums.get("reportCount") != null && zhibiaoNums.get("reportCount") > 0) {
-				// 企业年报
-				Elements reportNodes = document.select(".report_item_2017");
-				for (Element element : reportNodes) {
-					try {
-						Element linkElement = element.select("a").first();
-						String reportLink = linkElement.absUrl("href");
-						System.out.println(reportLink);
-						driver.get(reportLink);
-						String reportHtml = driver.getPageSource();
-						Document reportDocument = Jsoup.parse(reportHtml);
-						new TianyanchaYearReportParser().paseNode(reportDocument, companyName, companyId);
-					} catch (Exception e) {
-						e.printStackTrace();
-					} finally {
-						driver.navigate().back();
-					}
-
-				}
-
-			}
 
 			if (zhibiaoNums.get("branchCount") != null && zhibiaoNums.get("branchCount") > 0) {
 				// 分支机构
@@ -195,10 +187,9 @@ public class TianyanchaCrawler {
 			}
 			if (zhibiaoNums.get("changeCount") != null && zhibiaoNums.get("changeCount") > 0) {
 				// 变更记录
-				
-				//  //*[@id="_container_changeinfo"]/div/div[2]/ul/li[6]
-				
-				
+
+				// //*[@id="_container_changeinfo"]/div/div[2]/ul/li[6]
+
 				tianyanchaChangeParser.paseNode(document, companyName, companyId);
 
 			}
@@ -209,63 +200,84 @@ public class TianyanchaCrawler {
 			}
 			if (zhibiaoNums.get("cpoyRightWorksCount") != null && zhibiaoNums.get("cpoyRightWorksCount") > 0) {
 				// 著作权 处理中
-				new TianyanchaCpoyRightWorksParser().paseNode(document, companyName, companyId);
+				tianyanchaCpoyRightWorksParser.paseNode(document, companyName, companyId);
 
 			}
 			if (zhibiaoNums.get("icpCount") != null && zhibiaoNums.get("icpCount") > 0) {
 				// 网站备案 处理中
-				new TianyanchaIcpParser().paseNode(document, companyName, companyId);
+				tianyanchaIcpParser.paseNode(document, companyName, companyId);
 
 			}
 			if (zhibiaoNums.get("equityCount") != null && zhibiaoNums.get("equityCount") > 0) {
 				// 股权出质 yx 网页
-				new TianyanchaEquityParser().paseNode(document, companyName, companyId);
+				tianyanchaEquityParser.paseNode(document, companyName, companyId);
 
 			}
 			if (zhibiaoNums.get("patentCount") != null && zhibiaoNums.get("patentCount") > 0) {
 
 				// 专利
-				new TianyanchaPatentParser().paseNode(document, companyName, companyId);
+				tianyanchaPatentParser.paseNode(document, companyName, companyId);
 
 			}
 			if (zhibiaoNums.get("recruitCount") != null && zhibiaoNums.get("recruitCount") > 0) {
 				// 招聘 处理中
-				new TianyanchaRecruitParser().paseNode(document, companyName, companyId);
+				tianyanchaRecruitParser.paseNode(document, companyName, companyId);
 
 			}
 			if (zhibiaoNums.get("tmCount") != null && zhibiaoNums.get("tmCount") > 0) {
 				// 商标信息 网页
-				new TianyanchaTmParser().paseNode(document, companyName, companyId);
-
+				tianyanchaTmParser.paseNode(document, companyName, companyId);
 			}
 
 			if (zhibiaoNums.get("rongziCount") != null && zhibiaoNums.get("rongziCount") > 0) {
 				// 融资历史
-				new TianyanchaRongziParser().paseNode(document, companyName, companyId);
+				tianyanchaRongziParser.paseNode(document, companyName, companyId);
 
 			}
 			if (zhibiaoNums.get("commonstockCount") != null && zhibiaoNums.get("commonstockCount") > 0) {
 				// 股本结构
-				new TianyanchaCommonstockParser().paseNode(document, companyName, companyId);
+				tianyanchaCommonstockParser.paseNode(document, companyName, companyId);
 			}
 
 			if (zhibiaoNums.get("commonstockChangeCount") != null && zhibiaoNums.get("commonstockChangeCount") > 0) {
 				// 股本变动
-				new TianyanchaCommonstockChangeParser().paseNode(document, companyName, companyId);
+				tianyanchaCommonstockChangeParser.paseNode(document, companyName, companyId);
 			}
 			if (zhibiaoNums.get("imExPortCount") != null && zhibiaoNums.get("imExPortCount") > 0) {
 				// 进出口信息
-				new TianyanchaImExPortParser().paseNode(document, companyName, companyId);
+				tianyanchaImExPortParser.paseNode(document, companyName, companyId);
 			}
 
 			if (zhibiaoNums.get("sfpmCount") != null && zhibiaoNums.get("sfpmCount") > 0) {
 				// 司法拍卖
-				new TianyanchaSfpmParser().paseNode(document, companyName, companyId);
+				tianyanchaSfpmParser.paseNode(document, companyName, companyId);
 			}
 
 			if (zhibiaoNums.get("wechatCount") != null && zhibiaoNums.get("wechatCount") > 0) {
 				// 微信公众号
-				new TianyanchaWechatParser().paseNode(document, companyName, companyId);
+				tianyanchaWechatParser.paseNode(document, companyName, companyId);
+			}
+
+			// reportCount
+			if (zhibiaoNums.get("reportCount") != null && zhibiaoNums.get("reportCount") > 0) {
+				// 企业年报
+				Elements reportNodes = document.select(".report_item_2017");
+				for (Element element : reportNodes) {
+					try {
+						Element linkElement = element.select("a").first();
+						String reportLink = linkElement.absUrl("href");
+						driver.get(reportLink);
+						String reportHtml = driver.getPageSource();
+						Document reportDocument = Jsoup.parse(reportHtml);
+						tianyanchaYearReportParser.paseNode(reportDocument, companyName, companyId);
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						driver.navigate().back();
+					}
+
+				}
+
 			}
 
 		} catch (Exception e) {
@@ -278,6 +290,12 @@ public class TianyanchaCrawler {
 		}
 	}
 
+	/***
+	 * 判断每个栏目是否有数据
+	 * 
+	 * @param zhibiaoNums
+	 * @param document
+	 */
 	private void fillZhibiaoNums(Map<String, Integer> zhibiaoNums, Document document) {
 		String infoCssPath = "div.companypage_2017";
 		Element infoElement = getNodeByCssPath(document, infoCssPath);
@@ -613,6 +631,11 @@ public class TianyanchaCrawler {
 
 	}
 
+	/***
+	 * 启动浏览器
+	 * 
+	 * @return
+	 */
 	public WebDriver createWebDrive() {
 		System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 		WebDriver driver = null;
@@ -622,6 +645,11 @@ public class TianyanchaCrawler {
 		return driver;
 	}
 
+	/***
+	 * 关闭浏览器
+	 * 
+	 * @param driver
+	 */
 	public void closeWebDrive(WebDriver driver) {
 		if (driver != null) {
 			Set<String> allWindows = driver.getWindowHandles();
@@ -635,10 +663,25 @@ public class TianyanchaCrawler {
 
 	}
 
+	/***
+	 * 根据csspath 获取element
+	 * 
+	 * @param document
+	 * @param cssPath
+	 * @return
+	 */
 	public static Element getNodeByCssPath(Document document, String cssPath) {
 		return getNodeByCssPath(document, cssPath, 0);
 	}
 
+	/***
+	 * 根据csspath 获取第几个 element
+	 * 
+	 * @param document
+	 * @param cssPath
+	 * @param index
+	 * @return
+	 */
 	public static Element getNodeByCssPath(Document document, String cssPath, int index) {
 		Elements elments = document.select(cssPath);
 		if (elments.size() != 0) {

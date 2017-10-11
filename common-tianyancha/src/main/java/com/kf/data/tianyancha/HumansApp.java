@@ -18,15 +18,25 @@ import com.kf.data.fetcher.Fetcher;
 import com.kf.data.fetcher.tools.KfConstant;
 import com.kf.data.mybatis.entity.TycHumans;
 
-/**
- * Hello world!
- *
+/****
+ * 
+ * @Title: HumansApp.java
+ * @Package com.kf.data.tianyancha
+ * @Description: 爬取天眼查人名
+ * @author liangyt
+ * @date 2017年10月11日 下午1:56:50
+ * @version V1.0
  */
 public class HumansApp {
 
 	public static String supNameIndex = "赵";
 	public static boolean isSupCrawler = false;
 
+	/***
+	 * 程序入口
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		KfConstant.init();
 		try {
@@ -64,10 +74,17 @@ public class HumansApp {
 
 	}
 
+	/****
+	 * 解析列表页
+	 * 
+	 * @param surName
+	 * @param surHref
+	 */
 	private static void parserList(String surName, String surHref) {
 		String html = Fetcher.getInstance().get(surHref);
 		Document document = Jsoup.parse(html);
 		parserDetail(surName, document);
+
 		Elements pageElements = document.select(".company_pager");
 		int pageNum = 0;
 		if (pageElements.size() == 1) {
@@ -88,6 +105,12 @@ public class HumansApp {
 
 	}
 
+	/***
+	 * 解析详情页
+	 * 
+	 * @param surName
+	 * @param document
+	 */
 	private static void parserDetail(String surName, Document document) {
 		Elements elements = document.select("a.new-c2");
 		for (Element element : elements) {
@@ -101,6 +124,12 @@ public class HumansApp {
 
 	}
 
+	/***
+	 * 保存姓名
+	 * 
+	 * @param object
+	 * @param type
+	 */
 	public static void sendJson(Object object, String type) {
 		String url = KfConstant.saveJsonIp;
 		Map<String, String> params = new HashMap<String, String>();

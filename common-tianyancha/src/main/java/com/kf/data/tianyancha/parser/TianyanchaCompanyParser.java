@@ -13,7 +13,7 @@ import com.kf.data.mybatis.entity.TycBaseCompanyCrawler;
  * 
  * @Title: TianyanchaCompanyParser.java
  * @Package com.kf.data.tianyancha.parser
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 天眼查基本信息解析
  * @author liangyt
  * @date 2017年9月29日 下午2:26:33
  * @version V1.0
@@ -28,6 +28,14 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 	public static final String headerCssPath = "div.company_header_width";
 	public static final String logoCssPath = ".new-border";
 
+	/***
+	 * 天眼查基本信息解析
+	 * 
+	 * @param document
+	 * @param operatingStatus
+	 * @param companyID
+	 * @return
+	 */
 	public String paseNode(Document document, String operatingStatus, String companyID) {
 
 		String companyName = null;
@@ -210,7 +218,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 
 			tycBaseCompanyCrawler.setBusinessScope(businessScope);
 
-//			tycBaseCompanyCrawler.setCompanyAbout(companyAbout);
+			// tycBaseCompanyCrawler.setCompanyAbout(companyAbout);
 			tycBaseCompanyCrawler.setCompanyId(companyID);
 
 			tycBaseCompanyCrawler.setCompanyLogoUrl(companyLogoUrl);

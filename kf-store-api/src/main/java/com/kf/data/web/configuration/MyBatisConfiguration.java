@@ -18,7 +18,15 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
+/****
+ * 
+* @Title: MyBatisConfiguration.java 
+* @Package com.kf.data.web.configuration 
+* @Description: TODO(用一句话描述该文件做什么) 
+* @author liangyt   
+* @date 2017年10月11日 下午2:43:40 
+* @version V1.0
+ */
 @Configuration
 @EnableTransactionManagement
 @ComponentScan({ "com.kf.data" })

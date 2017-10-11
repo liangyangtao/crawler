@@ -13,15 +13,33 @@ import com.kf.data.mybatis.entity.TycCompanyShareholdersContributiveCrawler;
  * 
  * @Title: TianyanchaYearReportParser.java
  * @Package com.kf.data.tianyancha.parser
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 年报解析
  * @author liangyt
  * @date 2017年10月10日 下午4:46:49
  * @version V1.0
  */
 public class TianyanchaYearReportParser extends TianyanchaBasePaser {
 
+	/***
+	 * 年报解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 
+		parserShareholders(document, companyName, companyId);
+	}
+
+	/****
+	 * 解析股东出资
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void parserShareholders(Document document, String companyName, String companyId) {
 		// 股东出资
 		Elements contentNodes = document.select(".report_holder");
 		if (contentNodes.size() > 0) {
@@ -33,7 +51,7 @@ public class TianyanchaYearReportParser extends TianyanchaBasePaser {
 					String name = null;
 					Double ratio = null;
 					name = tdElements.get(0).text().trim();
-					moneyChar = tdElements.get(4).text().trim()+"万";
+					moneyChar = tdElements.get(4).text().trim() + "万";
 					TycCompanyShareholdersContributiveCrawler tycCompanyShareholdersContributive = new TycCompanyShareholdersContributiveCrawler();
 					tycCompanyShareholdersContributive.setCompanyId(companyId);
 					tycCompanyShareholdersContributive.setCompanyName(companyName);

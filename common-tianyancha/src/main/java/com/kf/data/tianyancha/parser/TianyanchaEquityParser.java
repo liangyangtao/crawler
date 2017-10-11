@@ -6,14 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.kf.data.mybatis.entity.TycCompanyEquityPledgedCrawler;
 
-//import clojure.main;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
@@ -29,6 +24,13 @@ public class TianyanchaEquityParser extends TianyanchaBasePaser {
 	public static final String bodyCssPath = "#_container_equity";
 	public static final String listCssPath = ".companyInfo-table > tbody > tr";
 
+	/***
+	 * 股权出质解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyID
+	 */
 	public void paseNode(Document document, String companyName, String companyID) {
 		try {
 			Element bodyElemnt = getNodeByCssPath(document, bodyCssPath);

@@ -14,7 +14,7 @@ import com.kf.data.web.service.SaveJsonObjectService;
  * 
  * @Title: AddJsonObjectController.java
  * @Package com.kf.data.web.controller
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 保存json数据
  * @author liangyt
  * @date 2017年6月27日 上午11:13:15
  * @version V1.0
@@ -26,6 +26,14 @@ public class SaveJsonObjectController extends CommonController {
 	@Autowired
 	SaveJsonObjectService saveJsonObjectService;
 
+	/****
+	 * 保存json 数据
+	 * 
+	 * @param json
+	 * @param type
+	 * @param response
+	 * @param request
+	 */
 	@RequestMapping(value = { "/saveJson" }, method = { RequestMethod.POST, RequestMethod.GET })
 	public void reviceJson(String json, String type, HttpServletResponse response, HttpServletRequest request) {
 

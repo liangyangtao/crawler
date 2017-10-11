@@ -8,6 +8,15 @@ import org.jsoup.select.Elements;
 
 import com.kf.data.mybatis.entity.TycCompanyExecutiveCrawler;
 
+/****
+ * 
+ * @Title: TianyanchaStaffParser.java
+ * @Package com.kf.data.tianyancha.parser
+ * @Description: 高管信息解析
+ * @author liangyt
+ * @date 2017年10月11日 下午2:16:59
+ * @version V1.0
+ */
 public class TianyanchaStaffParser extends TianyanchaBasePaser {
 	// <!--[高管信息]-->
 	// <!-- ngIf: items2.staffCount.show&&dataItemCount.staffCount>0 -->
@@ -16,6 +25,13 @@ public class TianyanchaStaffParser extends TianyanchaBasePaser {
 	public static final String listCssPath = "div.staffinfo-module-container";
 	public static final String pageTotalCssPath = ".total";
 
+	/***
+	 * 高管信息解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 		Element bodyElemnt = getNodeByCssPath(document, bodyCssPath);
 		if (bodyElemnt == null) {

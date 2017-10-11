@@ -13,13 +13,20 @@ import com.kf.data.mybatis.entity.TycCompanyCommonstockCrawler;
  * 
  * @Title: TianyanchaCommonstockParser.java
  * @Package com.kf.data.tianyancha.parser
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 天眼查股本解析
  * @author liangyt
  * @date 2017年9月30日 下午2:53:11
  * @version V1.0
  */
 public class TianyanchaCommonstockParser extends TianyanchaBasePaser {
 
+	/***
+	 * 天眼查股本解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 		Elements contentNodes = document.select("#_container_shareStructure");
 		if (contentNodes.size() > 0) {

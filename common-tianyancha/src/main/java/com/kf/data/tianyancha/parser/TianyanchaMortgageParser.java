@@ -11,6 +11,15 @@ import com.kf.data.mybatis.entity.TycCompanyChattelMortgageCrawler;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+/***
+ * 
+ * @Title: TianyanchaMortgageParser.java
+ * @Package com.kf.data.tianyancha.parser
+ * @Description: 动产抵押信息解析
+ * @author liangyt
+ * @date 2017年10月11日 下午2:14:10
+ * @version V1.0
+ */
 public class TianyanchaMortgageParser extends TianyanchaBasePaser {
 	// <!--动产抵押-->
 	// <!-- ngIf: items2.mortgageCount.show&&dataItemCount.mortgageCount>0 -->
@@ -19,6 +28,13 @@ public class TianyanchaMortgageParser extends TianyanchaBasePaser {
 	public static final String listCssPath = "tr[ng-repeat=check in changeinfoList.result]";
 	public static final String pageTotalCssPath = ".total";
 
+	/****
+	 * 动产抵押信息解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 		Elements contentNodes = document.select("#_container_mortgage");
 		if (contentNodes.size() > 0) {

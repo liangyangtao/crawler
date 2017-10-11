@@ -1,7 +1,5 @@
 package com.kf.data.tianyancha.parser;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +20,13 @@ import net.sf.json.JSONObject;
  */
 public class TianyanchaPatentParser extends TianyanchaBasePaser {
 
+	/***
+	 * 专利信息解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 		Elements contentNodes = document.select("#_container_patent");
 		if (contentNodes.size() > 0) {
@@ -74,17 +79,17 @@ public class TianyanchaPatentParser extends TianyanchaBasePaser {
 						tycCompanyPatentCrawler.setApplicationNumber(application_number);
 						tycCompanyPatentCrawler.setPatentName(patent_name);
 						tycCompanyPatentCrawler.setAddress(address);
-//						Date date = null;
-//						SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
-//						try {
-//							date = sdf.parse(application_date);
-//						} catch (ParseException e) {
-//							e.printStackTrace();
-//						}
-						application_date =application_date.replace(".", "");
-						application_date =application_date.replace("-", "");
-						tycCompanyPatentCrawler
-								.setApplicationDate(Integer.parseInt(application_date));
+						// Date date = null;
+						// SimpleDateFormat sdf = new
+						// SimpleDateFormat("yyyy.MM.dd");
+						// try {
+						// date = sdf.parse(application_date);
+						// } catch (ParseException e) {
+						// e.printStackTrace();
+						// }
+						application_date = application_date.replace(".", "");
+						application_date = application_date.replace("-", "");
+						tycCompanyPatentCrawler.setApplicationDate(Integer.parseInt(application_date));
 						tycCompanyPatentCrawler.setPatentType(patent_type);
 						tycCompanyPatentCrawler.setApplicant(applicant);
 						tycCompanyPatentCrawler.setPublishDate(publish_date);

@@ -15,13 +15,20 @@ import net.sf.json.JSONObject;
  * 
  * @Title: TianyanchaWechatParser.java
  * @Package com.kf.data.tianyancha.parser
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 微信公众号
  * @author liangyt
  * @date 2017年9月30日 下午4:02:01
  * @version V1.0
  */
 public class TianyanchaWechatParser extends TianyanchaBasePaser {
 
+	/****
+	 * 微信公众号 解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 		Elements contentNodes = document.select("#_container_wechat");
 		if (contentNodes.size() > 0) {
@@ -54,6 +61,9 @@ public class TianyanchaWechatParser extends TianyanchaBasePaser {
 
 						}
 
+					}
+					if (wechatName == null) {
+						continue;
 					}
 					// wechatPopup({"title":"中建材集团进出口公司",
 					// "titleImgURL":"https:\u002F\u002Fimg.tianyancha.com\u002Fsogou\u002FWeChat\u002F9bed6a73dfe15538c0623dcb316d75f9.png@!watermark01",

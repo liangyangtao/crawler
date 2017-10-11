@@ -13,6 +13,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+/***
+ * 
+ * @Title: AppConfig.java
+ * @Package com.kf.data.web.configuration
+ * @Description: 程序入口
+ * @author liangyt
+ * @date 2017年10月11日 下午2:43:46
+ * @version V1.0
+ */
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.kf.data")

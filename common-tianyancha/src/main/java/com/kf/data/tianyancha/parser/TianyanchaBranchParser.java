@@ -12,7 +12,7 @@ import com.kf.data.mybatis.entity.TycCompanyBranchCrawler;
  * 
  * @Title: TianyanchaBranchParser.java
  * @Package com.kf.data.tianyancha.parser
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 天眼查分支机构解析
  * @author liangyt
  * @date 2017年9月29日 下午2:20:20
  * @version V1.0
@@ -22,10 +22,19 @@ public class TianyanchaBranchParser extends TianyanchaBasePaser {
 	// <!-- ngIf: items2.branchCount.show&&dataItemCount.branchCount>0 -->
 	// http://www.tianyancha.com/expanse/branch.json?id=6881781&ps=10&pn=1
 	// neeq_company_branch
-	public static final String bodyCssPath = "div[ng-if=items2.branchCount.show&&dataItemCount.branchCount>0]";
-	public static final String listCssPath = "tr[ng-repeat=node in branchList.result track by $index]";
-	public static final String pageTotalCssPath = ".total";
+	// public static final String bodyCssPath =
+	// "div[ng-if=items2.branchCount.show&&dataItemCount.branchCount>0]";
+	// public static final String listCssPath = "tr[ng-repeat=node in
+	// branchList.result track by $index]";
+	// public static final String pageTotalCssPath = ".total";
 
+	/***
+	 * 天眼查分支机构解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 		Elements contentNodes = document.select("#_container_branch");
 		if (contentNodes.size() > 0) {
