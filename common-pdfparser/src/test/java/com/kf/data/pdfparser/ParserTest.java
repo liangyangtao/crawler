@@ -7,6 +7,7 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import com.kf.data.fetcher.Fetcher;
 import com.kf.data.fetcher.tools.DocumentSimpler;
 import com.kf.data.fetcher.tools.KfConstant;
 import com.kf.data.mybatis.entity.PdfCodeTable;
@@ -19,14 +20,16 @@ public class ParserTest {
 
 	public static void main(String[] args) {
 		KfConstant.init();
-		List<PdfLinkEsEntity> pdfLinkEsEntities = new PdfReportTextReader().readPdfLinkInEsByNoticId(2670640);
-		String html = pdfLinkEsEntities.get(0).getContent();
+//		List<PdfLinkEsEntity> pdfLinkEsEntities = new PdfReportTextReader().readPdfLinkInEsByNoticId(1627189);
+//		String html = pdfLinkEsEntities.get(0).getContent();
+
+		String url ="https://static.kaifengdata.com/neeq/ce0562dc2f96cf5935eca91530dd699f/2168617.pdf.html";
+		String chagelink = changeHanzi(url);
+		String html = Fetcher.getInstance().get(chagelink);
 		Document document = Jsoup.parse(html);
 		document = new DocumentSimpler().simpleDocument(document);
-		
-		
 		PdfCodeTable pdfCodeTable = new PdfCodeTable();
-		pdfCodeTable.setPdfType("半年报_商业模式");
+		pdfCodeTable.setPdfType("半年报_公司基本信息");
 		PdfReportLinks pdfReportLinks = new PdfReportLinks();
 		System.out.println(new KfPdfParser().parserPdfHtmlByPdfTypeAndLink(pdfCodeTable, pdfReportLinks, document));
 
