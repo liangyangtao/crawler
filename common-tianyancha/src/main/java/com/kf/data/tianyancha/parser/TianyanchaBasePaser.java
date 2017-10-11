@@ -19,20 +19,38 @@ import com.kf.data.fetcher.tools.KfConstant;
 import com.kf.data.tianyancha.core.TianyanchaCrawler;
 
 /***
+ * 天眼查 base解析
  * 
- * @author lyt
- * 
- *         天眼查 base解析
- *
+ * @Title: TianyanchaBasePaser.java
+ * @Package com.kf.data.tianyancha.parser
+ * @Description: TODO(用一句话描述该文件做什么)
+ * @author liangyt
+ * @date 2017年10月11日 下午2:06:44
+ * @version V1.0
  */
 public class TianyanchaBasePaser {
 
 	public final static Logger logger = LoggerFactory.getLogger(TianyanchaCrawler.class);
 
+	/***
+	 * 通过csspath 获取第一个节点
+	 * 
+	 * @param document
+	 * @param cssPath
+	 * @return
+	 */
 	public Element getNodeByCssPath(Document document, String cssPath) {
 		return getNodeByCssPath(document, cssPath, 0);
 	}
 
+	/***
+	 * 通过csspath 获取节点
+	 * 
+	 * @param document
+	 * @param cssPath
+	 * @param index
+	 * @return
+	 */
 	public Element getNodeByCssPath(Document document, String cssPath, int index) {
 		Elements elments = document.select(cssPath);
 		if (elments.size() != 0) {
@@ -43,6 +61,12 @@ public class TianyanchaBasePaser {
 		}
 	}
 
+	/***
+	 * 字符串 转换时间
+	 * 
+	 * @param time
+	 * @return
+	 */
 	public Date stringToDate(String time) {
 		Date date = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -55,12 +79,22 @@ public class TianyanchaBasePaser {
 
 	}
 
+	/***
+	 * 
+	 * @param time
+	 * @return
+	 */
 	public Date timestampToDate(String time) {
 		long lt = new Long(time);
 		Date date = new Date(lt);
 		return date;
 	}
 
+	/***
+	 * 
+	 * @param time
+	 * @return
+	 */
 	public String dateToString(String time) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = timestampToDate(time);
@@ -68,6 +102,12 @@ public class TianyanchaBasePaser {
 		return format;
 
 	}
+
+	/***
+	 * 
+	 * @param time
+	 * @return
+	 */
 	public String dateTo8char(String time) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Date date = timestampToDate(time);
@@ -75,9 +115,13 @@ public class TianyanchaBasePaser {
 		return format;
 
 	}
-	
-	
 
+	/***
+	 * 发送数据给API存储到数据库
+	 * 
+	 * @param object
+	 * @param type
+	 */
 	public void sendJson(Object object, String type) {
 		try {
 			String url = KfConstant.saveJsonIp;

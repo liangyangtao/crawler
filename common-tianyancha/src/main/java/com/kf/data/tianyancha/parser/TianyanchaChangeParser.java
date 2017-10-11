@@ -9,15 +9,33 @@ import org.jsoup.select.Elements;
 
 import com.kf.data.mybatis.entity.TycCompanyChangeCrawler;
 
+/***
+ * 
+ * @Title: TianyanchaChangeParser.java
+ * @Package com.kf.data.tianyancha.parser
+ * @Description: 天眼查变更信息解析
+ * @author liangyt
+ * @date 2017年10月11日 下午2:08:11
+ * @version V1.0
+ */
 public class TianyanchaChangeParser extends TianyanchaBasePaser {
 	// <!--变更信息oocss-->
 	// <!-- ngIf: items2.changeCount.show&&dataItemCount.changeCount>0 -->
 	// neeq_company_change
 
-	public static final String bodycCssPath = "div[ng-if=items2.changeCount.show&&dataItemCount.changeCount>0]";
-	public static final String listCssPath = "tr[ng-repeat=change in changeinfoList.result]";
-	public static final String pageTotalCssPath = ".total";
+	// public static final String bodycCssPath =
+	// "div[ng-if=items2.changeCount.show&&dataItemCount.changeCount>0]";
+	// public static final String listCssPath = "tr[ng-repeat=change in
+	// changeinfoList.result]";
+	// public static final String pageTotalCssPath = ".total";
 
+	/***
+	 * 天眼查变更信息解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 
 		Elements contentNodes = document.select("#_container_changeinfo");

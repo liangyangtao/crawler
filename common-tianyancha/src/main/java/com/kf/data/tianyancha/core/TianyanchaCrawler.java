@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -49,14 +50,28 @@ import com.kf.data.tianyancha.parser.TianyanchaYearReportParser;
  * @version V1.0
  */
 public class TianyanchaCrawler {
+
 	private final static Logger logger = LoggerFactory.getLogger(TianyanchaCrawler.class);
 	private static final String url = "http://www.tianyancha.com";
 	private TianyanchaCompanyParser tianyanchaCompanyParser = new TianyanchaCompanyParser();
-	TianyanchaStaffParser tianyanchaStaffParser = new TianyanchaStaffParser();
-	TianyanchaHolderParser tianyanchaHolderParser = new TianyanchaHolderParser();
-	TianyanchaBranchParser tianyanchaBranchParser = new TianyanchaBranchParser();
-	TianyanchaChangeParser tianyanchaChangeParser = new TianyanchaChangeParser();
-	TianyanchaMortgageParser tianyanchaMortgageParser = new TianyanchaMortgageParser();
+	private TianyanchaStaffParser tianyanchaStaffParser = new TianyanchaStaffParser();
+	private TianyanchaHolderParser tianyanchaHolderParser = new TianyanchaHolderParser();
+	private TianyanchaBranchParser tianyanchaBranchParser = new TianyanchaBranchParser();
+	private TianyanchaChangeParser tianyanchaChangeParser = new TianyanchaChangeParser();
+	private TianyanchaMortgageParser tianyanchaMortgageParser = new TianyanchaMortgageParser();
+	private TianyanchaYearReportParser tianyanchaYearReportParser = new TianyanchaYearReportParser();
+	private TianyanchaWechatParser tianyanchaWechatParser = new TianyanchaWechatParser();
+	private TianyanchaCpoyRightWorksParser tianyanchaCpoyRightWorksParser = new TianyanchaCpoyRightWorksParser();
+	private TianyanchaIcpParser tianyanchaIcpParser = new TianyanchaIcpParser();
+	private TianyanchaEquityParser tianyanchaEquityParser = new TianyanchaEquityParser();
+	private TianyanchaPatentParser tianyanchaPatentParser = new TianyanchaPatentParser();
+	private TianyanchaRecruitParser tianyanchaRecruitParser = new TianyanchaRecruitParser();
+	private TianyanchaTmParser tianyanchaTmParser = new TianyanchaTmParser();
+	private TianyanchaRongziParser tianyanchaRongziParser = new TianyanchaRongziParser();
+	private TianyanchaCommonstockParser tianyanchaCommonstockParser = new TianyanchaCommonstockParser();
+	private TianyanchaCommonstockChangeParser tianyanchaCommonstockChangeParser = new TianyanchaCommonstockChangeParser();
+	private TianyanchaImExPortParser tianyanchaImExPortParser = new TianyanchaImExPortParser();
+	private TianyanchaSfpmParser tianyanchaSfpmParser = new TianyanchaSfpmParser();
 
 	/***
 	 * 输入名称进行数据采集入库
@@ -166,6 +181,86 @@ public class TianyanchaCrawler {
 
 			Map<String, Integer> zhibiaoNums = new HashMap<String, Integer>();
 			fillZhibiaoNums(zhibiaoNums, document);
+
+			if (zhibiaoNums.get("branchCount") != null && zhibiaoNums.get("branchCount") > 0) {
+				// 分支机构
+				branchParser(document, driver, companyName, companyId);
+
+			}
+			if (zhibiaoNums.get("changeCount") != null && zhibiaoNums.get("changeCount") > 0) {
+				// 变更记录
+				changeParser(document, driver, companyName, companyId);
+
+			}
+			// 《动产抵押 》栏目解析
+			if (zhibiaoNums.get("mortgageCount") != null && zhibiaoNums.get("mortgageCount") > 0) {
+				mortgageParser(document, driver, companyName, companyId);
+
+			}
+			if (zhibiaoNums.get("cpoyRightWorksCount") != null && zhibiaoNums.get("cpoyRightWorksCount") > 0) {
+				// 著作权 处理中
+				cpoyRightWorksParser(document, driver, companyName, companyId);
+
+			}
+			if (zhibiaoNums.get("icpCount") != null && zhibiaoNums.get("icpCount") > 0) {
+				// 网站备案 处理中
+				// *[@id="_container_icp"]/div/div[2]/ul/li[13]/a
+				ipcParser(document, driver, companyName, companyId);
+
+			}
+			if (zhibiaoNums.get("equityCount") != null && zhibiaoNums.get("equityCount") > 0) {
+				// 股权出质 yx 网页
+				equityParser(document, driver, companyName, companyId);
+
+			}
+			if (zhibiaoNums.get("patentCount") != null && zhibiaoNums.get("patentCount") > 0) {
+				patentParser(document, driver, companyName, companyId);
+				// 专利
+
+			}
+			if (zhibiaoNums.get("recruitCount") != null && zhibiaoNums.get("recruitCount") > 0) {
+				recruitParser(document, driver, companyName, companyId);
+			}
+			if (zhibiaoNums.get("tmCount") != null && zhibiaoNums.get("tmCount") > 0) {
+				// 商标信息 网页
+				tmParser(document, driver, companyName, companyId);
+
+			}
+
+			if (zhibiaoNums.get("rongziCount") != null && zhibiaoNums.get("rongziCount") > 0) {
+				// 融资历史
+				rongziParser(document, driver, companyName, companyId);
+
+			}
+			if (zhibiaoNums.get("commonstockCount") != null && zhibiaoNums.get("commonstockCount") > 0) {
+				// 股本结构
+
+				commonstockParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("commonstockChangeCount") != null && zhibiaoNums.get("commonstockChangeCount") > 0) {
+				commonstockChangeParser(document, driver, companyName, companyId);
+				// 股本变动
+
+			}
+			if (zhibiaoNums.get("imExPortCount") != null && zhibiaoNums.get("imExPortCount") > 0) {
+				imExPortParser(document, driver, companyName, companyId);
+				// 进出口信息
+
+			}
+
+			if (zhibiaoNums.get("sfpmCount") != null && zhibiaoNums.get("sfpmCount") > 0) {
+				// 司法拍卖
+				sfpmParser(document, driver, companyName, companyId);
+
+			}
+
+			if (zhibiaoNums.get("wechatCount") != null && zhibiaoNums.get("wechatCount") > 0) {
+				// 微信公众号
+				wechatParser(document, driver, companyName, companyId);
+
+			}
+
 			// reportCount
 			if (zhibiaoNums.get("reportCount") != null && zhibiaoNums.get("reportCount") > 0) {
 				// 企业年报
@@ -174,11 +269,15 @@ public class TianyanchaCrawler {
 					try {
 						Element linkElement = element.select("a").first();
 						String reportLink = linkElement.absUrl("href");
-						System.out.println(reportLink);
 						driver.get(reportLink);
 						String reportHtml = driver.getPageSource();
 						Document reportDocument = Jsoup.parse(reportHtml);
-						new TianyanchaYearReportParser().paseNode(reportDocument, companyName, companyId);
+						tianyanchaYearReportParser.paseNode(reportDocument, companyName, companyId);
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
@@ -187,85 +286,6 @@ public class TianyanchaCrawler {
 
 				}
 
-			}
-
-			if (zhibiaoNums.get("branchCount") != null && zhibiaoNums.get("branchCount") > 0) {
-				// 分支机构
-				tianyanchaBranchParser.paseNode(document, companyName, companyId);
-			}
-			if (zhibiaoNums.get("changeCount") != null && zhibiaoNums.get("changeCount") > 0) {
-				// 变更记录
-				
-				//  //*[@id="_container_changeinfo"]/div/div[2]/ul/li[6]
-				
-				
-				tianyanchaChangeParser.paseNode(document, companyName, companyId);
-
-			}
-			// 《动产抵押 》栏目解析
-			if (zhibiaoNums.get("mortgageCount") != null && zhibiaoNums.get("mortgageCount") > 0) {
-				tianyanchaMortgageParser.paseNode(document, companyName, companyId);
-
-			}
-			if (zhibiaoNums.get("cpoyRightWorksCount") != null && zhibiaoNums.get("cpoyRightWorksCount") > 0) {
-				// 著作权 处理中
-				new TianyanchaCpoyRightWorksParser().paseNode(document, companyName, companyId);
-
-			}
-			if (zhibiaoNums.get("icpCount") != null && zhibiaoNums.get("icpCount") > 0) {
-				// 网站备案 处理中
-				new TianyanchaIcpParser().paseNode(document, companyName, companyId);
-
-			}
-			if (zhibiaoNums.get("equityCount") != null && zhibiaoNums.get("equityCount") > 0) {
-				// 股权出质 yx 网页
-				new TianyanchaEquityParser().paseNode(document, companyName, companyId);
-
-			}
-			if (zhibiaoNums.get("patentCount") != null && zhibiaoNums.get("patentCount") > 0) {
-
-				// 专利
-				new TianyanchaPatentParser().paseNode(document, companyName, companyId);
-
-			}
-			if (zhibiaoNums.get("recruitCount") != null && zhibiaoNums.get("recruitCount") > 0) {
-				// 招聘 处理中
-				new TianyanchaRecruitParser().paseNode(document, companyName, companyId);
-
-			}
-			if (zhibiaoNums.get("tmCount") != null && zhibiaoNums.get("tmCount") > 0) {
-				// 商标信息 网页
-				new TianyanchaTmParser().paseNode(document, companyName, companyId);
-
-			}
-
-			if (zhibiaoNums.get("rongziCount") != null && zhibiaoNums.get("rongziCount") > 0) {
-				// 融资历史
-				new TianyanchaRongziParser().paseNode(document, companyName, companyId);
-
-			}
-			if (zhibiaoNums.get("commonstockCount") != null && zhibiaoNums.get("commonstockCount") > 0) {
-				// 股本结构
-				new TianyanchaCommonstockParser().paseNode(document, companyName, companyId);
-			}
-
-			if (zhibiaoNums.get("commonstockChangeCount") != null && zhibiaoNums.get("commonstockChangeCount") > 0) {
-				// 股本变动
-				new TianyanchaCommonstockChangeParser().paseNode(document, companyName, companyId);
-			}
-			if (zhibiaoNums.get("imExPortCount") != null && zhibiaoNums.get("imExPortCount") > 0) {
-				// 进出口信息
-				new TianyanchaImExPortParser().paseNode(document, companyName, companyId);
-			}
-
-			if (zhibiaoNums.get("sfpmCount") != null && zhibiaoNums.get("sfpmCount") > 0) {
-				// 司法拍卖
-				new TianyanchaSfpmParser().paseNode(document, companyName, companyId);
-			}
-
-			if (zhibiaoNums.get("wechatCount") != null && zhibiaoNums.get("wechatCount") > 0) {
-				// 微信公众号
-				new TianyanchaWechatParser().paseNode(document, companyName, companyId);
 			}
 
 		} catch (Exception e) {
@@ -278,6 +298,965 @@ public class TianyanchaCrawler {
 		}
 	}
 
+	/***
+	 * 动产抵押
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void mortgageParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaMortgageParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_mortgage");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_mortgage\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaMortgageParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 股权出质
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void equityParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaEquityParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_equity");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_equity\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaEquityParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 融资历史
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void rongziParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaRongziParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_rongzi");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_rongzi\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaRongziParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 股本结构
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void commonstockParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaCommonstockParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_shareStructure");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_shareStructure\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaCommonstockParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+
+	}
+
+	/***
+	 * 股本变动
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void commonstockChangeParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaCommonstockChangeParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_equityChange");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_equityChange\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaCommonstockChangeParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 进出口信息
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void imExPortParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaImExPortParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_importAndExport");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
+							WebElement nextPageBt = driver.findElement(By
+									.xpath("//*[@id=\"_container_importAndExport\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaImExPortParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 司法拍卖
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void sfpmParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaSfpmParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_judicialSale");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_judicialSale\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaSfpmParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 分支机构
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void branchParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaBranchParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_branch");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_branch\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaBranchParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 微信公众号
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void wechatParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaWechatParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_wechat");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_wechat\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaWechatParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 商标信息
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void tmParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaTmParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_tmInfo");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							int size = liElements.size();
+							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
+							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
+							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
+							try {
+								WebElement nextPageBt = driver.findElement(
+										By.xpath("//*[@id=\"_container_tmInfo\"]/div/div/div[last()]/ul/li[last()]/a"));
+								((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							} catch (Exception e) {
+								e.printStackTrace();
+								break;
+							}
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaTmParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 专利
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void patentParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaPatentParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_patent");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							int size = liElements.size();
+							// *[@id="_container_patent"]/div/div/ul/li[13]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_patent\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaPatentParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 网站备案
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void ipcParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaIcpParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_icp");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							int size = liElements.size();
+							// *[@id="_container_icp"]/div/div[2]/ul/li[13]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_icp\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaIcpParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	/***
+	 * 作品著作权
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void cpoyRightWorksParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaCpoyRightWorksParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_copyrightWorks");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_copyrightWorks"]/div/div/ul/li[13]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_copyrightWorks\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaCpoyRightWorksParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+
+	}
+
+	/****
+	 * 变更信息解析
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	private void changeParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaChangeParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_changeinfo");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_changeinfo"]/div/div[2]/ul/li[6]/a
+							// *[@id="_container_changeinfo"]/div/div[2]/ul/li[4]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_changeinfo\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaChangeParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+
+	}
+
+	/***
+	 * 招聘翻页抽取数据
+	 * 
+	 * @param document
+	 * @param driver
+	 */
+	public void recruitParser(Document document, WebDriver driver, String companyName, String companyId) {
+		tianyanchaRecruitParser.paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_recruit");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							int size = liElements.size();
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_recruit\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaRecruitParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+
+	}
+
+	/***
+	 * 判断每个栏目是否有数据
+	 * 
+	 * @param zhibiaoNums
+	 * @param document
+	 */
 	private void fillZhibiaoNums(Map<String, Integer> zhibiaoNums, Document document) {
 		String infoCssPath = "div.companypage_2017";
 		Element infoElement = getNodeByCssPath(document, infoCssPath);
@@ -613,6 +1592,11 @@ public class TianyanchaCrawler {
 
 	}
 
+	/***
+	 * 启动浏览器
+	 * 
+	 * @return
+	 */
 	public WebDriver createWebDrive() {
 		System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 		WebDriver driver = null;
@@ -622,6 +1606,11 @@ public class TianyanchaCrawler {
 		return driver;
 	}
 
+	/***
+	 * 关闭浏览器
+	 * 
+	 * @param driver
+	 */
 	public void closeWebDrive(WebDriver driver) {
 		if (driver != null) {
 			Set<String> allWindows = driver.getWindowHandles();
@@ -635,10 +1624,25 @@ public class TianyanchaCrawler {
 
 	}
 
+	/***
+	 * 根据csspath 获取element
+	 * 
+	 * @param document
+	 * @param cssPath
+	 * @return
+	 */
 	public static Element getNodeByCssPath(Document document, String cssPath) {
 		return getNodeByCssPath(document, cssPath, 0);
 	}
 
+	/***
+	 * 根据csspath 获取第几个 element
+	 * 
+	 * @param document
+	 * @param cssPath
+	 * @param index
+	 * @return
+	 */
 	public static Element getNodeByCssPath(Document document, String cssPath, int index) {
 		Elements elments = document.select(cssPath);
 		if (elments.size() != 0) {

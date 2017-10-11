@@ -7,7 +7,7 @@ import com.kf.data.tianyancha.core.TianyanchaCrawler;
 /**
  * @Title: CompanyDownloadWorker.java
  * @Package com.kf.data.crawler.tianyancha.worker
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 获取公司信息
  * @author liangyt
  * @date 2017年5月4日 下午1:34:34
  * @version V1.0
@@ -42,6 +42,11 @@ public class CompanyDownloadWorker extends BaseWorker implements Runnable {
 
 	}
 
+	/***
+	 * 输入公司名称获取数据
+	 * 
+	 * @param company
+	 */
 	private void fillTycQueue(String company) {
 		tianyanchaCrawler.parserTycBaseCompany(company);
 	}

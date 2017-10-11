@@ -20,6 +20,13 @@ public class TianyanchaIcpParser extends TianyanchaBasePaser {
 	public static final String listCssPath = "tr[ng-repeat=check in changeinfoList.result]";
 	public static final String pageTotalCssPath = ".total";
 
+	/***
+	 * 网站备案 信息解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyID
+	 */
 	public void paseNode(Document document, String companyName, String companyID) {
 		Elements contentNodes = document.select("#_container_icp");
 		if (contentNodes.size() > 0) {
@@ -33,7 +40,7 @@ public class TianyanchaIcpParser extends TianyanchaBasePaser {
 
 					String home_url = tdElements.get(2).text();// 网站首页
 					String release_date = tdElements.get(0).text().trim();
-					release_date =release_date.replace("-", "");
+					release_date = release_date.replace("-", "");
 					String host_type = tdElements.get(6).text();// 单位性质
 					String site_name = tdElements.get(1).text();// 网站名称
 					String domain = tdElements.get(3).text();// 域名

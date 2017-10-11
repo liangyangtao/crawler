@@ -51,6 +51,15 @@ import com.kf.data.mybatis.mapper.TycEventsInvestCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycEventsInvestInvestorsCrawlerMapper;
 import com.kf.data.web.service.SaveJsonObjectService;
 
+/****
+ * 
+ * @Title: SaveJsonObjectServiceImpl.java
+ * @Package com.kf.data.web.service.impl
+ * @Description: 保存传送的json数据
+ * @author liangyt
+ * @date 2017年10月11日 下午2:34:49
+ * @version V1.0
+ */
 @Service
 public class SaveJsonObjectServiceImpl implements SaveJsonObjectService {
 
@@ -116,7 +125,13 @@ public class SaveJsonObjectServiceImpl implements SaveJsonObjectService {
 	@Autowired
 	TycEventsInvestCrawlerMapper tycEventsInvestCrawlerMapper;
 
-	@Override
+	/***
+	 * 保存传送的json数据
+	 * 
+	 * type 是表名
+	 * 
+	 * json 数据
+	 */
 	public String parserJson(String json, String type) {
 		try {
 			if (type.equals("tyc_base_company")) {

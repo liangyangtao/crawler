@@ -10,6 +10,15 @@ import org.jsoup.select.Elements;
 import com.kf.data.fetcher.tools.ReportDataFormat;
 import com.kf.data.mybatis.entity.TycCompanyShareholdersContributiveCrawler;
 
+/***
+ * 
+ * @Title: TianyanchaHolderParser.java
+ * @Package com.kf.data.tianyancha.parser
+ * @Description: 股东信息解析
+ * @author liangyt
+ * @date 2017年10月11日 下午2:12:36
+ * @version V1.0
+ */
 public class TianyanchaHolderParser extends TianyanchaBasePaser {
 	// <!--[股东信息]-->
 	// <!-- ngIf: items2.holderCount.show&&dataItemCount.holderCount>0 -->
@@ -19,6 +28,13 @@ public class TianyanchaHolderParser extends TianyanchaBasePaser {
 	public static final String listCssPath = ".companyInfo-table > tbody > tr";
 	public static final String pageTotalCssPath = ".total";
 
+	/***
+	 * 股东信息解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyID
+	 */
 	public void paseNode(Document document, String companyName, String companyID) {
 		// 是否分页
 		// boolean hasNextPage = false;
@@ -65,7 +81,6 @@ public class TianyanchaHolderParser extends TianyanchaBasePaser {
 				// tycCompanyShareholdersContributive.setCurrencyId(currencyId);
 				// tycCompanyShareholdersContributive.setCurrenyName(currenyName);
 				// tycCompanyShareholdersContributive.setId(company.getId());
-
 
 				tycCompanyShareholdersContributive.setMoneyChar(moneyStr);
 				tycCompanyShareholdersContributive.setMoney(ReportDataFormat.bigUnitChange(moneyStr));

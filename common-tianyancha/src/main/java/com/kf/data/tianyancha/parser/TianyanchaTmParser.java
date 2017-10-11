@@ -9,6 +9,15 @@ import org.jsoup.select.Elements;
 import com.kf.data.fetcher.tools.AliOssSender;
 import com.kf.data.mybatis.entity.TycCompanyTrademarkCrawler;
 
+/***
+ * 
+ * @Title: TianyanchaTmParser.java
+ * @Package com.kf.data.tianyancha.parser
+ * @Description: 商标信息解析
+ * @author liangyt
+ * @date 2017年10月11日 下午2:17:39
+ * @version V1.0
+ */
 public class TianyanchaTmParser extends TianyanchaBasePaser {
 	// <!-- 商标信息 -->
 	// <!-- ngIf: items2.tmCount.show&&dataItemCount.tmCount>0 -->
@@ -17,6 +26,13 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 	public static final String listCssPath = "tr[ng-repeat=check in changeinfoList.result]";
 	public static final String pageTotalCssPath = ".total";
 
+	/****
+	 * 商标信息解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 
 		Elements contentNodes = document.select("#_container_tmInfo");
@@ -31,7 +47,7 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 					String trademark_type = tdElements.get(4).text();
 
 					String application_date = tdElements.get(0).text();
-					application_date =application_date.replace("-", "");
+					application_date = application_date.replace("-", "");
 					String trademark_status = null;
 					try {
 						trademark_status = tdElements.get(5).text();
@@ -57,9 +73,9 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 					tycCompanyTrademarkCrawler.setApplicationDate(application_date);
 					tycCompanyTrademarkCrawler.setTrademarkStatus(trademark_status);
 					tycCompanyTrademarkCrawler.setRegistrationNumber(registration_number);
-//					tycCompanyTrademarkCrawler.setTrademarkName(trademark_name);
+					// tycCompanyTrademarkCrawler.setTrademarkName(trademark_name);
 					tycCompanyTrademarkCrawler.setTrademarkImgUrl(trademark_img_url);
-//					tycCompanyTrademarkCrawler.setKfImgUrl(kfImgUrl);
+					// tycCompanyTrademarkCrawler.setKfImgUrl(kfImgUrl);
 					tycCompanyTrademarkCrawler.setTrademarkId("trademark_id");
 					tycCompanyTrademarkCrawler.setStatus(false);
 					sendJson(tycCompanyTrademarkCrawler, "tyc_company_trademark");

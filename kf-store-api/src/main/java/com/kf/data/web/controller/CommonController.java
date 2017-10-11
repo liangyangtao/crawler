@@ -11,8 +11,23 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/***
+ * 
+ * @Title: CommonController.java
+ * @Package com.kf.data.web.controller
+ * @Description: 基础类
+ * @author liangyt
+ * @date 2017年10月11日 下午2:35:34
+ * @version V1.0
+ */
 public class CommonController {
 
+	/***
+	 * 实体转换json 串
+	 * 
+	 * @param obj
+	 * @return
+	 */
 	protected String objectToJson(Object obj) {
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		return gson.toJson(obj);
@@ -44,6 +59,8 @@ public class CommonController {
 		return map;
 	}
 
+	
+	
 	protected void responseJson(HttpServletResponse response, Object obj) throws IOException {
 		response.setHeader("Pragma", "No-cache");
 		response.setHeader("Cache-Control", "no-cache");
@@ -52,7 +69,5 @@ public class CommonController {
 		out.write(objectToJson(obj));
 		out.close();
 	}
-	
-
 
 }

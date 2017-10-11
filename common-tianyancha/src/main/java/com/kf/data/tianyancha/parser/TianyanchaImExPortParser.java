@@ -15,7 +15,7 @@ import net.sf.json.JSONObject;
  * 
  * @Title: TianyanchaImExPortParser.java
  * @Package com.kf.data.tianyancha.parser
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 进出口信息解析
  * @author liangyt
  * @date 2017年9月30日 下午3:09:14
  * @version V1.0
@@ -23,6 +23,13 @@ import net.sf.json.JSONObject;
 
 public class TianyanchaImExPortParser extends TianyanchaBasePaser {
 
+	/***
+	 * 进出口信息解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
+	 */
 	public void paseNode(Document document, String companyName, String companyId) {
 		Elements contentNodes = document.select("#_container_importAndExport");
 		if (contentNodes.size() > 0) {
