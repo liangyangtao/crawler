@@ -58,6 +58,12 @@ public class TianyanchaSfpmParser extends TianyanchaBasePaser {
 						tycCompanySfpmCrawler.setAuctionDate(sdf.parse(auctionDate));
 					} catch (Exception e) {
 						e.printStackTrace();
+						try {
+							sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							tycCompanySfpmCrawler.setAuctionDate(sdf.parse(auctionDate));
+						} catch (Exception e1) {
+							// TODO: handle exception
+						}
 					}
 					tycCompanySfpmCrawler.setAuctionName(auctionName);
 					tycCompanySfpmCrawler.setAuctionOrg(auctionOrg);

@@ -273,6 +273,11 @@ public class TianyanchaCrawler {
 						String reportHtml = driver.getPageSource();
 						Document reportDocument = Jsoup.parse(reportHtml);
 						tianyanchaYearReportParser.paseNode(reportDocument, companyName, companyId);
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
@@ -307,45 +312,50 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_mortgage");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_mortgage");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_mortgage\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaMortgageParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_mortgage\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaMortgageParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -364,45 +374,50 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_equity");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_equity");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_equity\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaEquityParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_equity\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaEquityParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -421,45 +436,50 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_rongzi");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_rongzi");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_rongzi\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaRongziParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_rongzi\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaRongziParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -478,45 +498,50 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_shareStructure");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_shareStructure");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_shareStructure\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaCommonstockParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_shareStructure\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaCommonstockParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 
@@ -536,45 +561,50 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_equityChange");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_equityChange");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_equityChange\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaCommonstockChangeParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_equityChange\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaCommonstockChangeParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -593,46 +623,51 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_importAndExport");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_importAndExport");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
+							WebElement nextPageBt = driver.findElement(By
+									.xpath("//*[@id=\"_container_importAndExport\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaImExPortParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_importAndExport\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaImExPortParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -651,46 +686,51 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_judicialSale");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_judicialSale");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_judicialSale\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaSfpmParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_judicialSale\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaSfpmParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -709,46 +749,51 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_branch");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_branch");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_branch\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaBranchParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_branch\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaBranchParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -767,46 +812,51 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_wechat");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_wechat");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_wechat\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaWechatParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_wechat\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaWechatParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -825,47 +875,59 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_tmInfo");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_tmInfo");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							int size = liElements.size();
+							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
+							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
+							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
+							try {
+								WebElement nextPageBt = driver.findElement(
+										By.xpath("//*[@id=\"_container_tmInfo\"]/div/div/div[last()]/ul/li[last()]/a"));
+								((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							} catch (Exception e) {
+								e.printStackTrace();
+								break;
+							}
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaTmParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						int size = liElements.size();
-						// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_tmInfo\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaTmParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -884,47 +946,52 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_patent");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_patent");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							int size = liElements.size();
+							// *[@id="_container_patent"]/div/div/ul/li[13]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_patent\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaPatentParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						int size = liElements.size();
-						// *[@id="_container_patent"]/div/div/ul/li[13]/a
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_patent\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaPatentParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -943,47 +1010,52 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_icp");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_icp");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							int size = liElements.size();
+							// *[@id="_container_icp"]/div/div[2]/ul/li[13]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_icp\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaIcpParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						int size = liElements.size();
-						// *[@id="_container_icp"]/div/div[2]/ul/li[13]/a
-						WebElement nextPageBt = driver
-								.findElement(By.xpath("//*[@id=\"_container_icp\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaIcpParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
@@ -1002,46 +1074,51 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_copyrightWorks");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_copyrightWorks");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_copyrightWorks"]/div/div/ul/li[13]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_copyrightWorks\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaCpoyRightWorksParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						// *[@id="_container_copyrightWorks"]/div/div/ul/li[13]/a
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_copyrightWorks\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaCpoyRightWorksParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 
@@ -1061,46 +1138,52 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_changeinfo");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_changeinfo");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_changeinfo"]/div/div[2]/ul/li[6]/a
+							// *[@id="_container_changeinfo"]/div/div[2]/ul/li[4]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_changeinfo\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaChangeParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						// *[@id="_container_changeinfo"]/div/div[2]/ul/li[6]/a
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_changeinfo\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaChangeParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 
@@ -1118,46 +1201,51 @@ public class TianyanchaCrawler {
 		int pageNum = 0;
 		// 招聘 处理中
 		while (true) {
-			Elements contentNodes = document.select("#_container_recruit");
-			if (contentNodes.size() > 0) {
-				Elements pageElements = contentNodes.first().select(".company_pager");
-				if (pageElements.size() > 0) {
-					Elements totalElements = pageElements.first().select(".total");
-					if (totalElements.size() > 0) {
-						String totalStr = totalElements.first().text().trim();
-						totalStr = totalStr.replace("共", "");
-						totalStr = totalStr.replace("页", "");
-						if (totalStr.isEmpty()) {
-							pageNum = 0;
+			try {
+				Elements contentNodes = document.select("#_container_recruit");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							int size = liElements.size();
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_recruit\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							tianyanchaRecruitParser.paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
 						} else {
-							pageNum = Integer.parseInt(totalStr);
-						}
-					}
-					if (pageIndex <= pageNum) {
-						Elements liElements = pageElements.select("li");
-						int size = liElements.size();
-						WebElement nextPageBt = driver.findElement(
-								By.xpath("//*[@id=\"_container_recruit\"]/div/div[last()]/ul/li[last()]/a"));
-						((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						document = Jsoup.parse(driver.getPageSource());
-						tianyanchaRecruitParser.paseNode(document, companyName, companyId);
-						if (liElements.last().classNames().contains("disabled")) {
 							break;
 						}
-						pageIndex++;
+
 					} else {
 						break;
 					}
 
-				} else {
-					break;
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 
