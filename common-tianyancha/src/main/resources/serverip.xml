@@ -1,6 +1,6 @@
 <root>
 	<serverip>http://101.201.111.214:8097/company/getNeeqComapny</serverip>
-	<saveJsonIp>http://localhost:8080/kf-store-api/saveJson</saveJsonIp>
+	<saveJsonIp>http://101.201.223.55:8334/kf-store-api/saveJson</saveJsonIp>
 	<esClusterName>kaifengdata</esClusterName>
 	<esPort>9300</esPort>
 	<esUrl>10.27.32.236</esUrl>
