@@ -22,8 +22,30 @@ import com.kf.data.mybatis.entity.PdfCodeTable;
 import com.kf.data.mybatis.entity.PdfCodeTemporary;
 import com.kf.data.mybatis.entity.PdfReportLinks;
 
+/***
+ * 
+ * @Title: PdfTemporary2Parser.java
+ * @Package com.kf.data.pdfparser.parser
+ * @Description: 解析表格类型
+ * @author liangyt
+ * @date 2017年10月11日 上午11:34:43
+ * @version V1.0
+ */
 public class PdfTemporary2Parser extends KfPdfParser {
 
+	/***
+	 * 解析表格类型
+	 * 
+	 * @param pdfCodeTable
+	 *            pdf分类
+	 * @param pdfCodeLink
+	 *            pdf 链接
+	 * @param document
+	 *            pdfdom
+	 * @param pdfCodeTemporarys2
+	 *            解析规则
+	 * @return 解析结果
+	 */
 	public Map<String, Object> parserDocument(PdfCodeTable pdfCodeTable, PdfReportLinks pdfCodeLink, Document document,
 			List<PdfCodeTemporary> pdfCodeTemporarys2) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -36,10 +58,15 @@ public class PdfTemporary2Parser extends KfPdfParser {
 			Map<String, Set<String>> tables = new HashMap<String, Set<String>>();
 			// 存储字段的解析规则 table_propertys 规则list
 			Map<String, Set<String>> propertyNameRules = new HashMap<String, Set<String>>();
-			Map<String, List<String>> beginRules = new HashMap<String, List<String>>();
-			Map<String, List<String>> endRules = new HashMap<String, List<String>>();
+			// 存储属性在表格哪一列
 			Map<String, Integer> keyIndex = new HashMap<String, Integer>();
+			// 存储表格里面的标题
 			Set<String> keyRules = new HashSet<String>();
+			// 存储开始位置
+			List<String> begins = new ArrayList<String>();
+			// 存储结束位置
+			List<String> ends = new ArrayList<String>();
+
 			for (PdfCodeTemporary pdfCodeTemporary : pdfCodeTemporarys2) {
 				// 先看下有多少张表
 				String tableName = pdfCodeTemporary.getTableName().trim();
@@ -56,25 +83,26 @@ public class PdfTemporary2Parser extends KfPdfParser {
 				propertys.add(property);
 				tables.put(tableName, propertys);
 				String table_property = tableName + "@@@" + property;
-				/////////////////////////////
-				List<String> begins = null;
-				if (beginRules.get(table_property) == null) {
-					begins = new ArrayList<String>();
+				// 重复的开始和结束就不放了
+				String begin = pdfCodeTemporary.getBeginPosition().trim();
+				String end = pdfCodeTemporary.getEndPosition().trim();
+				if (begins.contains(begin)) {
+					for (int i = 0; i < begins.size(); i++) {
+						if (begins.get(i).equals(begin)) {
+							if (ends.get(i).equals(end)) {
+							} else {
+								begins.add(begin);
+								ends.add(end);
+								break;
+							}
+						}
+
+					}
 				} else {
-					begins = beginRules.get(table_property);
+					begins.add(begin);
+					ends.add(end);
 				}
-				begins.add(pdfCodeTemporary.getBeginPosition().trim());
-				beginRules.put(table_property, begins);
-				////////////////////////////////////
-				List<String> ends = null;
-				if (endRules.get(table_property) == null) {
-					ends = new ArrayList<String>();
-				} else {
-					ends = endRules.get(table_property);
-				}
-				ends.add(pdfCodeTemporary.getEndPosition().trim());
-				endRules.put(table_property, ends);
-				///////////////////////////////////
+
 				Set<String> propertyNames = null;
 				if (propertyNameRules.get(table_property) == null) {
 					propertyNames = new HashSet<String>();
@@ -85,12 +113,10 @@ public class PdfTemporary2Parser extends KfPdfParser {
 				propertyNameRules.put(table_property, propertyNames);
 				keyRules.add(pdfCodeTemporary.getPropertyName().trim());
 			}
-			// 行间属性存储
 			List<List<Map<String, String>>> infoList = new ArrayList<List<Map<String, String>>>();
 			Set<String> tablekeys = tables.keySet();
 			for (String tableName : tablekeys) {
-				Set<String> propertys = tables.get(tableName);
-				// 每个字段比带的属性
+				// 每个字段必须带的属性
 				// id
 				Map<String, String> companyidMap = new HashMap<String, String>();
 				companyidMap.put("value", pdfCodeLink.getId() + "");
@@ -130,13 +156,9 @@ public class PdfTemporary2Parser extends KfPdfParser {
 				reportDateMap.put("property", "report_date");
 
 				String pdfType = pdfCodeTable.getPdfType();
-
+				Set<String> propertys = tables.get(tableName);
 				if (propertys.size() > 0) {
 					Elements pElements = document.select("div").first().children();
-					String property = propertys.iterator().next();
-					String table_property = tableName + "@@@" + property;
-					List<String> begins = beginRules.get(table_property);
-					List<String> ends = endRules.get(table_property);
 					sortPreAndEnd(begins, ends);
 					for (int i = 0; i < begins.size(); i++) {
 						String preText = begins.get(i);
@@ -145,316 +167,13 @@ public class PdfTemporary2Parser extends KfPdfParser {
 						} else {
 							continue;
 						}
-						int preIndex = 0;
-						int endIndex = pElements.size();
-						LinkedHashMap<Integer, Integer> indexs = new LinkedHashMap<Integer, Integer>();
-
-						for (int j = 0; j < pElements.size(); j++) {
-							Element pElement = pElements.get(j);
-							if (pElement.tagName().equals("p")) {
-								String pText = pElement.text();
-								if (pdfType.contains("负债表") || pdfType.contains("利润表") || pdfType.contains("现金流量表")) {
-
-									if (pText.contains("续") || pText.contains("表主要数据") || pText.contains("表项目变动分析表")
-											|| pText.contains("表日后事项")) {
-										continue;
-									}
-									for (String finance : finances) {
-										if (pText.contains(finance)) {
-											if (begins.contains(finance)) {
-												if (preIndex < endIndex) {
-													preIndex = j;
-												}
-												break;
-											}
-											if (ends.contains(finance)) {
-												if (preIndex == 0) {
-													continue;
-												}
-												if (j > endIndex && endIndex > preIndex) {
-													continue;
-												}
-												endIndex = j;
-												if (preIndex == endIndex) {
-													continue;
-												}
-												indexs.put(preIndex, endIndex);
-												break;
-											}
-
-										}
-
-									}
-
-								} else {
-									if (pText.contains(endText)) {
-										if (preIndex == 0) {
-											continue;
-										}
-										if (j > endIndex && endIndex > preIndex) {
-											continue;
-										}
-										endIndex = j;
-										indexs.put(preIndex, endIndex);
-									}
-									if (preIndex < endIndex && pText.contains(preText)) {
-										preIndex = j;
-									}
-								}
-							}
-						}
-						Element newBody = new Element(Tag.valueOf("div"), "");
-						Elements chlidElements = pElements;
-						if (chlidElements.size() == 0) {
+						List<Element> result = fillResult(pElements, pdfType, begins, ends, preText, endText);
+						if (result == null) {
 							continue;
-						}
-						List<Element> result = new ArrayList<Element>();
-
-						if (indexs.size() > 1) {
-							Iterator<Integer> indexIterator = indexs.keySet().iterator();
-							int k = 0;
-							while (indexIterator.hasNext()) {
-								int key = indexIterator.next();
-								int value = indexs.get(key);
-								if (value - key > 50) {
-									indexIterator.remove();
-									indexs.remove(key);
-									continue;
-								}
-								if (k == 0 && pdfType.contains("母公司")) {
-									indexIterator.remove();
-									indexs.remove(key);
-								}
-								if (k == 1 && pdfType.contains("合并")) {
-									indexIterator.remove();
-									indexs.remove(key);
-								}
-								k++;
-
-							}
-						} else {
-							// if (pdfType.contains("母公司") &&
-							// preText.contains("母公司")) {
-							// continue;
-							// }
-						}
-						Set<Integer> preIndexs = indexs.keySet();
-						for (Integer preIn : preIndexs) {
-							int endIn = indexs.get(preIn);
-							if (endIn - preIn > 50) {
-								continue;
-							}
-							for (int j = preIn; j <= endIn; j++) {
-								Element childElement = chlidElements.get(j);
-								newBody.appendChild(childElement);
-							}
-						}
-						Elements childElements = newBody.children();
-						for (Element element : childElements) {
-							if (element.tagName().equals("table")) {
-								result.add(element);
-							}
 						}
 						if (result.size() > 0) {
 							boolean istop = false;
-							Element resultTable = new Element(Tag.valueOf("table"), "");
-
-							if (result.size() == 1) {
-								Element element = result.get(0);
-								Elements trElements = element.select("tr");
-								for (Element trElement : trElements) {
-									resultTable.appendChild(trElement);
-								}
-							} else {
-								int firstIndex = 0;
-								int firstNum = 0;
-								// 如果有多个表格 ,排除掉不是需要的表格
-								for (int k = 0; k < result.size(); k++) {
-									Element element = result.get(k);
-									Elements trElements = element.select("tr");
-									// 判断有几行
-									// int row =
-									// trElements.size();
-									// 有几列
-									int col = 0;
-									for (int j = 0; j < trElements.size(); j++) {
-										Element trElement = trElements.get(j);
-										Elements tdElements = trElement.select("td,th");
-										if (col < tdElements.size()) {
-											col = tdElements.size();
-										}
-									}
-									if (trElements.size() == 0) {
-										continue;
-									}
-									Element firstElement = trElements.get(0);
-									Elements firtsTdElements = firstElement.select("td");
-									// 判断表头有几行
-									int titleNum = 1;
-									for (Element tdElement : firtsTdElements) {
-										String rowsStr = tdElement.attr("rowspan");
-										if (!rowsStr.isEmpty()) {
-											int rowInt = Integer.parseInt(rowsStr);
-											if (titleNum < rowInt) {
-												titleNum = rowInt;
-											}
-										}
-									}
-									// 如果是多行的表头,就合并一下，
-									if (titleNum > 1) {
-										// istop=true;
-									}
-									if (element.select("tr").size() == 0) {
-										continue;
-									}
-									// 多个表格怎么合并
-									Elements firstTdElements = element.select("tr").first().select("td");
-									int proNum = 0;
-									for (Element firstTdElement : firstTdElements) {
-										String elementText = firstTdElement.text();
-										elementText = replacekong(elementText);
-										elementText = elementText.replace("###", "");
-										for (String propertyname : keyRules) {
-											propertyname = replacekong(propertyname);
-											propertyname = propertyname.replace("###", "");
-											if (propertyname.contains("@@")) {
-												String propertyTemp[] = propertyname.split("@@");
-												boolean isExit = true;
-												for (String string : propertyTemp) {
-													if (elementText.contains(string)) {
-
-													} else {
-														isExit = false;
-													}
-												}
-												if (isExit) {
-													proNum++;
-													break;
-												}
-
-											} else {
-												if (elementText.contains(propertyname)) {
-													proNum++;
-													break;
-
-												}
-											}
-
-										}
-
-										if (proNum > firstNum) {
-											firstNum = proNum;
-											firstIndex = k;
-										}
-									}
-								}
-								if (firstNum > 1) {
-									istop = true;
-								}
-								Element firstTable = result.get(firstIndex);
-								Elements firstTrElements = firstTable.select("tr");
-								Elements firstTdElements = firstTrElements.first().select("td");
-
-								for (int k = firstIndex; k < result.size(); k++) {
-									Element element = result.get(k);
-									Elements trElements = element.select("tr");
-									if (istop) {
-										if (k > firstIndex) {
-											if (trElements.size() == 0) {
-												continue;
-											}
-											Element firstElement = trElements.get(0);
-											Elements firtsTdElements = firstElement.select("td");
-											// 判断表头有几行
-											int titleNum = 1;
-											for (Element tdElement : firtsTdElements) {
-												String rowsStr = tdElement.attr("rowspan");
-												if (!rowsStr.isEmpty()) {
-													int rowInt = Integer.parseInt(rowsStr);
-													if (titleNum < rowInt) {
-														titleNum = rowInt;
-													}
-												}
-											}
-											if (titleNum > 1) {
-												break;
-											}
-											if (trElements.size() == 1 && firtsTdElements.size() == 1) {
-												break;
-											}
-											element = new TableSpliter().splitTable(element, false, null);
-											trElements = element.select("tr");
-											Elements tdElements = trElements.first().select("td");
-											boolean isAppend = false;
-											int emptyNum = 0;
-											for (Element element2 : tdElements) {
-												if (element2.text().trim().contains("-")
-														|| element2.text().matches(".*\\d+.*")
-														|| element2.text().contains("�")
-														|| element2.text().trim().contains("_")) {
-													isAppend = true;
-													break;
-												} else if (element2.text().trim().isEmpty()) {
-													emptyNum++;
-												}
-											}
-											if (!isAppend) {
-												if (emptyNum > 1) {
-													isAppend = true;
-												}
-											}
-											if (!isAppend) {
-
-												boolean check = true;
-												for (int j = 0; j < tdElements.size(); j++) {
-													Element tdElement = tdElements.get(j);
-													Element firstTdElement = firstTdElements.get(j);
-													if (!tdElement.text().equals(firstTdElement.text())) {
-														check = false;
-														break;
-													}
-												}
-												if (check) {
-													isAppend = true;
-												}
-
-											}
-											//
-											if (isAppend) {
-												for (Element trElement : trElements) {
-													if (trElement.text().contains(endText)) {
-														break;
-													}
-													resultTable.appendChild(trElement);
-												}
-											} else {
-												// 结束
-												break;
-											}
-										} else {
-											element = new TableSpliter().splitTable(element, false, null);
-											trElements = element.select("tr");
-											// 是表头的那个表
-											for (Element trElement : trElements) {
-												if (trElement.text().contains(endText)) {
-													break;
-												}
-												resultTable.appendChild(trElement);
-											}
-										}
-									} else {
-										// 是LEFT 方式提取
-										for (Element trElement : trElements) {
-											if (trElement.text().contains(endText)) {
-												break;
-											}
-											resultTable.appendChild(trElement);
-										}
-									}
-								}
-
-							}
-
+							Element resultTable = createNewtable(result, endText, keyRules, istop);
 							if (Arrays.asList(megerPdfTypes).contains(pdfType)) {
 								String key = "";
 								if (pdfType.equals("年报_负债") || pdfType.equals("公转书_合并资产负债表")
@@ -537,215 +256,24 @@ public class PdfTemporary2Parser extends KfPdfParser {
 								} else {
 									Element thElement = trElements.first();
 									Elements tdElments = thElement.select("td");
-									for (int j = 0; j < tdElments.size(); j++) {
-										Element element = tdElments.get(j);
-										String elementText = element.text().trim();
-										elementText = replacekong(elementText);
-										elementText = elementText.replace("###", "");
-										if (elementText.contains("@@")) {
-
-										} else {
-											if (elementText.contains("（")) {
-												elementText = elementText.split("（")[0].trim();
-											}
-											if (elementText.contains("(")) {
-												elementText = elementText.split("\\(")[0].trim();
-											}
-											if (elementText.contains("%")) {
-												elementText = elementText.split("%")[0].trim();
-											}
-										}
-										for (String propertyTemp : propertys) {
-											Set<String> propertyNameTemps = propertyNameRules
-													.get(tableName + "@@@" + propertyTemp);
-											// 属性的列表
-											for (String string : propertyNameTemps) {
-												string = replacekong(string);
-												string = string.replace("###", "");
-												if (elementText.isEmpty() && string.endsWith("#")) {
-													int keylength = string.length();
-													if (i == keylength - 1) {
-														keyIndex.put(propertyTemp, j);
-														break;
-													}
-												} else {
-													if (string.contains("@@")) {
-														String temp[] = string.split("@@");
-														boolean isAll = true;
-														for (String string2 : temp) {
-															if (!elementText.contains(string2)) {
-																isAll = false;
-																break;
-															}
-														}
-														if (isAll) {
-															keyIndex.put(propertyTemp, j);
-															break;
-														}
-
-													} else {
-														if (elementText.contains("@@")) {
-															String temp[] = elementText.split("@@");
-															String mm = temp[temp.length - 1];
-															if (mm.contains("（")) {
-																mm = mm.split("（")[0].trim();
-															}
-															if (mm.contains("(")) {
-																mm = mm.split("\\(")[0].trim();
-															}
-															if (mm.contains("%")) {
-																mm = elementText.split("%")[0].trim();
-															}
-															if (mm.trim().equals(string)) {
-																keyIndex.put(propertyTemp, j);
-																break;
-															}
-														} else {
-
-															if (elementText.equals(string)) {
-																keyIndex.put(propertyTemp, j);
-																break;
-															}
-														}
-													}
-												}
-											}
-										}
-
-									}
-
+									fillKeyIndex(tdElments, propertys, propertyNameRules, tableName, keyIndex, i);
 									// 如果是多行表头
-
 									////////////////////////// for
 									////////////////////////// jiesu
 									if (keyIndex.size() <= 1) {
 										//////////////// left
 										//////////////// 来确定
-										istop = false;
-										boolean isLeft = false;
-										List<Map<String, String>> infoEntity = new ArrayList<Map<String, String>>();
-
-										for (int j = 0; j < trElements.size(); j++) {
-											Element leftThElement = trElements.get(j);
-											Element element = leftThElement.select("td").get(0);
-											String elementText = element.text().trim();
-											elementText = replacekong(elementText);
-											elementText = elementText.replace("###", "");
-											if (elementText.contains("@@")) {
-
-											} else {
-												if (elementText.contains("（")) {
-													elementText = elementText.split("（")[0].trim();
-												}
-												if (elementText.contains("(")) {
-													elementText = elementText.split("\\(")[0].trim();
-												}
-												if (elementText.contains("%")) {
-													elementText = elementText.split("%")[0].trim();
-												}
-											}
-											for (String propertyTemp : propertys) {
-												Set<String> propertyNameTemps = propertyNameRules
-														.get(tableName + "@@@" + propertyTemp);
-												for (String string : propertyNameTemps) {
-													string = replacekong(string);
-													string = string.replace("###", "");
-													if (elementText.equals(string)) {
-														isLeft = true;
-														Map<String, String> resultInfoMap = new HashMap<String, String>();
-														resultInfoMap.put("value",
-																leftThElement.select("td").get(1).text().trim());
-														resultInfoMap.put("tableName", tableName);
-														resultInfoMap.put("property", propertyTemp);
-														infoEntity.add(resultInfoMap);
-														break;
-													}
-
-												}
-
-											}
-
-										}
-										if (!isLeft) {
-											continue;
-										}
-										if (infoEntity.size() != 0) {
-											infoEntity.add(companyidMap);
-											// link
-											infoEntity.add(linkMap);
-											// pdfType
-											infoEntity.add(pdfTypeMap);
-											// 时间
-											infoEntity.add(timeMap);
-											// noticeId
-											infoEntity.add(noticeIdMap);
-											infoEntity.add(reportDateMap);
-											infoList.add(infoEntity);
-										}
-
+										fillLeftTypeTable(trElements, propertys, keyIndex, tableName, companyidMap,
+												linkMap, pdfTypeMap, timeMap, noticeIdMap, reportDateMap, infoList,
+												istop, propertyNameRules);
 										////////////////////////
 									} else {
 										istop = true;
 									}
-
 									if (istop) {
+										fillTopTypeTable(trElements, propertys, keyIndex, tableName, companyidMap,
+												linkMap, pdfTypeMap, timeMap, noticeIdMap, reportDateMap, infoList);
 
-										for (int j = 1; j < trElements.size(); j++) {
-											List<Map<String, String>> infoEntity = new ArrayList<Map<String, String>>();
-
-											Element trElement = trElements.get(j);
-											Elements tdElements = trElement.select("td");
-											if (tdElements.size() == 0) {
-												continue;
-											}
-											if (tdElements.first().text().isEmpty()
-													|| tdElements.first().text().equals("-")) {
-												continue;
-											}
-
-											for (String propertyTemp : propertys) {
-												if (keyIndex.get(propertyTemp) == null) {
-													continue;
-												}
-												int index = keyIndex.get(propertyTemp);
-												String value = tdElements.get(index).text().trim();
-												String unit = trElements.get(0).select("td").get(index).text().trim();
-												if (unit.contains("（元）") || unit.contains("(元)")) {
-													unit = "元";
-												} else if (unit.contains("（万元）") || unit.contains("(万元)")) {
-													unit = "万元";
-												} else if (unit.contains("（股）") || unit.contains("(股)")) {
-													unit = "股";
-												} else if (unit.contains("（万股）") || unit.contains("(万股)")) {
-													unit = "万股";
-												} else {
-													unit = "";
-												}
-												if (value.isEmpty()) {
-													continue;
-												}
-
-												Map<String, String> resultInfoMap = new HashMap<String, String>();
-												resultInfoMap.put("value", value + unit);
-												resultInfoMap.put("tableName", tableName);
-												resultInfoMap.put("property", propertyTemp);
-												infoEntity.add(resultInfoMap);
-											}
-											if (infoEntity.size() != 0) {
-												infoEntity.add(companyidMap);
-												// link
-												infoEntity.add(linkMap);
-												// pdfType
-												infoEntity.add(pdfTypeMap);
-												// 时间
-												infoEntity.add(timeMap);
-												// noticeId
-												infoEntity.add(noticeIdMap);
-												infoEntity.add(reportDateMap);
-												infoList.add(infoEntity);
-											}
-
-										}
 									}
 								}
 							}
@@ -753,6 +281,7 @@ public class PdfTemporary2Parser extends KfPdfParser {
 						}
 
 					}
+
 				}
 
 			}
@@ -763,5 +292,527 @@ public class PdfTemporary2Parser extends KfPdfParser {
 		}
 
 		return resultMap;
+	}
+
+	public void fillKeyIndex(Elements tdElments, Set<String> propertys, Map<String, Set<String>> propertyNameRules,
+			String tableName, Map<String, Integer> keyIndex, int i) {
+		for (int j = 0; j < tdElments.size(); j++) {
+			Element element = tdElments.get(j);
+			String elementText = element.text().trim();
+			elementText = replacekong(elementText);
+			elementText = elementText.replace("###", "");
+			if (elementText.contains("@@")) {
+
+			} else {
+				if (elementText.contains("（")) {
+					elementText = elementText.split("（")[0].trim();
+				}
+				if (elementText.contains("(")) {
+					elementText = elementText.split("\\(")[0].trim();
+				}
+				if (elementText.contains("%")) {
+					elementText = elementText.split("%")[0].trim();
+				}
+			}
+			for (String propertyTemp : propertys) {
+				Set<String> propertyNameTemps = propertyNameRules.get(tableName + "@@@" + propertyTemp);
+				// 属性的列表
+				for (String string : propertyNameTemps) {
+					string = replacekong(string);
+					string = string.replace("###", "");
+					if (elementText.isEmpty() && string.endsWith("#")) {
+						int keylength = string.length();
+						if (i == keylength - 1) {
+							keyIndex.put(propertyTemp, j);
+							break;
+						}
+					} else {
+						if (string.contains("@@")) {
+							String temp[] = string.split("@@");
+							boolean isAll = true;
+							for (String string2 : temp) {
+								if (!elementText.contains(string2)) {
+									isAll = false;
+									break;
+								}
+							}
+							if (isAll) {
+								keyIndex.put(propertyTemp, j);
+								break;
+							}
+
+						} else {
+							if (elementText.contains("@@")) {
+								String temp[] = elementText.split("@@");
+								String mm = temp[temp.length - 1];
+								if (mm.contains("（")) {
+									mm = mm.split("（")[0].trim();
+								}
+								if (mm.contains("(")) {
+									mm = mm.split("\\(")[0].trim();
+								}
+								if (mm.contains("%")) {
+									mm = elementText.split("%")[0].trim();
+								}
+								if (mm.trim().equals(string)) {
+									keyIndex.put(propertyTemp, j);
+									break;
+								}
+							} else {
+
+								if (elementText.equals(string)) {
+									keyIndex.put(propertyTemp, j);
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+
+	}
+
+	public boolean fillLeftTypeTable(Elements trElements, Set<String> propertys, Map<String, Integer> keyIndex,
+			String tableName, Map<String, String> companyidMap, Map<String, String> linkMap,
+			Map<String, String> pdfTypeMap, Map<String, String> timeMap, Map<String, String> noticeIdMap,
+			Map<String, String> reportDateMap, List<List<Map<String, String>>> infoList, boolean istop,
+			Map<String, Set<String>> propertyNameRules) {
+		istop = false;
+		boolean isLeft = false;
+		List<Map<String, String>> infoEntity = new ArrayList<Map<String, String>>();
+
+		for (int j = 0; j < trElements.size(); j++) {
+			Element leftThElement = trElements.get(j);
+			Element element = leftThElement.select("td").get(0);
+			String elementText = element.text().trim();
+			elementText = replacekong(elementText);
+			elementText = elementText.replace("###", "");
+			if (elementText.contains("@@")) {
+
+			} else {
+				if (elementText.contains("（")) {
+					elementText = elementText.split("（")[0].trim();
+				}
+				if (elementText.contains("(")) {
+					elementText = elementText.split("\\(")[0].trim();
+				}
+				if (elementText.contains("%")) {
+					elementText = elementText.split("%")[0].trim();
+				}
+			}
+			for (String propertyTemp : propertys) {
+				Set<String> propertyNameTemps = propertyNameRules.get(tableName + "@@@" + propertyTemp);
+				for (String string : propertyNameTemps) {
+					string = replacekong(string);
+					string = string.replace("###", "");
+					if (elementText.equals(string)) {
+						isLeft = true;
+						Map<String, String> resultInfoMap = new HashMap<String, String>();
+						resultInfoMap.put("value", leftThElement.select("td").get(1).text().trim());
+						resultInfoMap.put("tableName", tableName);
+						resultInfoMap.put("property", propertyTemp);
+						infoEntity.add(resultInfoMap);
+						break;
+					}
+
+				}
+
+			}
+
+		}
+		if (!isLeft) {
+
+		} else {
+			if (infoEntity.size() != 0) {
+				infoEntity.add(companyidMap);
+				// link
+				infoEntity.add(linkMap);
+				// pdfType
+				infoEntity.add(pdfTypeMap);
+				// 时间
+				infoEntity.add(timeMap);
+				// noticeId
+				infoEntity.add(noticeIdMap);
+				infoEntity.add(reportDateMap);
+				infoList.add(infoEntity);
+			}
+		}
+		return isLeft;
+
+	}
+
+	public void fillTopTypeTable(Elements trElements, Set<String> propertys, Map<String, Integer> keyIndex,
+			String tableName, Map<String, String> companyidMap, Map<String, String> linkMap,
+			Map<String, String> pdfTypeMap, Map<String, String> timeMap, Map<String, String> noticeIdMap,
+			Map<String, String> reportDateMap, List<List<Map<String, String>>> infoList) {
+		for (int j = 1; j < trElements.size(); j++) {
+			List<Map<String, String>> infoEntity = new ArrayList<Map<String, String>>();
+			Element trElement = trElements.get(j);
+			Elements tdElements = trElement.select("td");
+			if (tdElements.size() == 0) {
+				continue;
+			}
+			if (tdElements.first().text().isEmpty() || tdElements.first().text().equals("-")) {
+				continue;
+			}
+			for (String propertyTemp : propertys) {
+				if (keyIndex.get(propertyTemp) == null) {
+					continue;
+				}
+				int index = keyIndex.get(propertyTemp);
+				String value = tdElements.get(index).text().trim();
+				String unit = trElements.get(0).select("td").get(index).text().trim();
+				if (unit.contains("（元）") || unit.contains("(元)")) {
+					unit = "元";
+				} else if (unit.contains("（万元）") || unit.contains("(万元)")) {
+					unit = "万元";
+				} else if (unit.contains("（股）") || unit.contains("(股)")) {
+					unit = "股";
+				} else if (unit.contains("（万股）") || unit.contains("(万股)")) {
+					unit = "万股";
+				} else {
+					unit = "";
+				}
+				if (value.isEmpty()) {
+					continue;
+				}
+				Map<String, String> resultInfoMap = new HashMap<String, String>();
+				resultInfoMap.put("value", value + unit);
+				resultInfoMap.put("tableName", tableName);
+				resultInfoMap.put("property", propertyTemp);
+				infoEntity.add(resultInfoMap);
+			}
+			if (infoEntity.size() != 0) {
+				infoEntity.add(companyidMap);
+				// link
+				infoEntity.add(linkMap);
+				// pdfType
+				infoEntity.add(pdfTypeMap);
+				// 时间
+				infoEntity.add(timeMap);
+				// noticeId
+				infoEntity.add(noticeIdMap);
+				infoEntity.add(reportDateMap);
+				infoList.add(infoEntity);
+			}
+
+		}
+
+	}
+
+	public Element createNewtable(List<Element> result, String endText, Set<String> keyRules, boolean istop) {
+		Element resultTable = new Element(Tag.valueOf("table"), "");
+		if (result.size() == 1) {
+			Element element = result.get(0);
+			Elements trElements = element.select("tr");
+			for (Element trElement : trElements) {
+				resultTable.appendChild(trElement);
+			}
+		} else {
+			int firstIndex = 0;
+			int firstNum = 0;
+			// 如果有多个表格 ,排除掉不是需要的表格
+			for (int k = 0; k < result.size(); k++) {
+				Element element = result.get(k);
+				Elements trElements = element.select("tr");
+				// 判断有几行
+				// int row =
+				// trElements.size();
+				// 有几列
+				int col = 0;
+				for (int j = 0; j < trElements.size(); j++) {
+					Element trElement = trElements.get(j);
+					Elements tdElements = trElement.select("td,th");
+					if (col < tdElements.size()) {
+						col = tdElements.size();
+					}
+				}
+				if (trElements.size() == 0) {
+					continue;
+				}
+				Element firstElement = trElements.get(0);
+				Elements firtsTdElements = firstElement.select("td");
+				// 判断表头有几行
+				int titleNum = 1;
+				for (Element tdElement : firtsTdElements) {
+					String rowsStr = tdElement.attr("rowspan");
+					if (!rowsStr.isEmpty()) {
+						int rowInt = Integer.parseInt(rowsStr);
+						if (titleNum < rowInt) {
+							titleNum = rowInt;
+						}
+					}
+				}
+				// 如果是多行的表头,就合并一下，
+				if (titleNum > 1) {
+					// istop=true;
+				}
+				if (element.select("tr").size() == 0) {
+					continue;
+				}
+				// 多个表格怎么合并
+				Elements firstTdElements = element.select("tr").first().select("td");
+				int proNum = 0;
+				for (Element firstTdElement : firstTdElements) {
+					String elementText = firstTdElement.text();
+					elementText = replacekong(elementText);
+					elementText = elementText.replace("###", "");
+					for (String propertyname : keyRules) {
+						propertyname = replacekong(propertyname);
+						propertyname = propertyname.replace("###", "");
+						if (propertyname.contains("@@")) {
+							String propertyTemp[] = propertyname.split("@@");
+							boolean isExit = true;
+							for (String string : propertyTemp) {
+								if (elementText.contains(string)) {
+
+								} else {
+									isExit = false;
+								}
+							}
+							if (isExit) {
+								proNum++;
+								break;
+							}
+
+						} else {
+							if (elementText.contains(propertyname)) {
+								proNum++;
+								break;
+
+							}
+						}
+
+					}
+
+					if (proNum > firstNum) {
+						firstNum = proNum;
+						firstIndex = k;
+					}
+				}
+			}
+			if (firstNum > 1) {
+				istop = true;
+			}
+			Element firstTable = result.get(firstIndex);
+			Elements firstTrElements = firstTable.select("tr");
+			Elements firstTdElements = firstTrElements.first().select("td");
+
+			for (int k = firstIndex; k < result.size(); k++) {
+				Element element = result.get(k);
+				Elements trElements = element.select("tr");
+				if (istop) {
+					if (k > firstIndex) {
+						if (trElements.size() == 0) {
+							continue;
+						}
+						Element firstElement = trElements.get(0);
+						Elements firtsTdElements = firstElement.select("td");
+						// 判断表头有几行
+						int titleNum = 1;
+						for (Element tdElement : firtsTdElements) {
+							String rowsStr = tdElement.attr("rowspan");
+							if (!rowsStr.isEmpty()) {
+								int rowInt = Integer.parseInt(rowsStr);
+								if (titleNum < rowInt) {
+									titleNum = rowInt;
+								}
+							}
+						}
+						if (titleNum > 1) {
+							break;
+						}
+						if (trElements.size() == 1 && firtsTdElements.size() == 1) {
+							break;
+						}
+						element = new TableSpliter().splitTable(element, false, null);
+						trElements = element.select("tr");
+						Elements tdElements = trElements.first().select("td");
+						boolean isAppend = false;
+						int emptyNum = 0;
+						for (Element element2 : tdElements) {
+							if (element2.text().trim().contains("-") || element2.text().matches(".*\\d+.*")
+									|| element2.text().contains("�") || element2.text().trim().contains("_")) {
+								isAppend = true;
+								break;
+							} else if (element2.text().trim().isEmpty()) {
+								emptyNum++;
+							}
+						}
+						if (!isAppend) {
+							if (emptyNum > 1) {
+								isAppend = true;
+							}
+						}
+						if (!isAppend) {
+
+							boolean check = true;
+							for (int j = 0; j < tdElements.size(); j++) {
+								Element tdElement = tdElements.get(j);
+								Element firstTdElement = firstTdElements.get(j);
+								if (!tdElement.text().equals(firstTdElement.text())) {
+									check = false;
+									break;
+								}
+							}
+							if (check) {
+								isAppend = true;
+							}
+
+						}
+						//
+						if (isAppend) {
+							for (Element trElement : trElements) {
+								if (trElement.text().contains(endText)) {
+									break;
+								}
+								resultTable.appendChild(trElement);
+							}
+						} else {
+							// 结束
+							break;
+						}
+					} else {
+						element = new TableSpliter().splitTable(element, false, null);
+						trElements = element.select("tr");
+						// 是表头的那个表
+						for (Element trElement : trElements) {
+							if (trElement.text().contains(endText)) {
+								break;
+							}
+							resultTable.appendChild(trElement);
+						}
+					}
+				} else {
+					// 是LEFT 方式提取
+					for (Element trElement : trElements) {
+						if (trElement.text().contains(endText)) {
+							break;
+						}
+						resultTable.appendChild(trElement);
+					}
+				}
+			}
+
+		}
+		return resultTable;
+
+	}
+
+	public List<Element> fillResult(Elements pElements, String pdfType, List<String> begins, List<String> ends,
+			String preText, String endText) {
+		int preIndex = 0;
+		int endIndex = pElements.size();
+		LinkedHashMap<Integer, Integer> indexs = new LinkedHashMap<Integer, Integer>();
+		for (int j = 0; j < pElements.size(); j++) {
+			Element pElement = pElements.get(j);
+			if (pElement.tagName().equals("p")) {
+				String pText = pElement.text();
+				if (pdfType.contains("负债表") || pdfType.contains("利润表") || pdfType.contains("现金流量表")) {
+
+					if (pText.contains("续") || pText.contains("表主要数据") || pText.contains("表项目变动分析表")
+							|| pText.contains("表日后事项")) {
+						continue;
+					}
+					for (String finance : finances) {
+						if (pText.contains(finance)) {
+							if (begins.contains(finance)) {
+								if (preIndex < endIndex) {
+									preIndex = j;
+								}
+								break;
+							}
+							if (ends.contains(finance)) {
+								if (preIndex == 0) {
+									continue;
+								}
+								if (j > endIndex && endIndex > preIndex) {
+									continue;
+								}
+								endIndex = j;
+								if (preIndex == endIndex) {
+									continue;
+								}
+								indexs.put(preIndex, endIndex);
+								break;
+							}
+
+						}
+
+					}
+
+				} else {
+					if (pText.contains(endText)) {
+						if (preIndex == 0) {
+							continue;
+						}
+						if (j > endIndex && endIndex > preIndex) {
+							continue;
+						}
+						endIndex = j;
+						indexs.put(preIndex, endIndex);
+					}
+					if (preIndex < endIndex && pText.contains(preText)) {
+						preIndex = j;
+					}
+				}
+			}
+		}
+		Element newBody = new Element(Tag.valueOf("div"), "");
+		Elements chlidElements = pElements;
+		if (chlidElements.size() == 0) {
+			return null;
+		}
+		List<Element> result = new ArrayList<Element>();
+
+		if (indexs.size() > 1) {
+			Iterator<Integer> indexIterator = indexs.keySet().iterator();
+			int k = 0;
+			while (indexIterator.hasNext()) {
+				int key = indexIterator.next();
+				int value = indexs.get(key);
+				if (value - key > 50) {
+					indexIterator.remove();
+					indexs.remove(key);
+					continue;
+				}
+				if (k == 0 && pdfType.contains("母公司")) {
+					indexIterator.remove();
+					indexs.remove(key);
+				}
+				if (k == 1 && pdfType.contains("合并")) {
+					indexIterator.remove();
+					indexs.remove(key);
+				}
+				k++;
+
+			}
+		} else {
+			// if (pdfType.contains("母公司") &&
+			// preText.contains("母公司")) {
+			// continue;
+			// }
+		}
+		Set<Integer> preIndexs = indexs.keySet();
+		for (Integer preIn : preIndexs) {
+			int endIn = indexs.get(preIn);
+			if (endIn - preIn > 50) {
+				continue;
+			}
+			for (int j = preIn; j <= endIn; j++) {
+				Element childElement = chlidElements.get(j);
+				newBody.appendChild(childElement);
+			}
+		}
+		Elements childElements = newBody.children();
+		for (Element element : childElements) {
+			if (element.tagName().equals("table")) {
+				result.add(element);
+			}
+		}
+		return result;
+
 	}
 }

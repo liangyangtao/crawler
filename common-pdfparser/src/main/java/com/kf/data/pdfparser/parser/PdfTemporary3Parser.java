@@ -130,7 +130,9 @@ public class PdfTemporary3Parser extends KfPdfParser {
 									endIndex = j;
 									indexs.put(preIndex, endIndex);
 								}
-								if (pText.contains(preText)) {
+								if (pText.equals(preText)) {
+									preIndex = j;
+								} else if (pText.contains(preText)) {
 									for (String string : titleTags) {
 										if (pText.contains(string)) {
 											if (preIndex < endIndex) {

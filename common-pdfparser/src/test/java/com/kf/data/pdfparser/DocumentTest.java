@@ -23,20 +23,20 @@ import com.kf.data.pdfparser.es.PdfReportTextReader;
 public class DocumentTest {
 
 	public static void main(String[] args) {
-//		String url = "https://static.kaifengdata.com/neeq/1d378815cdf19b7c6b5f9e28d3de61e8/[定期报告]迈得医疗_2017年半年度报告.pdf.html";
-//		url = changeHanzi(url);
-//		String html = Fetcher.getInstance().get(url);
+		String url = "https://static.kaifengdata.com/neeq/dfb0c010cd00b6ba47234f4e4ed34c93/[%E5%AE%9A%E6%9C%9F%E6%8A%A5%E5%91%8A]%E6%B5%99%E6%B1%9F%E5%A4%A7%E5%86%9C_2017%E5%B9%B4%E5%8D%8A%E5%B9%B4%E5%BA%A6%E6%8A%A5%E5%91%8A.pdf.html";
+		url = changeHanzi(url);
+		String html = Fetcher.getInstance().get(url);
+		Document document = Jsoup.parse(html);
+//		KfConstant.init();
+//		List<PdfLinkEsEntity> pdfLinkEsEntities = new PdfReportTextReader().readPdfLinkInEsByNoticId(2670640);
+//		String html = pdfLinkEsEntities.get(0).getContent();
 //		Document document = Jsoup.parse(html);
-		KfConstant.init();
-		List<PdfLinkEsEntity> pdfLinkEsEntities = new PdfReportTextReader().readPdfLinkInEsByNoticId(2670640);
-		String html = pdfLinkEsEntities.get(0).getContent();
-//		Document document = Jsoup.parse(html);
-//		document = new DocumentSimpler().simpleDocument(document);
+		document = new DocumentSimpler().simpleDocument(document);
 		File file = new File("C:\\Users\\meidi\\Desktop\\re.html");
 		try {
 			PrintWriter pw = new PrintWriter(new FileWriter(file));
 			pw.print("<html><head><meta charset=\"utf-8\"></head>");
-			pw.print(html.toString());
+			pw.print(document.toString());
 			pw.print("</html>");
 			pw.close();
 		} catch (Exception e) {
