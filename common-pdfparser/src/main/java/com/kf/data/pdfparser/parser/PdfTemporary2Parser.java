@@ -294,6 +294,16 @@ public class PdfTemporary2Parser extends KfPdfParser {
 		return resultMap;
 	}
 
+	/***
+	 * 找到数据对应的列
+	 * 
+	 * @param tdElments
+	 * @param propertys
+	 * @param propertyNameRules
+	 * @param tableName
+	 * @param keyIndex
+	 * @param i
+	 */
 	public void fillKeyIndex(Elements tdElments, Set<String> propertys, Map<String, Set<String>> propertyNameRules,
 			String tableName, Map<String, Integer> keyIndex, int i) {
 		for (int j = 0; j < tdElments.size(); j++) {
@@ -374,6 +384,24 @@ public class PdfTemporary2Parser extends KfPdfParser {
 
 	}
 
+	/****
+	 * 解析 left 方式的表格
+	 * 
+	 * @param trElements
+	 * @param propertys
+	 * @param keyIndex
+	 * @param tableName
+	 * @param companyidMap
+	 * @param linkMap
+	 * @param pdfTypeMap
+	 * @param timeMap
+	 * @param noticeIdMap
+	 * @param reportDateMap
+	 * @param infoList
+	 * @param istop
+	 * @param propertyNameRules
+	 * @return
+	 */
 	public boolean fillLeftTypeTable(Elements trElements, Set<String> propertys, Map<String, Integer> keyIndex,
 			String tableName, Map<String, String> companyidMap, Map<String, String> linkMap,
 			Map<String, String> pdfTypeMap, Map<String, String> timeMap, Map<String, String> noticeIdMap,
@@ -443,6 +471,22 @@ public class PdfTemporary2Parser extends KfPdfParser {
 
 	}
 
+	/***
+	 * 解析 top 方式的表格
+	 * 
+	 * @param trElements
+	 * @param propertys
+	 * @param keyIndex
+	 * @param tableName
+	 * @param companyidMap
+	 * @param linkMap
+	 * @param pdfTypeMap
+	 * @param timeMap
+	 * @param noticeIdMap
+	 * @param reportDateMap
+	 * @param infoList
+	 */
+
 	public void fillTopTypeTable(Elements trElements, Set<String> propertys, Map<String, Integer> keyIndex,
 			String tableName, Map<String, String> companyidMap, Map<String, String> linkMap,
 			Map<String, String> pdfTypeMap, Map<String, String> timeMap, Map<String, String> noticeIdMap,
@@ -502,6 +546,15 @@ public class PdfTemporary2Parser extends KfPdfParser {
 
 	}
 
+	/****
+	 * 找到需要解析的表格
+	 * 
+	 * @param result
+	 * @param endText
+	 * @param keyRules
+	 * @param istop
+	 * @return
+	 */
 	public Element createNewtable(List<Element> result, String endText, Set<String> keyRules, boolean istop) {
 		Element resultTable = new Element(Tag.valueOf("table"), "");
 		if (result.size() == 1) {
@@ -701,6 +754,17 @@ public class PdfTemporary2Parser extends KfPdfParser {
 
 	}
 
+	/****
+	 * 判读表格的位置
+	 * 
+	 * @param pElements
+	 * @param pdfType
+	 * @param begins
+	 * @param ends
+	 * @param preText
+	 * @param endText
+	 * @return
+	 */
 	public List<Element> fillResult(Elements pElements, String pdfType, List<String> begins, List<String> ends,
 			String preText, String endText) {
 		int preIndex = 0;

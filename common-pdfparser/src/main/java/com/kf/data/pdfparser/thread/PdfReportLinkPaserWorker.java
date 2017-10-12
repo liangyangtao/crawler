@@ -22,7 +22,7 @@ import com.kf.data.pdfparser.parser.KfPdfParser;
 /**
  * @Title: PdfLinkPaserWorker.java
  * @Package com.kf.data.web.task.thread
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 解析pdf
  * @author liangyt
  * @date 2017年5月11日 下午5:09:30
  * @version V1.0

@@ -17,7 +17,7 @@ public class TableMegTest {
 			Document document = Jsoup.parse(in, "gbk");
             Element table =new TableRepairer().repairTable(document);
             System.out.println(table);
-			System.out.println(new TableSpliter().splitTable(table, false, null));
+//			System.out.println(new TableSpliter().splitTable(table, false, null));
 			
 		} catch (Exception e) {
 			// TODO: handle exception

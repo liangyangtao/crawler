@@ -20,16 +20,17 @@ public class ParserTest {
 
 	public static void main(String[] args) {
 		KfConstant.init();
-//		List<PdfLinkEsEntity> pdfLinkEsEntities = new PdfReportTextReader().readPdfLinkInEsByNoticId(1627189);
-//		String html = pdfLinkEsEntities.get(0).getContent();
+		// List<PdfLinkEsEntity> pdfLinkEsEntities = new
+		// PdfReportTextReader().readPdfLinkInEsByNoticId(1627189);
+		// String html = pdfLinkEsEntities.get(0).getContent();
 
-		String url ="https://static.kaifengdata.com/neeq/ce0562dc2f96cf5935eca91530dd699f/2168617.pdf.html";
+		String url = "https://static.kaifengdata.com/neeq/bee28cfc351f109a8b7c575e37380433/[%E5%AE%9A%E6%9C%9F%E6%8A%A5%E5%91%8A]%E9%91%AB%E9%B9%B0%E7%A7%91%E6%8A%80%202017%E5%B9%B4%E5%8D%8A%E5%B9%B4%E5%BA%A6%E6%8A%A5%E5%91%8A.pdf.html";
 		String chagelink = changeHanzi(url);
 		String html = Fetcher.getInstance().get(chagelink);
 		Document document = Jsoup.parse(html);
 		document = new DocumentSimpler().simpleDocument(document);
 		PdfCodeTable pdfCodeTable = new PdfCodeTable();
-		pdfCodeTable.setPdfType("半年报_公司基本信息");
+		pdfCodeTable.setPdfType("半年报_核心员工以及核心技术人员");
 		PdfReportLinks pdfReportLinks = new PdfReportLinks();
 		System.out.println(new KfPdfParser().parserPdfHtmlByPdfTypeAndLink(pdfCodeTable, pdfReportLinks, document));
 

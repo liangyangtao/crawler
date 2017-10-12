@@ -1,6 +1,7 @@
 <root>
 	<serverip>http://101.201.111.214:8097/company/getNeeqComapny</serverip>
-	<saveJsonIp></saveJsonIp>
+	<saveJsonIp>1</saveJsonIp>
+	<minaServerIp>127.0.0.1</minaServerIp>
 	<esClusterName>kaifengdata</esClusterName>
 	<esPort>9300</esPort>
 	<esUrl>10.27.32.236</esUrl>

@@ -30,7 +30,10 @@
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.mina</groupId>
+			<artifactId>mina-core</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.kf.data</groupId>
 			<artifactId>common-fetcher</artifactId>

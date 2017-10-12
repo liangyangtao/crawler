@@ -24,6 +24,12 @@ import net.sf.json.JSONObject;
 public class DynamicDataStore {
 	BaseDao baseDao = new BaseDao();
 
+	/****
+	 * 保存数据
+	 * 
+	 * @param json
+	 * @param temppdfType
+	 */
 	public void doStore(String json, String temppdfType) {
 
 		JSONObject results = JSONObject.fromObject(json);
