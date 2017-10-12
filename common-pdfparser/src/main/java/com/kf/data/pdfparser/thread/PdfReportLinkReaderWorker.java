@@ -15,7 +15,7 @@ import com.kf.data.pdfparser.jdbc.PdfReportLinksWriter;
 /**
  * @Title: PdfLinkReaderWorker.java
  * @Package com.kf.data.web.task.thread
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 从数据库中读取要解析的链接
  * @author liangyt
  * @date 2017年5月11日 下午5:09:37
  * @version V1.0

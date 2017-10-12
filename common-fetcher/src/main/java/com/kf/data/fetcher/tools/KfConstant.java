@@ -27,6 +27,8 @@ public class KfConstant {
 
 	public static String saveJsonIp = "";
 
+	public static String minaServerIp = "";
+
 	public KfConstant() {
 		super();
 		init();
@@ -50,8 +52,8 @@ public class KfConstant {
 				esUrl = doc.getElementsByTagName("esUrl").item(i).getFirstChild().getNodeValue().trim();
 				esIndexName = doc.getElementsByTagName("esIndexName").item(i).getFirstChild().getNodeValue().trim();
 				esDataType = doc.getElementsByTagName("esDataType").item(i).getFirstChild().getNodeValue().trim();
-
 				saveJsonIp = doc.getElementsByTagName("saveJsonIp").item(i).getFirstChild().getNodeValue();
+				minaServerIp = doc.getElementsByTagName("minaServerIp").item(i).getFirstChild().getNodeValue();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

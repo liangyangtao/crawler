@@ -224,7 +224,8 @@ public class TableRepairer {
 						}
 						break;
 
-					} else if (iStyle.contains("border-right:none") && style.contains("border:none;")) {
+					} else if (iStyle.contains("border-right:none") && style.contains("border:none;")
+							&& !style.contains("border-left:solid")) {
 
 						// 跨了好几个列
 						String tempStyle = nextTdElement.attr("style");
@@ -271,7 +272,8 @@ public class TableRepairer {
 						newTrElement.appendChild(newTdElement);
 						break;
 
-					} else if (iStyle.contains("border:none") && style.contains("border:none")) {
+					} else if (iStyle.contains("border:none") && !iStyle.contains("border-right:solid")
+							&& style.contains("border:none") && !style.contains("border-left:solid")) {
 
 						// 跨了好几个列
 						String tempStyle = nextTdElement.attr("style");
@@ -322,7 +324,8 @@ public class TableRepairer {
 						newTdElement.text(textBuffer.toString());
 						newTrElement.appendChild(newTdElement);
 						break;
-					} else if (iStyle.contains("border:none") && !style.contains("border:none")) {
+					} else if (iStyle.contains("border:none") && !iStyle.contains("border-right:solid")
+							&& (!style.contains("border-left:solid") || !style.contains("border:none"))) {
 						width = width + Integer.parseInt(nextTdElement.attr("width"));
 						j++;
 						newTdElement.attr("width", width + "");
@@ -455,7 +458,9 @@ public class TableRepairer {
 				Element nextRowTd = nextRowTdElements.get(nextColIndex);
 				int nextRowWidth = Integer.parseInt(nextRowTd.attr("width"));
 				if (width == nextRowWidth) {
-					if (nextRowTd.text().isEmpty() && nextRowTdElements.size() > tdElements.size()) {
+					String nextRowTdText = nextRowTd.text();
+					nextRowTdText = replacekong(nextRowTdText);
+					if (nextRowTdText.isEmpty() && nextRowTdElements.size() > tdElements.size()) {
 						if (tdElement.hasAttr("rowspan")) {
 							tdElement.attr("rowspan", (Integer.parseInt(tdElement.attr("rowspan")) + 1) + "");
 						} else {
@@ -555,7 +560,9 @@ public class TableRepairer {
 					continue;
 				}
 			}
-			if (trElement.text().trim().isEmpty()) {
+			String trText = trElement.text().trim();
+			trText = replacekong(trText);
+			if (trText.isEmpty()) {
 				if (i - 1 >= 0) {
 					Element preTrElement = trElements.get(i - 1);
 					Elements tdElements = preTrElement.select("td");
@@ -636,11 +643,11 @@ public class TableRepairer {
 	 * @param preEnd
 	 * @return
 	 */
-	// public String replacekong(String text) {
-	// text = text.replace(" ", "");
-	// text = text.replace(" ", "");
-	// text = text.replace(" ", "");
-	// text = text.replace(" ", "");
-	// return text;
-	// }
+	public String replacekong(String text) {
+		text = text.replace(" ", "");
+		text = text.replace(" ", "");
+		text = text.replace(" ", "");
+		text = text.replace(" ", "");
+		return text;
+	}
 }

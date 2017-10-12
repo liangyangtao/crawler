@@ -63,58 +63,36 @@ public class KfPdfParser {
 			// 读取所有某个类别下的所有解析规则
 			List<PdfCodeTemporary> pdfCodeTemporarys = pdfCodeTemporaryReader
 					.readerPdfCodeTemporaryByPdfType(pdfCodeTable.getPdfType());
-			String pdfType = pdfCodeTable.getPdfType();
-			if (pdfType.startsWith("半年报")) {
-				pdfType = pdfType.replace("半年报", "年报");
-				pdfCodeTemporarys.addAll(pdfCodeTemporaryReader.readerPdfCodeTemporaryByPdfType(pdfType));
-			}
-			if (pdfCodeTemporarys.size() == 0) {
-				resultMap.put("state", "error");
-			} else {
-				/////////////////////////////////////////
-				List<PdfCodeTemporary> pdfCodeTemporarys1 = new ArrayList<PdfCodeTemporary>();
-				List<PdfCodeTemporary> pdfCodeTemporarys2 = new ArrayList<PdfCodeTemporary>();
-				List<PdfCodeTemporary> pdfCodeTemporarys3 = new ArrayList<PdfCodeTemporary>();
-				List<PdfCodeTemporary> pdfCodeTemporarys4 = new ArrayList<PdfCodeTemporary>();
-				for (PdfCodeTemporary pdfCodeTemporary : pdfCodeTemporarys) {
-					if (pdfCodeTemporary.getCodeType() == 1) {
-						pdfCodeTemporarys1.add(pdfCodeTemporary);
-					} else if (pdfCodeTemporary.getCodeType() == 2) {
-						pdfCodeTemporarys2.add(pdfCodeTemporary);
-					} else if (pdfCodeTemporary.getCodeType() == 3) {
-						pdfCodeTemporarys3.add(pdfCodeTemporary);
-					} else if (pdfCodeTemporary.getCodeType() == 4) {
-						pdfCodeTemporarys4.add(pdfCodeTemporary);
+			if (pdfCodeTemporarys.size() > 0) {
+				resultMap = parserPdfHtmlByTemporary(pdfCodeTemporarys, pdfCodeTable, pdfReportLinks, document);
+				if (resultMap.size() == 0) {
+					String pdfType = pdfCodeTable.getPdfType();
+					if (pdfType.startsWith("半年报")) {
+						pdfType = pdfType.replace("半年报", "年报");
+						pdfCodeTemporarys = pdfCodeTemporaryReader.readerPdfCodeTemporaryByPdfType(pdfType);
+						resultMap = parserPdfHtmlByTemporary(pdfCodeTemporarys, pdfCodeTable, pdfReportLinks, document);
+					}
+				} else {
+					List<List<Map<String, String>>> infoList = (List<List<Map<String, String>>>) resultMap.get("info");
+					if (infoList.size() == 0) {
+						String pdfType = pdfCodeTable.getPdfType();
+						if (pdfType.startsWith("半年报")) {
+							pdfType = pdfType.replace("半年报", "年报");
+							pdfCodeTemporarys = pdfCodeTemporaryReader.readerPdfCodeTemporaryByPdfType(pdfType);
+							resultMap = parserPdfHtmlByTemporary(pdfCodeTemporarys, pdfCodeTable, pdfReportLinks,
+									document);
+						}
 					}
 				}
-				if (pdfCodeTemporarys1.size() > 0) {
-					resultMap = new PdfTemporary1Parser().parserDocument(pdfCodeTable, pdfReportLinks, document,
-							pdfCodeTemporarys1);
+			} else {
+				String pdfType = pdfCodeTable.getPdfType();
+				if (pdfType.startsWith("半年报")) {
+					pdfType = pdfType.replace("半年报", "年报");
+					pdfCodeTemporarys = pdfCodeTemporaryReader.readerPdfCodeTemporaryByPdfType(pdfType);
+					resultMap = parserPdfHtmlByTemporary(pdfCodeTemporarys, pdfCodeTable, pdfReportLinks, document);
 				}
-				if (pdfCodeTemporarys2.size() > 0) {
-					resultMap = new PdfTemporary2Parser().parserDocument(pdfCodeTable, pdfReportLinks, document,
-							pdfCodeTemporarys2);
-				}
-				if (pdfCodeTemporarys3.size() > 0) {
-					resultMap = new PdfTemporary3Parser().parserDocument(pdfCodeTable, pdfReportLinks, document,
-							pdfCodeTemporarys3);
-				}
-				if (pdfCodeTemporarys4.size() > 0) {
-					resultMap = new PdfTemporary4Parser().parserDocument(pdfCodeTable, pdfReportLinks, document,
-							pdfCodeTemporarys4);
-				}
-				pdfCodeTemporarys1.clear();
-				pdfCodeTemporarys1 = null;
-				pdfCodeTemporarys2.clear();
-				pdfCodeTemporarys2 = null;
-				pdfCodeTemporarys3.clear();
-				pdfCodeTemporarys3 = null;
-				pdfCodeTemporarys4.clear();
-				pdfCodeTemporarys4 = null;
 
 			}
-			pdfCodeTemporarys.clear();
-			pdfCodeTemporarys = null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -122,6 +100,145 @@ public class KfPdfParser {
 		return objectToJson(resultMap);
 
 	}
+
+	/***
+	 * 
+	 * @param pdfCodeTemporarys
+	 * @param resultMap
+	 * @param pdfCodeTable
+	 * @param pdfReportLinks
+	 * @param document
+	 */
+	private Map<String, Object> parserPdfHtmlByTemporary(List<PdfCodeTemporary> pdfCodeTemporarys,
+			PdfCodeTable pdfCodeTable, PdfReportLinks pdfReportLinks, Document document) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		if (pdfCodeTemporarys.size() > 0) {
+			/////////////////////////////////////////
+			List<PdfCodeTemporary> pdfCodeTemporarys1 = new ArrayList<PdfCodeTemporary>();
+			List<PdfCodeTemporary> pdfCodeTemporarys2 = new ArrayList<PdfCodeTemporary>();
+			List<PdfCodeTemporary> pdfCodeTemporarys3 = new ArrayList<PdfCodeTemporary>();
+			List<PdfCodeTemporary> pdfCodeTemporarys4 = new ArrayList<PdfCodeTemporary>();
+			for (PdfCodeTemporary pdfCodeTemporary : pdfCodeTemporarys) {
+				if (pdfCodeTemporary.getCodeType() == 1) {
+					pdfCodeTemporarys1.add(pdfCodeTemporary);
+				} else if (pdfCodeTemporary.getCodeType() == 2) {
+					pdfCodeTemporarys2.add(pdfCodeTemporary);
+				} else if (pdfCodeTemporary.getCodeType() == 3) {
+					pdfCodeTemporarys3.add(pdfCodeTemporary);
+				} else if (pdfCodeTemporary.getCodeType() == 4) {
+					pdfCodeTemporarys4.add(pdfCodeTemporary);
+				}
+			}
+			if (pdfCodeTemporarys1.size() > 0) {
+				resultMap = new PdfTemporary1Parser().parserDocument(pdfCodeTable, pdfReportLinks, document,
+						pdfCodeTemporarys1);
+			}
+			if (pdfCodeTemporarys2.size() > 0) {
+				resultMap = new PdfTemporary2Parser().parserDocument(pdfCodeTable, pdfReportLinks, document,
+						pdfCodeTemporarys2);
+			}
+			if (pdfCodeTemporarys3.size() > 0) {
+				resultMap = new PdfTemporary3Parser().parserDocument(pdfCodeTable, pdfReportLinks, document,
+						pdfCodeTemporarys3);
+			}
+			if (pdfCodeTemporarys4.size() > 0) {
+				resultMap = new PdfTemporary4Parser().parserDocument(pdfCodeTable, pdfReportLinks, document,
+						pdfCodeTemporarys4);
+			}
+			pdfCodeTemporarys1.clear();
+			pdfCodeTemporarys1 = null;
+			pdfCodeTemporarys2.clear();
+			pdfCodeTemporarys2 = null;
+			pdfCodeTemporarys3.clear();
+			pdfCodeTemporarys3 = null;
+			pdfCodeTemporarys4.clear();
+			pdfCodeTemporarys4 = null;
+			pdfCodeTemporarys.clear();
+			pdfCodeTemporarys = null;
+
+		}
+		return resultMap;
+
+	}
+
+	// public String parserPdfHtmlByPdfTypeAndLinkbak(PdfCodeTable pdfCodeTable,
+	// PdfReportLinks pdfReportLinks,
+	// Document document) {
+	// if (pdfReportLinks.getReportDate() == null) {
+	// pdfReportLinks.setReportDate(new Date());
+	// }
+	// Map<String, Object> resultMap = new HashMap<String, Object>();
+	// try {
+	// // 读取所有某个类别下的所有解析规则
+	// List<PdfCodeTemporary> pdfCodeTemporarys = pdfCodeTemporaryReader
+	// .readerPdfCodeTemporaryByPdfType(pdfCodeTable.getPdfType());
+	// String pdfType = pdfCodeTable.getPdfType();
+	// if (pdfType.startsWith("半年报")) {
+	// pdfType = pdfType.replace("半年报", "年报");
+	// pdfCodeTemporarys.addAll(pdfCodeTemporaryReader.readerPdfCodeTemporaryByPdfType(pdfType));
+	// }
+	// if (pdfCodeTemporarys.size() == 0) {
+	// resultMap.put("state", "error");
+	// } else {
+	// /////////////////////////////////////////
+	// List<PdfCodeTemporary> pdfCodeTemporarys1 = new
+	// ArrayList<PdfCodeTemporary>();
+	// List<PdfCodeTemporary> pdfCodeTemporarys2 = new
+	// ArrayList<PdfCodeTemporary>();
+	// List<PdfCodeTemporary> pdfCodeTemporarys3 = new
+	// ArrayList<PdfCodeTemporary>();
+	// List<PdfCodeTemporary> pdfCodeTemporarys4 = new
+	// ArrayList<PdfCodeTemporary>();
+	// for (PdfCodeTemporary pdfCodeTemporary : pdfCodeTemporarys) {
+	// if (pdfCodeTemporary.getCodeType() == 1) {
+	// pdfCodeTemporarys1.add(pdfCodeTemporary);
+	// } else if (pdfCodeTemporary.getCodeType() == 2) {
+	// pdfCodeTemporarys2.add(pdfCodeTemporary);
+	// } else if (pdfCodeTemporary.getCodeType() == 3) {
+	// pdfCodeTemporarys3.add(pdfCodeTemporary);
+	// } else if (pdfCodeTemporary.getCodeType() == 4) {
+	// pdfCodeTemporarys4.add(pdfCodeTemporary);
+	// }
+	// }
+	// if (pdfCodeTemporarys1.size() > 0) {
+	// resultMap = new PdfTemporary1Parser().parserDocument(pdfCodeTable,
+	// pdfReportLinks, document,
+	// pdfCodeTemporarys1);
+	// }
+	// if (pdfCodeTemporarys2.size() > 0) {
+	// resultMap = new PdfTemporary2Parser().parserDocument(pdfCodeTable,
+	// pdfReportLinks, document,
+	// pdfCodeTemporarys2);
+	// }
+	// if (pdfCodeTemporarys3.size() > 0) {
+	// resultMap = new PdfTemporary3Parser().parserDocument(pdfCodeTable,
+	// pdfReportLinks, document,
+	// pdfCodeTemporarys3);
+	// }
+	// if (pdfCodeTemporarys4.size() > 0) {
+	// resultMap = new PdfTemporary4Parser().parserDocument(pdfCodeTable,
+	// pdfReportLinks, document,
+	// pdfCodeTemporarys4);
+	// }
+	// pdfCodeTemporarys1.clear();
+	// pdfCodeTemporarys1 = null;
+	// pdfCodeTemporarys2.clear();
+	// pdfCodeTemporarys2 = null;
+	// pdfCodeTemporarys3.clear();
+	// pdfCodeTemporarys3 = null;
+	// pdfCodeTemporarys4.clear();
+	// pdfCodeTemporarys4 = null;
+	//
+	// }
+	// pdfCodeTemporarys.clear();
+	// pdfCodeTemporarys = null;
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	//
+	// return objectToJson(resultMap);
+	//
+	// }
 
 	public String formatvalue(String result2) {
 		result2 = result2.replace("###", " ");
