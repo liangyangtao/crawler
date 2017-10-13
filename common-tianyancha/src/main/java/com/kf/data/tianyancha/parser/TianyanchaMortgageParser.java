@@ -76,8 +76,17 @@ public class TianyanchaMortgageParser extends TianyanchaBasePaser {
 						} catch (Exception e) {
 							// TODO: handle exception
 						}
-						String debt_term = baseInfo.getString("overviewTerm");// 债务人履行债务期限
-						String register_number = baseInfo.getString("regNum");// 登记编号
+						String debt_term = null;
+						try {
+							debt_term = baseInfo.getString("overviewTerm");// 债务人履行债务期限
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+						String register_number = null;
+						try {
+							register_number = baseInfo.getString("regNum");// 登记编号
+						} catch (Exception e) {
+						}
 						TycCompanyChattelMortgageCrawler tycCompanyChattelMortgage = new TycCompanyChattelMortgageCrawler();
 						tycCompanyChattelMortgage
 								.setCreditGuaranteedAmt(ReportDataFormat.bigUnitChange(credit_guaranteed_amt));
