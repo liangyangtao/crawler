@@ -51,7 +51,11 @@ public class TianyanchaYearReportParser extends TianyanchaBasePaser {
 					String name = null;
 					Double ratio = null;
 					name = tdElements.get(0).text().trim();
-					moneyChar = tdElements.get(4).text().trim() + "万";
+					moneyChar = tdElements.get(4).text();
+					moneyChar = moneyChar.replace("万", "");
+					moneyChar = moneyChar.replace("元", "");
+					moneyChar = moneyChar.replace("人民币", "");
+					moneyChar = moneyChar.trim() + "万";
 					TycCompanyShareholdersContributiveCrawler tycCompanyShareholdersContributive = new TycCompanyShareholdersContributiveCrawler();
 					tycCompanyShareholdersContributive.setCompanyId(companyId);
 					tycCompanyShareholdersContributive.setCompanyName(companyName);

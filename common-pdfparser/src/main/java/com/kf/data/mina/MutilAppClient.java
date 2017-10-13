@@ -16,7 +16,6 @@ public class MutilAppClient {
 
 	public static void main(String[] args) {
 		KfConstant.init();
-		TLSClinet tLSClinet = new TLSClinet();
-		tLSClinet.paser();
+		new TLSClinet();
 	}
 }

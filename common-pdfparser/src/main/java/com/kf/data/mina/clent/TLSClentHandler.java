@@ -1,7 +1,6 @@
 package com.kf.data.mina.clent;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +10,7 @@ import org.apache.mina.core.session.IoSession;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kf.data.mybatis.entity.PdfReportLinks;
+import com.kf.data.pdfparser.parser.PdfReportLinkPaser;
 
 /***
  * 
@@ -25,15 +25,12 @@ public class TLSClentHandler extends IoHandlerAdapter {
 
 	private static Log logger = LogFactory.getLog(TLSClentHandler.class);
 	Gson gson = new GsonBuilder().create();
-	private LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue;
-
-	public TLSClentHandler(LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue) {
-		this.pdfcodeLinkQueue = pdfcodeLinkQueue;
-	}
+	PdfReportLinkPaser pdfReportLinkPaser = new PdfReportLinkPaser();
 
 	@Override
 	public void sessionCreated(IoSession session) throws Exception {
 		logger.info("与服务器建立连接");
+		session.write("SEND");
 	}
 
 	@Override
@@ -55,17 +52,13 @@ public class TLSClentHandler extends IoHandlerAdapter {
 	 */
 	@Override
 	public void messageReceived(IoSession session, Object message) throws Exception {
-		logger.info("接收到消息" + message);
+		// logger.info("接收到消息" + message);
 		if (message instanceof Integer) {
 		} else if (message instanceof String) {
+			String temp = (String) message;
 			try {
-				PdfReportLinks pdfReportLinks = gson.fromJson((String) message, PdfReportLinks.class);
-				pdfcodeLinkQueue.add(pdfReportLinks);
-				if (pdfcodeLinkQueue.size() > 2000) {
-					session.write("STOP");
-				} else if (pdfcodeLinkQueue.size() < 100) {
-					session.write("START");
-				}
+				PdfReportLinks pdfReportLinks = gson.fromJson(temp, PdfReportLinks.class);
+				pdfReportLinkPaser.parserPdfReportLinks(pdfReportLinks);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

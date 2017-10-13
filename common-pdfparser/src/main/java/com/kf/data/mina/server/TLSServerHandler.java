@@ -25,7 +25,6 @@ public class TLSServerHandler extends IoHandlerAdapter {
 	static Log logger = LogFactory.getLog(TLSServerHandler.class);
 	static List<IoSession> sessions = Collections.synchronizedList(new ArrayList<IoSession>());
 	static AtomicInteger atomicInteger = new AtomicInteger(0);
-	static boolean isSend = true;
 
 	@Override
 	public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
@@ -57,13 +56,6 @@ public class TLSServerHandler extends IoHandlerAdapter {
 		if (message instanceof Integer) {
 
 		} else if (message instanceof String) {
-			String temp = message.toString();
-			if (temp.equals("STOP")) {
-				isSend = false;
-			} else if (temp.equals("START")) {
-				isSend = true;
-			}
-
 		}
 	}
 
@@ -86,10 +78,6 @@ public class TLSServerHandler extends IoHandlerAdapter {
 
 	public List<IoSession> getSessions() {
 		return sessions;
-	}
-
-	public boolean isSend() {
-		return isSend;
 	}
 
 }

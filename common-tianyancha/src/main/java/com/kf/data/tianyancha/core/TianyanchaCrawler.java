@@ -162,13 +162,10 @@ public class TianyanchaCrawler {
 				}
 			}
 			childDriver = driver.switchTo().window(key);
-
 			childDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
 			childDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 			String baseHtml = childDriver.getPageSource();
-
 			baseHtml = childDriver.getPageSource();
-
 			Document document = Jsoup.parse(baseHtml, "https://www.tianyancha.com");
 			// 统一companyId
 			String companyId = Md5Tools.GetMD5Code(companyName);
@@ -290,6 +287,8 @@ public class TianyanchaCrawler {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} catch (Throwable t) {
+			t.printStackTrace();
 		} finally {
 			if (childDriver != null) {
 				childDriver.close();
@@ -318,7 +317,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -380,7 +379,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -442,7 +441,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -504,7 +503,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -567,7 +566,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -629,7 +628,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -692,7 +691,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -755,7 +754,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -818,7 +817,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -881,7 +880,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -952,7 +951,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -1016,7 +1015,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -1080,7 +1079,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -1144,7 +1143,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");
@@ -1207,7 +1206,7 @@ public class TianyanchaCrawler {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
 						Elements totalElements = pageElements.first().select(".total");
-						if (totalElements.size() > 0) {
+						if (totalElements.size() > 0 && pageIndex == 2) {
 							String totalStr = totalElements.first().text().trim();
 							totalStr = totalStr.replace("共", "");
 							totalStr = totalStr.replace("页", "");

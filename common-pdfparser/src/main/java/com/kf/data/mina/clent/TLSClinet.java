@@ -35,9 +35,6 @@ import com.kf.data.pdfparser.thread.PdfReportLinkPaserWorker;
 public class TLSClinet {
 
 	public static Log logger = LogFactory.getLog(TLSClinet.class);
-	private LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue = new LinkedBlockingQueue<PdfReportLinks>();
-	private PdfReportLinksWriter pdfReportLinksWriter = new PdfReportLinksWriter();
-	private PdfCodetableReader pdfCodetableReader = new PdfCodetableReader();
 	public NioSocketConnector connector;
 	public IoSession session;
 	public ConnectFuture future;
@@ -50,13 +47,6 @@ public class TLSClinet {
 		fillConnector(ip);
 	}
 
-	public void paser() {
-		ExecutorService executor = Executors.newCachedThreadPool();
-		for (int i = 0; i < 4; i++) {
-			executor.execute(new PdfReportLinkPaserWorker(pdfcodeLinkQueue, pdfCodetableReader, pdfReportLinksWriter));
-		}
-		executor.shutdown();
-	}
 
 	private boolean fillConnector(String ip) {
 		try {
@@ -71,7 +61,7 @@ public class TLSClinet {
 			factory.setEncoderMaxLineLength(Integer.MAX_VALUE);
 			// 设置编码过滤器和按行读取数据模式
 			connector.getFilterChain().addLast("codeobj", new ProtocolCodecFilter(factory));
-			connector.setHandler(new TLSClentHandler(pdfcodeLinkQueue));
+			connector.setHandler(new TLSClentHandler());
 			connector.setDefaultRemoteAddress(new InetSocketAddress(ip, 6554));
 			// 连接到服务器：
 			connector.addListener(new IoListener() {

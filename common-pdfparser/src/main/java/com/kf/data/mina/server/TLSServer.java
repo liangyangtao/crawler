@@ -41,14 +41,11 @@ public class TLSServer {
 		// 启动服务
 		createAcceptor();
 		while (true) {
-
 			if (tLSServerHandler.getSessions().size() > 0) {
-				if (tLSServerHandler.isSend()) {
-					List<PdfReportLinks> links = pdfReportLinksReader.readerPdfCodeLinkByRank(0);
-					for (PdfReportLinks pdfReportLinks : links) {
-						tLSServerHandler.broadcast(gson.toJson(pdfReportLinks));
-						pdfReportLinksWriter.updatePdfReportRankById(pdfReportLinks.getId(), 3);
-					}
+				List<PdfReportLinks> links = pdfReportLinksReader.readerPdfCodeLinkByRank(0);
+				for (PdfReportLinks pdfReportLinks : links) {
+					tLSServerHandler.broadcast(gson.toJson(pdfReportLinks));
+					pdfReportLinksWriter.updatePdfReportRankById(pdfReportLinks.getId(), 3);
 				}
 			}
 			try {

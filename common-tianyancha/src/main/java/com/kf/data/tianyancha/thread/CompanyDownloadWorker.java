@@ -33,6 +33,9 @@ public class CompanyDownloadWorker extends BaseWorker implements Runnable {
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
+				} catch (Throwable t) {
+					t.printStackTrace();
+					continue;
 				}
 			} else {
 				sleeping(1000);
