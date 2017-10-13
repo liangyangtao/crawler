@@ -32,7 +32,7 @@ public class App {
 		ExecutorService executor = Executors.newCachedThreadPool();
 		executor.execute(new PdfReportLinkReaderWorker(pdfcodeLinkQueue, pdfReportLinksReader, pdfReportLinksWriter,
 				pdfCodetableReader));
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 8; i++) {
 			executor.execute(new PdfReportLinkPaserWorker(pdfcodeLinkQueue, pdfCodetableReader, pdfReportLinksWriter));
 		}
 		executor.shutdown();
