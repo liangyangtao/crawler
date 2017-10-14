@@ -1,6 +1,9 @@
 package com.kf.data.tianyancha.parser;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -27,9 +30,22 @@ public class TianyanchaYearReportParser extends TianyanchaBasePaser {
 	 * @param companyName
 	 * @param companyId
 	 */
-	public void paseNode(Document document, String companyName, String companyId) {
+	public void paseNode(Document document, String companyName, String companyId, String reportdate) {
 
-		parserShareholders(document, companyName, companyId);
+		// parserShareholders(document, companyName, companyId);
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		Elements bodyElement = document.select(".report_body");
+		if (bodyElement.size() > 0) {
+			result.put("report_dom", bodyElement.first().toString());
+			result.put("company_id", companyId);
+			result.put("company_name", companyName);
+			result.put("status", 0);
+			result.put("created_at", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format( new Date()));
+			result.put("updated_at", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format( new Date()));
+			result.put("reportdate", reportdate);
+			sendJson(result, "tyc_company_report");
+		}
 	}
 
 	/****

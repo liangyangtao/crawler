@@ -266,10 +266,12 @@ public class TianyanchaCrawler {
 					try {
 						Element linkElement = element.select("a").first();
 						String reportLink = linkElement.absUrl("href");
+						
 						driver.get(reportLink);
 						String reportHtml = driver.getPageSource();
-						Document reportDocument = Jsoup.parse(reportHtml);
-						tianyanchaYearReportParser.paseNode(reportDocument, companyName, companyId);
+						Document reportDocument = Jsoup.parse(reportHtml,reportLink);
+						String reportdate = element.select(".pt15").first().text().trim();
+						tianyanchaYearReportParser.paseNode(reportDocument, companyName, companyId,reportdate);
 						try {
 							Thread.sleep(5000);
 						} catch (InterruptedException e) {
