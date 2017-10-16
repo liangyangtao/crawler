@@ -63,7 +63,7 @@ public class PdfReportLinkPaserWorker implements Runnable {
 					// html = pdfLinkEsEntities.get(0).getContent();
 					// }
 					String chagelink = changeHanzi(pdfReportLinks.getLink());
-					html = Fetcher.getInstance().get(chagelink);
+					html = Fetcher.getInstance().get(chagelink, "gbk");
 					if (html == null) {
 						// PdfErrorRecord pdfErrorRecord = new PdfErrorRecord();
 						// pdfErrorRecord.setLink(pdfReportLinks.getLink());

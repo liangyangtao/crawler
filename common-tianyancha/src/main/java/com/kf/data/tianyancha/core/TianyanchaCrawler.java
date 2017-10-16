@@ -40,6 +40,8 @@ import com.kf.data.tianyancha.parser.TianyanchaStaffParser;
 import com.kf.data.tianyancha.parser.TianyanchaTmParser;
 import com.kf.data.tianyancha.parser.TianyanchaWechatParser;
 import com.kf.data.tianyancha.parser.TianyanchaYearReportParser;
+import com.kf.data.tianyancha.sender.SendMail;
+import com.kf.data.tianyancha.watch.PidRecorder;
 
 /**
  * @Title: TianyanchaCrawler.java
@@ -73,6 +75,8 @@ public class TianyanchaCrawler {
 	private TianyanchaImExPortParser tianyanchaImExPortParser = new TianyanchaImExPortParser();
 	private TianyanchaSfpmParser tianyanchaSfpmParser = new TianyanchaSfpmParser();
 
+	private SendMail sendMail = new SendMail();
+
 	/***
 	 * 输入名称进行数据采集入库
 	 * 
@@ -88,15 +92,42 @@ public class TianyanchaCrawler {
 			driver.get(url);
 			Thread.sleep(5 * 1000);
 			String title = driver.getTitle();
+			if (title.contains("访问禁止")) {
+				logger.info(companyName + "IP 已经被封不能采集了");
+				sendMail.sendMail("IP已经被封");
+//				int ok = JOptionPane.showConfirmDialog(null, "继续采集");
+//				if (ok == JOptionPane.OK_OPTION) {
+//
+//				} else {
+//					
+//				}
+//				pidRecorder.reStart();
+				System.exit(0);
+			}
 			if (title.contains("403")) {
 				logger.info(companyName + "IP 已经被封不能采集了");
-				int ok = JOptionPane.showConfirmDialog(null, "继续采集");
-				if (ok == JOptionPane.OK_OPTION) {
-
-				} else {
-					System.exit(0);
-				}
+				sendMail.sendMail("IP已经被封");
+//				int ok = JOptionPane.showConfirmDialog(null, "继续采集");
+//				if (ok == JOptionPane.OK_OPTION) {
+//				} else {
+//					System.exit(0);
+//				}
+//				pidRecorder.reStart();
+				System.exit(0);
 			}
+			String loginUrl = driver.getCurrentUrl();
+			if (loginUrl.contains("login")) {
+				sendMail.sendMail("IP已经被封");
+				logger.info(companyName + "需要登录 不能采集");
+//				int ok = JOptionPane.showConfirmDialog(null, "继续采集");
+//				if (ok == JOptionPane.OK_OPTION) {
+//				} else {
+//					System.exit(0);
+//				}
+//				pidRecorder.reStart();
+				System.exit(0);
+			}
+
 			// 将搜索词输入文本框
 			driver.findElement(By.xpath("//*[@id=\"home-main-search\"]")).sendKeys(companyName);
 			// 点击搜索按钮
@@ -106,12 +137,27 @@ public class TianyanchaCrawler {
 			String current = driver.getCurrentUrl();
 			if (current.contains("http://antirobot.tianyancha.com")) {
 				logger.info(companyName + "遇到验证码已经被封不能采集了");
-				int ok = JOptionPane.showConfirmDialog(null, "继续采集");
-				if (ok == JOptionPane.OK_OPTION) {
-
-				} else {
-					System.exit(0);
-				}
+				sendMail.sendMail("IP已经被封");
+//				int ok = JOptionPane.showConfirmDialog(null, "继续采集");
+//				if (ok == JOptionPane.OK_OPTION) {
+//
+//				} else {
+//					System.exit(0);
+//				}
+//				pidRecorder.reStart();
+				System.exit(0);
+			}
+			if (current.contains("www.tianyancha.com/login")) {
+				logger.info(companyName + "需要登录 不能采集");
+				sendMail.sendMail("IP已经被封");
+//				int ok = JOptionPane.showConfirmDialog(null, "继续采集");
+//				if (ok == JOptionPane.OK_OPTION) {
+//
+//				} else {
+//					System.exit(0);
+//				}
+//				pidRecorder.reStart();
+				System.exit(0);
 			}
 			String html = driver.getPageSource();
 			if (html.contains("static.tianyancha.com/wap/images/notFound.png")) {
@@ -151,6 +197,32 @@ public class TianyanchaCrawler {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+
+			current = driver.getCurrentUrl();
+			if (current.contains("http://antirobot.tianyancha.com")) {
+				logger.info(companyName + "遇到验证码已经被封不能采集了");
+				sendMail.sendMail("IP已经被封");
+//				int ok = JOptionPane.showConfirmDialog(null, "继续采集");
+//				if (ok == JOptionPane.OK_OPTION) {
+//
+//				} else {
+//					System.exit(0);
+//				}
+//				pidRecorder.reStart();
+				System.exit(0);
+			}
+			if (current.contains("www.tianyancha.com/login")) {
+				logger.info(companyName + "需要登录 不能采集");
+				sendMail.sendMail("IP已经被封");
+//				int ok = JOptionPane.showConfirmDialog(null, "继续采集");
+//				if (ok == JOptionPane.OK_OPTION) {
+//
+//				} else {
+//					System.exit(0);
+//				}
+				System.exit(0);
+			}
+
 			String currenWindow = driver.getWindowHandle();
 			Set<String> allWindows = driver.getWindowHandles();
 			String key = null;
@@ -266,12 +338,12 @@ public class TianyanchaCrawler {
 					try {
 						Element linkElement = element.select("a").first();
 						String reportLink = linkElement.absUrl("href");
-						
+
 						driver.get(reportLink);
 						String reportHtml = driver.getPageSource();
-						Document reportDocument = Jsoup.parse(reportHtml,reportLink);
+						Document reportDocument = Jsoup.parse(reportHtml, reportLink);
 						String reportdate = element.select(".pt15").first().text().trim();
-						tianyanchaYearReportParser.paseNode(reportDocument, companyName, companyId,reportdate);
+						tianyanchaYearReportParser.paseNode(reportDocument, companyName, companyId, reportdate);
 						try {
 							Thread.sleep(5000);
 						} catch (InterruptedException e) {

@@ -27,5 +27,6 @@
 			<artifactId>common-mybatis</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
 	</dependencies>
 </project>

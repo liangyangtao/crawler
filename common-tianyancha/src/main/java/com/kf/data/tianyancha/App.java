@@ -8,6 +8,7 @@ import com.kf.data.fetcher.tools.KfConstant;
 import com.kf.data.tianyancha.core.TianyanchaCrawler;
 import com.kf.data.tianyancha.thread.CompanyDownloadWorker;
 import com.kf.data.tianyancha.thread.TycApiCompanyReaderWorker;
+import com.kf.data.tianyancha.watch.PidRecorder;
 
 /***
  * 
@@ -21,10 +22,12 @@ import com.kf.data.tianyancha.thread.TycApiCompanyReaderWorker;
 public class App {
 	public static LinkedBlockingQueue<Object> companyQueue = new LinkedBlockingQueue<Object>();
 	public static TianyanchaCrawler tianyanchaCrawler = new TianyanchaCrawler();
+	static PidRecorder pidRecorder = new PidRecorder("", "SPIDERPID");
 
 	public static void main(String[] args) {
 		// 初始化程序
 		KfConstant.init();
+		pidRecorder.start();
 		System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 		ExecutorService executor = Executors.newCachedThreadPool();
 		// 读取公司名称

@@ -7,6 +7,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.kf.data.fetcher.tools.AliOssSender;
 import com.kf.data.mybatis.entity.TycCompanyPatentCrawlerWithBLOBs;
 
 import net.sf.json.JSONObject;
@@ -65,6 +66,23 @@ public class TianyanchaPatentParser extends TianyanchaBasePaser {
 						String applicant = obj.getString("applicantName");
 						String publish_date = obj.getString("applicationPublishTime");
 						publish_date = publish_date.replace("-", "");
+						String imgurl = null;
+						String kfImgUrl = null;
+						try {
+							imgurl = obj.getString("imgUrl");
+							kfImgUrl = new AliOssSender().uploadObject(imgurl);
+							if (kfImgUrl.startsWith("https://") || kfImgUrl.startsWith("http://")) {
+
+							} else {
+								kfImgUrl = "https:" + kfImgUrl;
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						// openPatentPopup({"mainCatNum":"H04L29\u002F06(2006.01)I","applicationPublishNum":"CN203206281U","agency":"北京三友知识产权代理有限公司
+						// 11127","inventor":"王海洲;孙成国;揭文云","agent":"陶海萍","applicationPublishTime":"2013-09-18","patentNum":"CN201220716684.1","imgUrl":"http:\u002F\u002Fpic.cnipr.com:8080\u002FXmlData\u002FXX\u002F20130918\u002F201220716684.1\u002F201220716684.gif","allCatNum":"H04L29\u002F06(2006.01)I;G06F21\u002F60(2013.01)I","patentName":"源代码保护机和源代码保护系统","abstracts":"本实用新型实施例提供一种源代码保护机和源代码保护系统，该源代码保护机与局域网中的网络交换机以及预警装置分别相连，所述网络交换机还连接多台终端设备，该源代码保护机包括：用于监听软件开发所在局域网中任意两台终端设备间的通信，对通信传输的数据包进行解码和反编译，并与预先设定的过滤条件进行比较，从而驱动预警装置进行预警的处理器；以及用于连接显示器的外接端口。这样，能够有效地保护源代码，防止软件开发过程中源代码的泄露。","address":"100048
+						// 北京市海淀区首体南路9号主语商务中心4号楼","applicationTime":"2012.12.21","uuid":"c72b12493ff14ed39a78d2f6a7df4d86","patentType":"实用新型","applicantName":"中建材集团进出口公司"})
+
 						TycCompanyPatentCrawlerWithBLOBs tycCompanyPatentCrawler = new TycCompanyPatentCrawlerWithBLOBs();
 						tycCompanyPatentCrawler.setCompanyId(companyId);
 						tycCompanyPatentCrawler.setCompanyName(companyName);
@@ -94,6 +112,7 @@ public class TianyanchaPatentParser extends TianyanchaBasePaser {
 						tycCompanyPatentCrawler.setApplicant(applicant);
 						tycCompanyPatentCrawler.setPublishDate(publish_date);
 						tycCompanyPatentCrawler.setStatus(false);
+						tycCompanyPatentCrawler.setImgUrl(kfImgUrl);
 						sendJson(tycCompanyPatentCrawler, "tyc_company_patent");
 					}
 

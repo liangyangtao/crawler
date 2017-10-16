@@ -10,8 +10,8 @@
 		<property name="endingDelimiter" value="`" />
 		<!--数据库链接URL，用户名、密码 -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://localhost:3306/crawler?autoReconnect=true"
-			userId="spider" password="spider" />
+			connectionURL="jdbc:mysql://10.24.193.86:3306/crawler?autoReconnect=true"
+			userId="meidi" password="12qwaszx" />
 		<!-- 生成模型的包名和位置 -->
 		<javaModelGenerator targetPackage="com.kf.data.mybatis.entity"
 			targetProject="common-mybatis\src\main\java">
@@ -26,8 +26,8 @@
 		</javaClientGenerator>
 
 
-		<table schema="crawler" tableName="tyc_company_wechat"
-			domainObjectName="TycCompanyWechatCrawler">
+		<table schema="crawler" tableName="tyc_company_patent"
+			domainObjectName="TycCompanyPatentCrawler">
 			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
 				identity="true" type="post" />
 		</table>
