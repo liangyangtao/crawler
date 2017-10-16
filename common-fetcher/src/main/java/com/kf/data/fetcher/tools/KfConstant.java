@@ -2,11 +2,9 @@ package com.kf.data.fetcher.tools;
 
 import java.io.File;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 /**
  * @Title: KfConstant.java
@@ -29,6 +27,13 @@ public class KfConstant {
 
 	public static String minaServerIp = "";
 
+	public static String emsHost = "";
+	public static String emsPort = "";
+	public static String emsUsername = "";
+	public static String emsPassword = "";
+	public static String emsFromAddress = "";
+	public static String emsReciver = "";
+
 	public KfConstant() {
 		super();
 		init();
@@ -37,24 +42,25 @@ public class KfConstant {
 	public static void init() {
 		try {
 			String path = KfConstant.class.getClassLoader().getResource("").toURI().getPath();
+			File file = new File(path + File.separator + "serverip.xml");
+			SAXReader saxReader = new SAXReader();
+			Document document = saxReader.read(file);
+			Element rootElement = document.getRootElement();
+			serverIp = rootElement.elementTextTrim("serverip");
+			esClusterName = rootElement.elementTextTrim("esClusterName").trim();
+			esPort = Integer.parseInt(rootElement.elementTextTrim("esPort").trim());
+			esUrl = rootElement.elementTextTrim("esUrl").trim();
+			esIndexName = rootElement.elementTextTrim("esIndexName").trim();
+			esDataType = rootElement.elementTextTrim("esDataType").trim();
+			saveJsonIp = rootElement.elementTextTrim("saveJsonIp");
+			minaServerIp = rootElement.elementTextTrim("minaServerIp");
+			emsHost = rootElement.elementTextTrim("emsHost");
+			emsPort = rootElement.elementTextTrim("emsPort");
+			emsUsername = rootElement.elementTextTrim("emsUsername");
+			emsPassword = rootElement.elementTextTrim("emsPassword");
+			emsFromAddress = rootElement.elementTextTrim("emsFromAddress");
+			emsReciver = rootElement.elementTextTrim("emsReciver");
 
-			File f = new File(path + File.separator + "serverip.xml");
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(f);
-
-			NodeList serverNode = doc.getElementsByTagName("root");
-			for (int i = 0; i < serverNode.getLength(); i++) {
-				serverIp = doc.getElementsByTagName("serverip").item(i).getFirstChild().getNodeValue();
-				esClusterName = doc.getElementsByTagName("esClusterName").item(i).getFirstChild().getNodeValue().trim();
-				esPort = Integer
-						.parseInt(doc.getElementsByTagName("esPort").item(i).getFirstChild().getNodeValue().trim());
-				esUrl = doc.getElementsByTagName("esUrl").item(i).getFirstChild().getNodeValue().trim();
-				esIndexName = doc.getElementsByTagName("esIndexName").item(i).getFirstChild().getNodeValue().trim();
-				esDataType = doc.getElementsByTagName("esDataType").item(i).getFirstChild().getNodeValue().trim();
-				saveJsonIp = doc.getElementsByTagName("saveJsonIp").item(i).getFirstChild().getNodeValue();
-				minaServerIp = doc.getElementsByTagName("minaServerIp").item(i).getFirstChild().getNodeValue();
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

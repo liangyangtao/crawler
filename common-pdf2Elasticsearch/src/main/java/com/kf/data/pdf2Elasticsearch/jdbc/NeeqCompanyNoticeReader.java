@@ -14,13 +14,19 @@ import com.kf.data.mybatis.mapper.NeeqCompanyNoticeMapper;
  * 
  * @Title: NeeqCompanyNoticeReader.java
  * @Package com.kf.data.jdbc.pdfCode.reader
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 读取neeqCompany
  * @author liangyt
  * @date 2017年7月31日 上午11:40:55
  * @version V1.0
  */
 public class NeeqCompanyNoticeReader {
 
+	/****
+	 * 根据id 读取notic
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public NeeqCompanyNotice readNeeqCompanyNoticesById(long id) {
 		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
 		NeeqCompanyNotice neeqCompanyNotice = null;
@@ -38,6 +44,12 @@ public class NeeqCompanyNoticeReader {
 
 	}
 
+	/****
+	 * 读取未解析的notic
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public List<NeeqCompanyNotice> readNeeqCompanyNoticesByIndex(long id) {
 		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
 		List<NeeqCompanyNotice> neeqCompanyNotices = null;
@@ -58,6 +70,13 @@ public class NeeqCompanyNoticeReader {
 
 	}
 
+	/****
+	 * 根据report date 读取neeqCompanyNotic
+	 * 
+	 * @param date
+	 * @param id
+	 * @return
+	 */
 	public List<NeeqCompanyNotice> readNeeqCompanyNoticesByReportDate(String date, long id) {
 		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
 		List<NeeqCompanyNotice> neeqCompanyNotices = null;
