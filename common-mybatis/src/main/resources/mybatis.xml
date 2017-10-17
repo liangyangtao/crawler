@@ -23,21 +23,19 @@
 			type="com.kf.data.mybatis.entity.PdfReportLinkText" />
 		<typeAlias alias="NeeqNotice" type="com.kf.data.mybatis.entity.NeeqNotice" />
 		<typeAlias alias="PdfErrorRecord" type="com.kf.data.mybatis.entity.PdfErrorRecord" />
-
-
+		<typeAlias alias="PdfClassifyKeywordsCrawler"
+			type="com.kf.data.mybatis.entity.PdfClassifyKeywordsCrawler" />
+		<!-- -->
 		<typeAlias alias="PdfReportModelNotice"
 			type="com.kf.data.mybatis.entity.PdfReportModelNotice" />
 		<typeAlias alias="PdfReportTableModel"
 			type="com.kf.data.mybatis.entity.PdfReportTableModel" />
 		<typeAlias alias="PdfReportTableValue"
 			type="com.kf.data.mybatis.entity.PdfReportTableValue" />
-		<typeAlias alias="TycHumans" type="com.kf.data.mybatis.entity.TycHumans" />
-
 		<!-- tyc -->
-
+		<typeAlias alias="TycHumans" type="com.kf.data.mybatis.entity.TycHumans" />
 		<typeAlias alias="TycBaseCompanyCrawler"
 			type="com.kf.data.mybatis.entity.TycBaseCompanyCrawler" />
-
 		<typeAlias alias="TycCompanyBranchCrawler"
 			type="com.kf.data.mybatis.entity.TycCompanyBranchCrawler" />
 		<typeAlias alias="TycCompanyChangeCrawler"
@@ -119,8 +117,10 @@
 	</environments>
 	<mappers>
 		<mapper resource="com/kf/data/mybatis/mapper/SqlAdapterMapper.xml" />
+		<!-- 文书 -->
 		<mapper resource="com/kf/data/mybatis/mapper/WenshucourtDataMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/WenshucourtContentMapper.xml" />
+		<!-- 年报 -->
 		<mapper resource="com/kf/data/mybatis/mapper/PdfCodeLinkMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/PdfCodeTemporaryMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/PdfCodeTableMapper.xml" />
@@ -130,13 +130,15 @@
 		<mapper resource="com/kf/data/mybatis/mapper/PdfReportLinkTextMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/NeeqNoticeMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/PdfErrorRecordMapper.xml" />
-
+		<mapper
+			resource="com/kf/data/mybatis/mapper/PdfClassifyKeywordsCrawlerMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/PdfReportModelNoticeMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/PdfReportTableModelMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/PdfReportTableValueMapper.xml" />
-		<mapper resource="com/kf/data/mybatis/mapper/TycHumansMapper.xml" />
+
 
 		<!-- tyc start -->
+		<mapper resource="com/kf/data/mybatis/mapper/TycHumansMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/TycBaseCompanyCrawlerMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/TycCompanyBranchCrawlerMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/TycCompanyChangeCrawlerMapper.xml" />
