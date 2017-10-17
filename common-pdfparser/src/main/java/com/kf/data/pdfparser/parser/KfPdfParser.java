@@ -249,6 +249,7 @@ public class KfPdfParser {
 		result2 = result2.replace(",", "");
 		result2 = result2.replace("：", "");
 		result2 = result2.replace(":", "");
+		result2 = result2.trim();
 		return result2;
 	}
 

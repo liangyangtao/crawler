@@ -102,7 +102,7 @@ public class PdfTemporary1Parser extends KfPdfParser {
 					String table_property = tableName + "@@@" + property;
 					// 某个字段的解析规则
 					List<PdfCodeTemporary> table_property_Rules = propertyRules.get(table_property);
-					String content = document.body().text();
+					String content = document.text();
 					content = content.replace(" ", "###");
 					content = content.replace("	", "###");
 					content = content.replace(" ", "###");

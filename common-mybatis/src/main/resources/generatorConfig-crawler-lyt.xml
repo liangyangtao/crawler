@@ -26,8 +26,8 @@
 		</javaClientGenerator>
 
 
-		<table schema="crawler" tableName="tyc_company_patent"
-			domainObjectName="TycCompanyPatentCrawler">
+		<table schema="crawler" tableName="pdf_classify_keywords"
+			domainObjectName="PdfClassifyKeywordsCrawler">
 			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
 				identity="true" type="post" />
 		</table>

@@ -15,7 +15,7 @@ import com.kf.data.pdfparser.thread.PdfReportLinkReaderWorker;
 /**
  * @Title: App.java
  * @Package com.kf.data.pdf2html
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: pdf 解析入口
  * @author liangyt
  * @date 2017年5月20日 下午4:06:11
  * @version V1.0
