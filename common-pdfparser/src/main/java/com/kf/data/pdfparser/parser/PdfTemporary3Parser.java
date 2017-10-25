@@ -103,6 +103,7 @@ public class PdfTemporary3Parser extends KfPdfParser {
 					List<String> result = new ArrayList<>();
 					String preText = null;
 					String endText = null;
+					
 					for (PdfCodeTemporary pdfCodeTemporary : table_property_Rules) {
 						preText = pdfCodeTemporary.getBeginPosition().trim();
 						endText = pdfCodeTemporary.getEndPosition().trim();
@@ -117,6 +118,10 @@ public class PdfTemporary3Parser extends KfPdfParser {
 							Element pElement = pElements.get(j);
 							if (pElement.tagName().equals("p")) {
 								String pText = pElement.text();
+								pText = pText.replace("  ", "");
+								pText = pText.replace(" ", "");
+								pText = pText.replace("	", "");
+								pText = pText.replace(" ", "");
 								if (pText.length() > 100) {
 									continue;
 								}
@@ -131,6 +136,8 @@ public class PdfTemporary3Parser extends KfPdfParser {
 									indexs.put(preIndex, endIndex);
 								}
 								if (pText.equals(preText)) {
+									preIndex = j;
+								} else if (pText.equals("、" + preText)) {
 									preIndex = j;
 								} else if (pText.contains(preText)) {
 									for (String string : titleTags) {

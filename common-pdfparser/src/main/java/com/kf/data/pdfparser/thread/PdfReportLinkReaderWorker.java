@@ -55,12 +55,11 @@ public class PdfReportLinkReaderWorker implements Runnable {
 						links = null;
 					}
 				}
-			} else {
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			}
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 
 		}

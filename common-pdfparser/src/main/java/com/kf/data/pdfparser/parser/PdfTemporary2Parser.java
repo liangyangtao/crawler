@@ -570,9 +570,9 @@ public class PdfTemporary2Parser extends KfPdfParser {
 			for (int k = 0; k < result.size(); k++) {
 				Element element = result.get(k);
 				Elements trElements = element.select("tr");
-				// 判断有几行
-				// int row =
-				// trElements.size();
+				if (trElements.size() == 0) {
+					continue;
+				}
 				// 有几列
 				int col = 0;
 				for (int j = 0; j < trElements.size(); j++) {
@@ -582,9 +582,7 @@ public class PdfTemporary2Parser extends KfPdfParser {
 						col = tdElements.size();
 					}
 				}
-				if (trElements.size() == 0) {
-					continue;
-				}
+
 				Element firstElement = trElements.get(0);
 				Elements firtsTdElements = firstElement.select("td");
 				// 判断表头有几行
@@ -598,13 +596,7 @@ public class PdfTemporary2Parser extends KfPdfParser {
 						}
 					}
 				}
-				// 如果是多行的表头,就合并一下，
-				if (titleNum > 1) {
-					// istop=true;
-				}
-				if (element.select("tr").size() == 0) {
-					continue;
-				}
+
 				// 多个表格怎么合并
 				Elements firstTdElements = element.select("tr").first().select("td");
 				int proNum = 0;
@@ -646,26 +638,39 @@ public class PdfTemporary2Parser extends KfPdfParser {
 					}
 				}
 			}
+
 			if (firstNum > 1) {
 				istop = true;
 			}
-			Element firstTable = result.get(firstIndex);
-			Elements firstTrElements = firstTable.select("tr");
-			Elements firstTdElements = firstTrElements.first().select("td");
-
+			// 判断列是否一致
+			int colNum = 0;
 			for (int k = firstIndex; k < result.size(); k++) {
 				Element element = result.get(k);
 				Elements trElements = element.select("tr");
 				if (istop) {
-					if (k > firstIndex) {
+					if (k == firstIndex) {
+						// 如果是第一个表格
+						trElements = element.select("tr");
+						// 是表头的那个表
+						for (Element trElement : trElements) {
+							if (trElement.text().contains(endText)) {
+								break;
+							}
+							resultTable.appendChild(trElement);
+							Elements tdElements = trElement.select("td,th");
+							if (colNum < tdElements.size()) {
+								colNum = tdElements.size();
+							}
+						}
+					} else if (k > firstIndex) {
 						if (trElements.size() == 0) {
 							continue;
 						}
-						Element firstElement = trElements.get(0);
-						Elements firtsTdElements = firstElement.select("td");
+						Element kTrElement = trElements.get(0);
+						Elements kTdElements = kTrElement.select("td");
 						// 判断表头有几行
 						int titleNum = 1;
-						for (Element tdElement : firtsTdElements) {
+						for (Element tdElement : kTdElements) {
 							String rowsStr = tdElement.attr("rowspan");
 							if (!rowsStr.isEmpty()) {
 								int rowInt = Integer.parseInt(rowsStr);
@@ -675,47 +680,26 @@ public class PdfTemporary2Parser extends KfPdfParser {
 							}
 						}
 						if (titleNum > 1) {
+							// 如果有多行表头 不合并
 							break;
 						}
-						if (trElements.size() == 1 && firtsTdElements.size() == 1) {
+						if (trElements.size() == 1 && kTdElements.size() == 1) {
 							break;
 						}
-						element = new TableSpliter().splitTable(element, false, null);
-						trElements = element.select("tr");
-						Elements tdElements = trElements.first().select("td");
 						boolean isAppend = false;
-						int emptyNum = 0;
-						for (Element element2 : tdElements) {
-							if (element2.text().trim().contains("-") || element2.text().matches(".*\\d+.*")
-									|| element2.text().contains("�") || element2.text().trim().contains("_")) {
-								isAppend = true;
+						int col = 0;
+						for (Element trElement : trElements) {
+							if (trElement.text().contains(endText)) {
 								break;
-							} else if (element2.text().trim().isEmpty()) {
-								emptyNum++;
+							}
+							Elements tdElements = trElement.select("td,th");
+							if (col < tdElements.size()) {
+								col = tdElements.size();
 							}
 						}
-						if (!isAppend) {
-							if (emptyNum > 1) {
-								isAppend = true;
-							}
+						if (col == colNum) {
+							isAppend = true;
 						}
-						if (!isAppend) {
-
-							boolean check = true;
-							for (int j = 0; j < tdElements.size(); j++) {
-								Element tdElement = tdElements.get(j);
-								Element firstTdElement = firstTdElements.get(j);
-								if (!tdElement.text().equals(firstTdElement.text())) {
-									check = false;
-									break;
-								}
-							}
-							if (check) {
-								isAppend = true;
-							}
-
-						}
-						//
 						if (isAppend) {
 							for (Element trElement : trElements) {
 								if (trElement.text().contains(endText)) {
@@ -726,16 +710,6 @@ public class PdfTemporary2Parser extends KfPdfParser {
 						} else {
 							// 结束
 							break;
-						}
-					} else {
-						element = new TableSpliter().splitTable(element, false, null);
-						trElements = element.select("tr");
-						// 是表头的那个表
-						for (Element trElement : trElements) {
-							if (trElement.text().contains(endText)) {
-								break;
-							}
-							resultTable.appendChild(trElement);
 						}
 					}
 				} else {

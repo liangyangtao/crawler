@@ -37,14 +37,14 @@ public class KfPdfParser {
 	static String[] titleTags = new String[] { "一)", "二)", "三)", "四)", "五)", "六)", "七)", "八)", "九)", "一）", "二）", "三）",
 			"四）", "五）", "六）", "七）", "八）", "九）", "1)", "2)", "3)", "4)", "5)", "6)", "7)", "8)", "9)", "1）", "2）", "3）",
 			"4）", "5）", "6）", "7）", "8）", "9）", "第一节", "第二节", "第三节", "第四节", "第五节", "第六节", "第七节", "第八节", "第九节", "第十节",
-			"第十一节", "第十二节", "第十三节", "第十四节", "第十五节", "一、", "二、", "三、", "四、", "五、", "六、", "七、", "八、", "九、", "十、", ":",
-			"：" };
+			"第十一节", "第十二节", "第十三节", "第十四节", "第十五节", "一、", "二、", "三、", "四、", "五、", "六、", "七、", "八、", "九、", "十、" };
 
 	static String[] finances = new String[] { "合并资产负债表", "合并利润表", "合并现金流量表", "合并所有者权益变动表", "合并股东权益变动表", "母公司资产负债表",
 			"母公司利润表", "母公司现金流量表", "母公司股东权益变动表", "母公司所有者权益变动表", "资产负债表", "利润表", "现金流量表", "所有者权益变动表", "股东权益变动表", };
 
 	private PdfCodeTemporaryReader pdfCodeTemporaryReader = new PdfCodeTemporaryReader();
 
+	private SemiannualYearSubsidiaryParser semiannualYearSubsidiaryParser = new SemiannualYearSubsidiaryParser();
 	/***
 	 * 
 	 * @param id
@@ -58,6 +58,17 @@ public class KfPdfParser {
 		if (pdfReportLinks.getReportDate() == null) {
 			pdfReportLinks.setReportDate(new Date());
 		}
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		if (pdfCodeTable.getPdfType().equals("半年报_子公司")) {
+			resultMap = getResult(pdfCodeTable, pdfReportLinks, document);
+		} else {
+			resultMap = getResult(pdfCodeTable, pdfReportLinks, document);
+		}
+		return objectToJson(resultMap);
+
+	}
+
+	private Map<String, Object> getResult(PdfCodeTable pdfCodeTable, PdfReportLinks pdfReportLinks, Document document) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			// 读取所有某个类别下的所有解析规则
@@ -96,9 +107,7 @@ public class KfPdfParser {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		return objectToJson(resultMap);
-
+		return resultMap;
 	}
 
 	/***

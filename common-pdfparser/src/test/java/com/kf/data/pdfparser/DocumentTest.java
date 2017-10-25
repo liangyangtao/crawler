@@ -23,7 +23,7 @@ import com.kf.data.pdfparser.es.PdfReportTextReader;
 public class DocumentTest {
 
 	public static void main(String[] args) {
-		String url = "https://static.kaifengdata.com/neeq/7a954b68e03a0dcb39c794e689243fa9/[%E5%AE%9A%E6%9C%9F%E6%8A%A5%E5%91%8A]%E4%B8%8A%E6%89%AC%E8%82%A1%E4%BB%BD%202017%E5%B9%B4%E5%8D%8A%E5%B9%B4%E5%BA%A6%E6%8A%A5%E5%91%8A.pdf.html";
+		String url = "https://static.kaifengdata.com/neeq/59765b3238e4ff1607a730a5f80e9cbc/2158901.pdf.html";
 		url = changeHanzi(url);
 		String html = Fetcher.getInstance().get(url);
 		Document document = Jsoup.parse(html);

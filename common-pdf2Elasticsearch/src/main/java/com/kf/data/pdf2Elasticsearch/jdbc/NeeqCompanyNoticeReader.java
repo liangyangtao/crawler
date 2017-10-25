@@ -51,7 +51,7 @@ public class NeeqCompanyNoticeReader {
 	 * @return
 	 */
 	public List<NeeqCompanyNotice> readNeeqCompanyNoticesByIndex(long id) {
-		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
+		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerHisMysql").openSession();
 		List<NeeqCompanyNotice> neeqCompanyNotices = null;
 		try {
 			NeeqCompanyNoticeMapper neeqCompanyNoticeMapper = sqlSession.getMapper(NeeqCompanyNoticeMapper.class);

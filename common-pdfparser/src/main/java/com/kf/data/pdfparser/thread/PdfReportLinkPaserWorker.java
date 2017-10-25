@@ -52,27 +52,17 @@ public class PdfReportLinkPaserWorker implements Runnable {
 			if (pdfcodeLinkQueue.size() > 0) {
 				try {
 					PdfReportLinks pdfReportLinks = pdfcodeLinkQueue.take();
-					// int noticeId = pdfReportLinks.getNoticeId();
-
-					// List<PdfLinkEsEntity> pdfLinkEsEntities = new
-					// PdfReportTextReader()
-					// .readPdfLinkInEsByNoticId(noticeId);
-
+					System.out.println(pdfReportLinks.getLink());
 					String html = null;
-					// if (pdfLinkEsEntities.size() > 0) {
-					// html = pdfLinkEsEntities.get(0).getContent();
-					// }
 					String chagelink = changeHanzi(pdfReportLinks.getLink());
+					if (chagelink.endsWith("/")) {
+						continue;
+					}
 					html = Fetcher.getInstance().get(chagelink, "gbk");
 					if (html == null) {
-						// PdfErrorRecord pdfErrorRecord = new PdfErrorRecord();
-						// pdfErrorRecord.setLink(pdfReportLinks.getLink());
-						// pdfErrorRecord.setNoticeId(noticeId);
-						// pdfErrorRecord.setPdfType(pdfReportLinks.getPdfType());
-						// pdfErrorRecord.setTask(0);
-						// pdfErrorRecord.setuTime(new Date());
-						// new
-						// PdfErrorRecordStore().savePdfErrorRecord(pdfErrorRecord);
+						continue;
+					}
+					if (html.contains("MirrorFailed")) {
 						continue;
 					}
 					Document document = Jsoup.parse(html);
@@ -90,12 +80,11 @@ public class PdfReportLinkPaserWorker implements Runnable {
 					e.printStackTrace();
 					continue;
 				}
-			} else {
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			}
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 
 		}
@@ -171,14 +160,6 @@ class PdfTableThread implements Runnable {
 				System.out.println(json);
 				if (json.equals("{}") || json.equals("{\"state\":\"ok\",\"info\":[]}")
 						|| json.equals("{\"state\":\"erro\"}") || json.equals("{\"state\":\"ok\",\"info\":[]}")) {
-					// PdfErrorRecord pdfErrorRecord = new PdfErrorRecord();
-					// pdfErrorRecord.setLink(pdfReportLinks.getLink());
-					// pdfErrorRecord.setNoticeId(pdfReportLinks.getNoticeId());
-					// pdfErrorRecord.setPdfType(pdfReportLinks.getPdfType());
-					// pdfErrorRecord.setTask(0);
-					// pdfErrorRecord.setuTime(new Date());
-					// new
-					// PdfErrorRecordStore().savePdfErrorRecord(pdfErrorRecord);
 				} else {
 					try {
 						dynamicDataStore.doStore(json, linkPdfType);
