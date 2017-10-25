@@ -1,49 +1,40 @@
-package com.kf.data.pdfparser;
+package com.kf.data.parser;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.parser.Tag;
-import org.jsoup.select.Elements;
 
 import com.kf.data.fetcher.Fetcher;
 import com.kf.data.fetcher.tools.DocumentSimpler;
-import com.kf.data.fetcher.tools.KfConstant;
-import com.kf.data.fetcher.tools.TableRepairer;
-import com.kf.data.pdfparser.entity.PdfLinkEsEntity;
-import com.kf.data.pdfparser.es.PdfReportTextReader;
+import com.kf.data.mybatis.entity.PdfCodeTable;
+import com.kf.data.mybatis.entity.PdfReportLinks;
+import com.kf.data.pdfparser.parser.KfPdfParser;
 
-public class DocumentTest {
-
+/***
+ * 
+ * @Title: ParserTest.java
+ * @Package com.kf.data.parser
+ * @Description: 解析测试
+ * @author liangyt
+ * @date 2017年10月23日 上午10:35:01
+ * @version V1.0
+ */
+public class ParserTest {
+	
+	
 	public static void main(String[] args) {
-		String url = "https://static.kaifengdata.com/neeq/59765b3238e4ff1607a730a5f80e9cbc/2158901.pdf.html";
-		url = changeHanzi(url);
-		String html = Fetcher.getInstance().get(url);
+		String url = "https://static.kaifengdata.com/neeq/7ade7ee63f3cb87e3224b8b4318628d6/2173418.pdf.html";
+		String chagelink = changeHanzi(url);
+		String html = Fetcher.getInstance().get(chagelink, "gbk");
 		Document document = Jsoup.parse(html);
-//		KfConstant.init();
-//		List<PdfLinkEsEntity> pdfLinkEsEntities = new PdfReportTextReader().readPdfLinkInEsByNoticId(2670640);
-//		String html = pdfLinkEsEntities.get(0).getContent();
-//		Document document = Jsoup.parse(html);
 		document = new DocumentSimpler().simpleDocument(document);
-		File file = new File("C:\\Users\\meidi\\Desktop\\re.html");
-		try {
-			PrintWriter pw = new PrintWriter(new FileWriter(file));
-			pw.print("<html><head><meta charset=\"utf-8\"></head>");
-			pw.print(document.toString());
-			pw.print("</html>");
-			pw.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		PdfCodeTable pdfCodeTable = new PdfCodeTable();
+		pdfCodeTable.setPdfType("公转书_主要客户");
+		PdfReportLinks pdfReportLinks = new PdfReportLinks();
+		pdfReportLinks.setLink(url);
+		System.out.println(new KfPdfParser().parserPdfHtmlByPdfTypeAndLink(pdfCodeTable, pdfReportLinks, document));
 	}
 
 	public static String changeHanzi(String url) {

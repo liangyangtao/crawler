@@ -24,13 +24,13 @@ public class ParserTest {
 		// PdfReportTextReader().readPdfLinkInEsByNoticId(1627189);
 		// String html = pdfLinkEsEntities.get(0).getContent();
 
-		String url = "https://static.kaifengdata.com/neeq/ef30cbd07a25931d9c2877a990076aa6/2181596.pdf.html";
+		String url = "https://static.kaifengdata.com/neeq/03f8b91b677bd553e89e7d47aa918c71/[%E5%AE%9A%E6%9C%9F%E6%8A%A5%E5%91%8A]%E8%B5%9E%E6%99%AE%E7%A7%91%E6%8A%80%202017%E5%B9%B4%E5%8D%8A%E5%B9%B4%E5%BA%A6%E6%8A%A5%E5%91%8A.pdf.html";
 		String chagelink = changeHanzi(url);
 		String html = Fetcher.getInstance().get(chagelink, "gbk");
 		Document document = Jsoup.parse(html);
 		document = new DocumentSimpler().simpleDocument(document);
 		PdfCodeTable pdfCodeTable = new PdfCodeTable();
-		pdfCodeTable.setPdfType("批准挂牌公司");
+		pdfCodeTable.setPdfType("半年报_商业模式");
 		PdfReportLinks pdfReportLinks = new PdfReportLinks();
 		System.out.println(new KfPdfParser().parserPdfHtmlByPdfTypeAndLink(pdfCodeTable, pdfReportLinks, document));
 

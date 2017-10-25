@@ -1,4 +1,4 @@
-package com.kf.data.pdf2Elasticsearch.jdbc;
+package com.kf.data.pdfparser.jdbc;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -14,19 +14,13 @@ import com.kf.data.mybatis.mapper.NeeqCompanyNoticeMapper;
  * 
  * @Title: NeeqCompanyNoticeReader.java
  * @Package com.kf.data.jdbc.pdfCode.reader
- * @Description: 读取neeqCompany
+ * @Description: TODO(用一句话描述该文件做什么)
  * @author liangyt
  * @date 2017年7月31日 上午11:40:55
  * @version V1.0
  */
 public class NeeqCompanyNoticeReader {
 
-	/****
-	 * 根据id 读取notic
-	 * 
-	 * @param id
-	 * @return
-	 */
 	public NeeqCompanyNotice readNeeqCompanyNoticesById(long id) {
 		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
 		NeeqCompanyNotice neeqCompanyNotice = null;
@@ -44,14 +38,8 @@ public class NeeqCompanyNoticeReader {
 
 	}
 
-	/****
-	 * 读取未解析的notic
-	 * 
-	 * @param id
-	 * @return
-	 */
 	public List<NeeqCompanyNotice> readNeeqCompanyNoticesByIndex(long id) {
-		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerHisMysql").openSession();
+		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
 		List<NeeqCompanyNotice> neeqCompanyNotices = null;
 		try {
 			NeeqCompanyNoticeMapper neeqCompanyNoticeMapper = sqlSession.getMapper(NeeqCompanyNoticeMapper.class);
@@ -70,20 +58,13 @@ public class NeeqCompanyNoticeReader {
 
 	}
 
-	/****
-	 * 根据report date 读取neeqCompanyNotic
-	 * 
-	 * @param date
-	 * @param id
-	 * @return
-	 */
-	public List<NeeqCompanyNotice> readNeeqCompanyNoticesByReportDate(String date, long id) {
+	public List<NeeqCompanyNotice> readNeeqCompanyNoticesByReportDate(String date) {
 		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
 		List<NeeqCompanyNotice> neeqCompanyNotices = null;
 		try {
 			NeeqCompanyNoticeMapper neeqCompanyNoticeMapper = sqlSession.getMapper(NeeqCompanyNoticeMapper.class);
 			NeeqCompanyNoticeExample example = new NeeqCompanyNoticeExample();
-			example.or().andReportDateEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse(date)).andIdGreaterThan(id);
+			example.or().andReportDateEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse(date));
 			example.setOrderByClause("id limit 20");
 			neeqCompanyNotices = neeqCompanyNoticeMapper.selectByExample(example);
 			sqlSession.commit(true);

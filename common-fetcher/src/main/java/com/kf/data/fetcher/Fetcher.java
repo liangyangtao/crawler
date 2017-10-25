@@ -127,7 +127,8 @@ public class Fetcher {
 			CloseableHttpResponse response = httpClient.execute(httpGet, context);
 			try {
 				HttpEntity entity = response.getEntity();
-				return inputStream2String(entity.getContent(), useCharset);
+				return EntityUtils.toString(entity, useCharset);
+//				return inputStream2String(entity.getContent(), useCharset);
 			} finally {
 				response.close();
 			}

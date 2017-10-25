@@ -6,7 +6,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.kf.data.mybatis.entity.PdfCodeTable;
 import com.kf.data.mybatis.entity.PdfReportLinks;
 import com.kf.data.pdfparser.jdbc.PdfCodetableReader;
 import com.kf.data.pdfparser.jdbc.PdfReportLinksReader;
@@ -25,7 +24,6 @@ public class PdfReportLinkReaderWorker implements Runnable {
 	private LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue;
 	private PdfReportLinksReader pdfReportLinksReader;
 	private PdfReportLinksWriter pdfReportLinksWriter;
-	private PdfCodetableReader pdfCodetableReader;
 
 	public PdfReportLinkReaderWorker(LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue,
 			PdfReportLinksReader pdfReportLinksReader, PdfReportLinksWriter pdfReportLinksWriter,
@@ -33,7 +31,6 @@ public class PdfReportLinkReaderWorker implements Runnable {
 		this.pdfcodeLinkQueue = pdfcodeLinkQueue;
 		this.pdfReportLinksReader = pdfReportLinksReader;
 		this.pdfReportLinksWriter = pdfReportLinksWriter;
-		this.pdfCodetableReader = pdfCodetableReader;
 
 	}
 
@@ -42,19 +39,13 @@ public class PdfReportLinkReaderWorker implements Runnable {
 		while (true) {
 			if (pdfcodeLinkQueue.size() == 0) {
 				// 不管rank 是什麼的都得讀取
-				List<PdfCodeTable> pdftables = pdfCodetableReader.readPdfTable();
-				for (PdfCodeTable pdfCodeTable : pdftables) {
-					String pdftype = pdfCodeTable.getPdfType();
-					if (pdfCodeTable.getTask() == 1) {
-						List<PdfReportLinks> links = pdfReportLinksReader.readerPdfCodeLinkByTypeAndRank(pdftype, 0);
-						for (PdfReportLinks pdfReportLinks : links) {
-							pdfcodeLinkQueue.add(pdfReportLinks);
-							pdfReportLinksWriter.updatePdfReportRankById(pdfReportLinks.getId(), 3);
-						}
-						links.clear();
-						links = null;
-					}
+				List<PdfReportLinks> links = pdfReportLinksReader.readerPdfCodeLinkByTypeAndRank("公转书", 0);
+				for (PdfReportLinks pdfReportLinks : links) {
+					pdfcodeLinkQueue.add(pdfReportLinks);
+					pdfReportLinksWriter.updatePdfReportRankById(pdfReportLinks.getId(), 3);
 				}
+				links.clear();
+				links = null;
 			}
 			try {
 				Thread.sleep(50);

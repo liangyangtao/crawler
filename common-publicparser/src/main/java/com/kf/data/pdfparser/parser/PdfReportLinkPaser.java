@@ -1,9 +1,8 @@
-package com.kf.data.pdfparser.thread;
+package com.kf.data.pdfparser.parser;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,7 +16,6 @@ import com.kf.data.mybatis.entity.PdfReportLinks;
 import com.kf.data.pdfparser.jdbc.DynamicDataStore;
 import com.kf.data.pdfparser.jdbc.PdfCodetableReader;
 import com.kf.data.pdfparser.jdbc.PdfReportLinksWriter;
-import com.kf.data.pdfparser.parser.KfPdfParser;
 
 /**
  * @Title: PdfLinkPaserWorker.java
@@ -27,70 +25,50 @@ import com.kf.data.pdfparser.parser.KfPdfParser;
  * @date 2017年5月11日 下午5:09:30
  * @version V1.0
  */
-public class PdfReportLinkPaserWorker implements Runnable {
+public class PdfReportLinkPaser {
 
-	static final Logger logger = LoggerFactory.getLogger(PdfReportLinkPaserWorker.class);
+	static final Logger logger = LoggerFactory.getLogger(PdfReportLinkPaser.class);
 
-	private LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue;
-	private PdfReportLinksWriter pdfReportLinksWriter;
-	private PdfCodetableReader pdfCodetableReader;
+	private PdfReportLinksWriter pdfReportLinksWriter = new PdfReportLinksWriter();
+	private PdfCodetableReader pdfCodetableReader = new PdfCodetableReader();
 	DocumentSimpler documentSimpler = new DocumentSimpler();
 
-	public PdfReportLinkPaserWorker(LinkedBlockingQueue<PdfReportLinks> pdfcodeLinkQueue,
-			PdfCodetableReader pdfCodetableReader, PdfReportLinksWriter pdfReportLinksWriter) {
-		super();
-		this.pdfcodeLinkQueue = pdfcodeLinkQueue;
-		this.pdfCodetableReader = pdfCodetableReader;
-		this.pdfReportLinksWriter = pdfReportLinksWriter;
-
-	}
-
-	@Override
-	public void run() {
-
-		while (true) {
-			if (pdfcodeLinkQueue.size() > 0) {
-				try {
-					PdfReportLinks pdfReportLinks = pdfcodeLinkQueue.take();
-					System.out.println(pdfReportLinks.getLink());
-					String html = null;
-					String chagelink = changeHanzi(pdfReportLinks.getLink());
-					if (chagelink.endsWith("/")) {
-						continue;
-					}
-					html = Fetcher.getInstance().get(chagelink, "gbk");
-					if (html == null) {
-						continue;
-					}
-					if (html.contains("MirrorFailed")) {
-						continue;
-					}
-					Document document = Jsoup.parse(html);
-					document = documentSimpler.simpleDocument(document);
-					List<PdfCodeTable> pdftables = pdfCodetableReader.readPdfTable();
-					for (PdfCodeTable pdfCodeTable : pdftables) {
-						if (pdfCodeTable.getTask() == 1) {
-							new Thread(new PdfTableThread(pdfCodeTable, pdfReportLinks, document.clone())).start();
-						}
-					}
-					pdfReportLinksWriter.updatePdfReportRankById(pdfReportLinks.getId(), 2);
-					document = null;
-					html = null;
-				} catch (Exception e) {
-					e.printStackTrace();
-					continue;
+	/***
+	 * 解析pdf链接
+	 * 
+	 * @param pdfReportLinks
+	 */
+	public void parserPdfReportLinks(PdfReportLinks pdfReportLinks) {
+		try {
+			String html = null;
+			String chagelink = changeHanzi(pdfReportLinks.getLink());
+			html = Fetcher.getInstance().get(chagelink);
+			if (html == null) {
+				return;
+			}
+			Document document = Jsoup.parse(html);
+			document = documentSimpler.simpleDocument(document);
+			List<PdfCodeTable> pdftables = pdfCodetableReader.readPdfTable();
+			for (PdfCodeTable pdfCodeTable : pdftables) {
+				if (pdfCodeTable.getTask() == 1) {
+					new Thread(new PdfTableThread(pdfCodeTable, pdfReportLinks, document.clone())).start();
 				}
 			}
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
+			pdfReportLinksWriter.updatePdfReportRankById(pdfReportLinks.getId(), 2);
+			document = null;
+			html = null;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}
 
+	/***
+	 * 转换url 中的汉子
+	 * 
+	 * @param url
+	 * @return
+	 */
 	public String changeHanzi(String url) {
 		char[] tp = url.toCharArray();
 		String now = "";
