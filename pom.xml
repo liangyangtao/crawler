@@ -203,6 +203,7 @@
 		<module>common-tianyancha</module>
 		<module>kf-store-api</module>
     <module>common-publicparser</module>
+    <module>common-ctrip</module>
   </modules>
 
 	<build>
