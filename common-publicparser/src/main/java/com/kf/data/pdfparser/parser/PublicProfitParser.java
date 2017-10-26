@@ -182,9 +182,6 @@ public class PublicProfitParser extends PublicBaseParser {
 					continue;
 				}
 				Element firstTrElement=	firstTrElements.first();
-				
-				
-				
 				if (isFind) {
 					int col = 0;
 					Elements trElements = childElement.select("tr");
