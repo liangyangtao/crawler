@@ -66,16 +66,17 @@ public class TianyanchaPatentParser extends TianyanchaBasePaser {
 						String applicant = obj.getString("applicantName");
 						String publish_date = obj.getString("applicationPublishTime");
 						publish_date = publish_date.replace("-", "");
+						// 修改图片使用专利网的图片
 						String imgurl = null;
-						String kfImgUrl = null;
+//						String kfImgUrl = null;
 						try {
 							imgurl = obj.getString("imgUrl");
-							kfImgUrl = new AliOssSender().uploadObject(imgurl);
-							if (kfImgUrl.startsWith("https://") || kfImgUrl.startsWith("http://")) {
-
-							} else {
-								kfImgUrl = "https:" + kfImgUrl;
-							}
+//							kfImgUrl = new AliOssSender().uploadObject(imgurl);
+//							if (kfImgUrl.startsWith("https://") || kfImgUrl.startsWith("http://")) {
+//
+//							} else {
+//								kfImgUrl = "https:" + kfImgUrl;
+//							}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -112,7 +113,7 @@ public class TianyanchaPatentParser extends TianyanchaBasePaser {
 						tycCompanyPatentCrawler.setApplicant(applicant);
 						tycCompanyPatentCrawler.setPublishDate(publish_date);
 						tycCompanyPatentCrawler.setStatus(false);
-						tycCompanyPatentCrawler.setImgUrl(kfImgUrl);
+						tycCompanyPatentCrawler.setImgUrl(imgurl);
 						sendJson(tycCompanyPatentCrawler, "tyc_company_patent");
 					}
 

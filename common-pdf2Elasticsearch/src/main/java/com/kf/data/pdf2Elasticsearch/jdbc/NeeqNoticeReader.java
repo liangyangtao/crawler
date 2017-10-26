@@ -21,7 +21,7 @@ public class NeeqNoticeReader {
 
 	public List<NeeqNotice> readNeeqNotice(String sql) {
 		List<NeeqNotice> neeqNotices = null;
-		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerHisMysql").openSession();
+		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
 		try {
 			NeeqNoticeMapper neeqNoticeMapper = sqlSession.getMapper(NeeqNoticeMapper.class);
 			SqlAdapter sqlAdapter = new SqlAdapter();
