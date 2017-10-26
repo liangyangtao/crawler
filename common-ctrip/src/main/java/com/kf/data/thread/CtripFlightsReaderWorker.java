@@ -28,15 +28,7 @@ public class CtripFlightsReaderWorker extends BaseWorker implements Runnable {
 	public void run() {
 		while (true) {
 			if (companyQueue.size() <= 0) {
-				// Calendar now = Calendar.getInstance();
-				// int hours = now.get(Calendar.HOUR_OF_DAY);
-				// if (hours > 22 || hours < 8) {
-				// System.out.println(hours + "点不进行采集");
-				// sleeping(10 * 60 * 1000);
-				// } else {
 				fillCompanyQueue();
-				// }
-				// 填充公司
 			} else {
 				sleeping(1 * 60 * 1000);
 			}
@@ -49,19 +41,23 @@ public class CtripFlightsReaderWorker extends BaseWorker implements Runnable {
 	 * 通过API 获取航线URL
 	 */
 	private void fillCompanyQueue() {
-//		String url = KfConstant.serverIp;
-//		String html = Fetcher.getInstance().get(url);
-//		JSONObject jsonObject = JSONObject.fromObject(html);
-//		int err_code = jsonObject.getInt("err_code");
-//		if (err_code == 200) {
-//			String companyName = jsonObject.getString("companyName").trim();
-//			if (companyName.isEmpty()) {
-//				logger.info("获取公司名称为API为空");
-//				return;
-//			}
-//			put(companyQueue, companyName);
-//		}
-		put(companyQueue, "http://flights.ctrip.com/international/round-beijing-macau-bjs-mfm?2017-10-28&2017-11-15&y_s");
+		String url = KfConstant.serverIp;
+		String html = Fetcher.getInstance().get(url);
+		if (html.startsWith("{")) {
+			JSONObject jsonObject = JSONObject.fromObject(html);
+			int err_code = jsonObject.getInt("err_code");
+			if (err_code == 200) {
+				String fightUrl = jsonObject.getString("url").trim();
+				if (fightUrl == null || fightUrl.isEmpty()) {
+					logger.info("获取公司名称为API为空");
+					return;
+				}
+				logger.info("获取到航线信息" + fightUrl);
+				put(companyQueue, fightUrl);
+			}
+		} else {
+			logger.info("通过API获取航线信息失败");
+		}
 	}
 
 }
