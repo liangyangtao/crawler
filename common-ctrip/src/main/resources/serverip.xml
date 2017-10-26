@@ -1,6 +1,6 @@
 <root>
 	<!-- 获取公司名称 -->
-	<serverip>http://101.201.111.214:8097/company/getNeeqComapny</serverip>
+	<serverip>http://101.201.111.214:8097/company/getCtrip</serverip>
 	<saveJsonIp>http://101.201.223.55:8334/kf-store-api/saveJson</saveJsonIp>
 	<minaServerIp>127.0.0.1</minaServerIp>
 	<!-- es -->

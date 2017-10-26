@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -35,18 +37,22 @@ import com.kf.data.fetcher.tools.KfConstant;
  */
 public class CtripFlightsCrawler {
 
+	public static Log logger = LogFactory.getLog(CtripFlightsCrawler.class);
+
 	private int i = 1;
 
-	public static void main(String[] args) {
-		KfConstant.init();
-		String url = "http://flights.ctrip.com/international/round-beijing-macau-bjs-mfm?2017-10-28&y_s";
-		new CtripFlightsCrawler().spider(url);
-	}
+	// public static void main(String[] args) {
+	// KfConstant.init();
+	// String url =
+	// "http://flights.ctrip.com/international/round-beijing-macau-bjs-mfm?2017-10-28&y_s";
+	// new CtripFlightsCrawler().spider(url);
+	// }
 
 	/***
 	 * 程序入口
 	 */
 	public void spider(String url) {
+		logger.info("开始采集航线" + url);
 		WebDriver driver = createWebDrive();
 		try {
 			driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
@@ -65,10 +71,11 @@ public class CtripFlightsCrawler {
 			Elements fightItemElements = document.select(".flight-item");
 			int num = fightItemElements.size();
 			System.out.println(num);
+			logger.info(url + " 下的航班信息有" + num + "个航班信息");
 			for (i = 1; i <= num; i++) {
+				logger.info(url + " 开始采集第" + i + "个航班");
 				try {
 					((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
-
 					Thread.sleep(2000);
 					((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
 
@@ -83,32 +90,42 @@ public class CtripFlightsCrawler {
 					// }).click();
 					// Thread.sleep(5000);
 					if (locadling(driver)) {
-						System.out.println(i + "加载失败");
+						logger.info(url + "  " + i + "航班信息加载失败");
 						continue;
 					}
 					if (i <= 15) {
 						// 预定
-						wait.until(new ExpectedCondition<WebElement>() {
-							@Override
-							public WebElement apply(WebDriver d) {
-								return d.findElement(By
-										.xpath("//*[@id=\"flightList\"]/div[" + i + "]/div[3]/div/div[6]/div/button"));
-							}
-						}).click();
+						try {
+							wait.until(new ExpectedCondition<WebElement>() {
+								@Override
+								public WebElement apply(WebDriver d) {
+									return d.findElement(By.xpath(
+											"//*[@id=\"flightList\"]/div[" + i + "]/div[3]/div/div[6]/div/button"));
+								}
+							}).click();
+						} catch (Exception e) {
+							logger.info(url + "  " + i + "点击预定失败");
+							continue;
+						}
 					} else if (i > 15) {
-						wait.until(new ExpectedCondition<WebElement>() {
-							@Override
-							public WebElement apply(WebDriver d) {
-								return d.findElement(By.xpath("//*[@id=\"flightList\"]/div/div[" + (i - 15)
-										+ "]/div[3]/div/div[6]/div/button"));
-							}
-						}).click();
+						try {
+							wait.until(new ExpectedCondition<WebElement>() {
+								@Override
+								public WebElement apply(WebDriver d) {
+									return d.findElement(By.xpath("//*[@id=\"flightList\"]/div/div[" + (i - 15)
+											+ "]/div[3]/div/div[6]/div/button"));
+								}
+							}).click();
+						} catch (Exception e) {
+							logger.info(url + "  " + i + "点击预定失败");
+							continue;
+						}
 					}
 					Thread.sleep(5000);
-					if (locadling(driver)) {
-						System.out.println(i + "加载失败");
-						continue;
-					}
+					// if (locadling(driver)) {
+					// logger.info(url + " " + i + "航班详情页信息加载失败");
+					// continue;
+					// }
 					// close 不登录直接预定
 					try {
 						Elements ssoElements = Jsoup.parse(driver.getPageSource()).select("#sso_btnDirectBook");
@@ -181,6 +198,7 @@ public class CtripFlightsCrawler {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("side", sidebarElements.first().toString());
 				sendJson(map, "ctrip_flights_side");
+				logger.info("保存数据");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -199,6 +217,8 @@ public class CtripFlightsCrawler {
 					}
 				}
 			}
+		} else {
+			logger.info("详情页获取失败");
 		}
 
 	}
