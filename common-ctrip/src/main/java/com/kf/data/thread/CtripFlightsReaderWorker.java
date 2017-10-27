@@ -28,7 +28,12 @@ public class CtripFlightsReaderWorker extends BaseWorker implements Runnable {
 	public void run() {
 		while (true) {
 			if (companyQueue.size() <= 0) {
-				fillCompanyQueue();
+				try {
+					fillCompanyQueue();
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
 			} else {
 				sleeping(1 * 60 * 1000);
 			}

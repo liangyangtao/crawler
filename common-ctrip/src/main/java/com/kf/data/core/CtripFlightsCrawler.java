@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kf.data.fetcher.Fetcher;
 import com.kf.data.fetcher.tools.KfConstant;
+import com.kf.data.fetcher.tools.UUIDTools;
 
 /***
  * 
@@ -39,14 +40,13 @@ public class CtripFlightsCrawler {
 
 	public static Log logger = LogFactory.getLog(CtripFlightsCrawler.class);
 
-	private int i = 1;
+	private int i = 0;
 
-	// public static void main(String[] args) {
-	// KfConstant.init();
-	// String url =
-	// "http://flights.ctrip.com/international/round-beijing-macau-bjs-mfm?2017-10-28&y_s";
-	// new CtripFlightsCrawler().spider(url);
-	// }
+	public static void main(String[] args) {
+		KfConstant.init();
+		String url = "http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s";
+		new CtripFlightsCrawler().spider(url);
+	}
 
 	/***
 	 * 程序入口
@@ -67,17 +67,142 @@ public class CtripFlightsCrawler {
 			Thread.sleep(5000);
 			String html = driver.getPageSource();
 			Document document = Jsoup.parse(html);
+			if (document.text().contains("对不起，您访问的太快了，休息一下吧。或者登录您的携程帐号继续访问")) {
+				Thread.sleep(5000);
+				String[] loadurls = new String[] { "http://hotels.ctrip.com/", "http://vacations.ctrip.com/",
+						"http://bus.ctrip.com/", "http://trains.ctrip.com", "http://piao.ctrip.com/" };
+				int n = (int) (Math.random() * 5);
+				driver.get(loadurls[n]);
+				Thread.sleep(5000);
+				driver.get(url);
+				Thread.sleep(5000);
+			}
 			// 表明有多少航班
 			Elements fightItemElements = document.select(".flight-item");
 			int num = fightItemElements.size();
-			System.out.println(num);
 			logger.info(url + " 下的航班信息有" + num + "个航班信息");
-			for (i = 1; i <= num; i++) {
-				logger.info(url + " 开始采集第" + i + "个航班");
+			for (i = 0; i < fightItemElements.size(); i++) {
+				String uuid = UUIDTools.getUUID();
+				logger.info(url + " 开始采集第" + (i + 1) + "个航班");
 				try {
 					((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
 					Thread.sleep(2000);
 					((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
+					if (locadling(driver)) {
+						logger.info(url + "  " + (i + 1) + "航班信息加载失败");
+						try {
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("url", url);
+							map.put("num", i + 1);
+							sendJson(map, "ctrip_error");
+							logger.info("保存数据");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						continue;
+					}
+					Element fightItem = fightItemElements.get(i);
+					Elements fightRowElements = fightItem.select(".flight-row");
+					if (fightItemElements.size() > 0) {
+						// 航空公司图标
+						String airlogo = null;
+						Element fightRowElement = fightRowElements.get(0);
+						Elements logoImgElements = fightRowElement.select(".airline-logo > img");
+						if (logoImgElements.size() > 0) {
+							airlogo = logoImgElements.first().attr("src");
+						}
+						// 航空公司名称
+						String airlineName = null;
+						Elements airlineNameElements = fightRowElement.select(".airline-name");
+						if (airlineNameElements.size() > 0) {
+							airlineName = airlineNameElements.first().text();
+						}
+						// 航空号码 // 飞机类型
+						String flightNo = null;
+						Elements flightNoElemens = fightRowElement.select(".flight-No");
+						if (flightNoElemens.size() > 0) {
+							flightNo = flightNoElemens.first().text();
+						}
+						String planeType = null;
+						Elements planeTypeElements = fightRowElement.select(".plane-type");
+						if (planeTypeElements.size() > 0) {
+							planeType = planeTypeElements.first().text();
+							flightNo = flightNo.replace(planeType, "");
+						}
+
+						// .flight-detail-depart
+						Elements departElements = fightRowElement.select(".flight-detail-depart");
+						String departTime = null;
+						String departAirport = null;
+						if (departElements.size() > 0) {
+
+							// 出发时间
+
+							Elements departTimeElements = departElements.first().select(".flight-detail-time");
+							if (departTimeElements.size() > 0) {
+								departTime = departTimeElements.first().text();
+							}
+							// 出发机场
+
+							Elements departAirportElements = departElements.first().select(".flight-detail-airport");
+							if (departAirportElements.size() > 0) {
+								departAirport = departAirportElements.first().text();
+							}
+						}
+						Elements returnElements = fightRowElement.select(".flight-detail-return");
+						String returnTime = null;
+						String returnAirport = null;
+						if (returnElements.size() > 0) {
+							// 到达时间 到达机场
+
+							Elements returnTimeElements = returnElements.first().select(".flight-detail-time");
+							if (returnTimeElements.size() > 0) {
+								returnTime = returnTimeElements.first().text();
+							}
+
+							Elements returnAirportElements = returnElements.first().select(".flight-detail-airport");
+							if (returnAirportElements.size() > 0) {
+								returnAirport = returnAirportElements.first().text();
+							}
+						}
+						// 飞行总时长
+						String totalTime = null;
+						Elements totalTimeElements = fightRowElement.select(".flight-total-time");
+						if (totalTimeElements.size() > 0) {
+							totalTime = totalTimeElements.first().text();
+						}
+						//
+						String stopInfo = null;
+						Elements stopInfoElements = fightRowElement.select(".flight-stop-info");
+						if (stopInfoElements.size() > 0) {
+							stopInfo = stopInfoElements.first().text();
+						}
+						try {
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("url", url);
+							map.put("uuid", uuid);
+							map.put("airline_name", airlineName);
+							map.put("flight_no", flightNo);
+							map.put("plane_type", planeType);
+							map.put("depart_time", departTime);
+							map.put("depart_airport", departAirport);
+							map.put("return_time", returnTime);
+							map.put("return_airport", returnAirport);
+							map.put("stop_info", stopInfo);
+							map.put("total_time", totalTime);
+							map.put("airlogo", airlogo);
+							sendJson(map, "ctrip_flights");
+							logger.info("保存数据");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				try {
 
 					// 选定
 					// wait.until(new ExpectedCondition<WebElement>() {
@@ -89,43 +214,56 @@ public class CtripFlightsCrawler {
 					// }
 					// }).click();
 					// Thread.sleep(5000);
-					if (locadling(driver)) {
-						logger.info(url + "  " + i + "航班信息加载失败");
-						continue;
-					}
-					if (i <= 15) {
+
+					if (i < 15) {
 						// 预定
 						try {
 							wait.until(new ExpectedCondition<WebElement>() {
 								@Override
 								public WebElement apply(WebDriver d) {
-									return d.findElement(By.xpath(
-											"//*[@id=\"flightList\"]/div[" + i + "]/div[3]/div/div[6]/div/button"));
-								}
-							}).click();
-						} catch (Exception e) {
-							logger.info(url + "  " + i + "点击预定失败");
-							continue;
-						}
-					} else if (i > 15) {
-						try {
-							wait.until(new ExpectedCondition<WebElement>() {
-								@Override
-								public WebElement apply(WebDriver d) {
-									return d.findElement(By.xpath("//*[@id=\"flightList\"]/div/div[" + (i - 15)
+									return d.findElement(By.xpath("//*[@id=\"flightList\"]/div[" + (i + 1)
 											+ "]/div[3]/div/div[6]/div/button"));
 								}
 							}).click();
 						} catch (Exception e) {
-							logger.info(url + "  " + i + "点击预定失败");
+							e.printStackTrace();
+							logger.info(url + "  " + (i + 1) + "点击预定失败");
+							try {
+								Map<String, Object> map = new HashMap<String, Object>();
+								map.put("url", url);
+								map.put("num", i + 1);
+								sendJson(map, "ctrip_error");
+								logger.info("保存数据");
+							} catch (Exception e1) {
+								e.printStackTrace();
+							}
+							continue;
+						}
+					} else if (i >= 15) {
+						try {
+							wait.until(new ExpectedCondition<WebElement>() {
+								@Override
+								public WebElement apply(WebDriver d) {
+									return d.findElement(By.xpath("//*[@id=\"flightList\"]/div/div[" + (i - 15 + 1)
+											+ "]/div[3]/div/div[6]/div/button"));
+								}
+							}).click();
+						} catch (Exception e) {
+							e.printStackTrace();
+							logger.info(url + "  " + (i + 1) + "点击预定失败");
+							try {
+								Map<String, Object> map = new HashMap<String, Object>();
+								map.put("url", url);
+								map.put("num", i + 1);
+								sendJson(map, "ctrip_error");
+								logger.info("保存数据");
+							} catch (Exception e1) {
+								e.printStackTrace();
+							}
 							continue;
 						}
 					}
 					Thread.sleep(5000);
-					// if (locadling(driver)) {
-					// logger.info(url + " " + i + "航班详情页信息加载失败");
-					// continue;
-					// }
 					// close 不登录直接预定
 					try {
 						Elements ssoElements = Jsoup.parse(driver.getPageSource()).select("#sso_btnDirectBook");
@@ -139,13 +277,25 @@ public class CtripFlightsCrawler {
 						e.printStackTrace();
 					}
 					Thread.sleep(5000);
-					parserBookDetail(driver);
+					parserBookDetail(driver, uuid);
 				} catch (Exception e) {
 					e.printStackTrace();
+					logger.info(url + "  " + (i + 1) + "点击预定失败");
+					try {
+						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("url", url);
+						map.put("num", i + 1);
+						sendJson(map, "ctrip_error");
+						logger.info("保存数据");
+					} catch (Exception e1) {
+						e.printStackTrace();
+					}
+					continue;
 				} finally {
 					driver.get(url);
 					Thread.sleep(5000);
 				}
+
 			}
 
 		} catch (Exception e) {
@@ -188,7 +338,7 @@ public class CtripFlightsCrawler {
 	 * 
 	 * @param driver
 	 */
-	private void parserBookDetail(WebDriver driver) {
+	private void parserBookDetail(WebDriver driver, String uuid) {
 		String html = driver.getPageSource();
 		Document document = Jsoup.parse(html);
 		Elements sidebarElements = document.select("#sidebar");
@@ -196,8 +346,9 @@ public class CtripFlightsCrawler {
 			// 先保存一份文本
 			try {
 				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("uuid", uuid);
 				map.put("side", sidebarElements.first().toString());
-				sendJson(map, "ctrip_flights_side");
+				sendJson(map, "ctrip_flights_detail");
 				logger.info("保存数据");
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -210,6 +361,7 @@ public class CtripFlightsCrawler {
 						String data = element.attr("data-source");
 						String info = URLDecoder.decode(data, "utf-8");
 						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("uuid", uuid);
 						map.put("info", info);
 						sendJson(map, "ctrip_flights_supplier");
 					} catch (Exception e) {

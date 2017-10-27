@@ -194,7 +194,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 							} else if (element.text().startsWith("登记机关")) {
 								registrationAuthority = trElement.select("td").get(1).text().trim();
 							} else if (element.text().startsWith("注册地址")) {
-								registeredAddress = trElement.select("td").get(3).text().trim();
+								registeredAddress = trElement.select("td").get(1).text().trim();
 							} else if (element.text().startsWith("经营范围")) {
 								businessScope = trElement.select("td").get(1).text().trim();
 								businessScope = businessScope.replace("收起", "").trim();

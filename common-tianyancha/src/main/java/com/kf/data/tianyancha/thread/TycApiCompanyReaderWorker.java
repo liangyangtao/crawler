@@ -34,7 +34,12 @@ public class TycApiCompanyReaderWorker extends BaseWorker implements Runnable {
 				// System.out.println(hours + "点不进行采集");
 				// sleeping(10 * 60 * 1000);
 				// } else {
-				fillCompanyQueue();
+				try {
+					fillCompanyQueue();
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
 				// }
 				// 填充公司
 			} else {
