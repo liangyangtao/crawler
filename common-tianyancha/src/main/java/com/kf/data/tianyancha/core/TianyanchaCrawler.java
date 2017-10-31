@@ -321,17 +321,15 @@ public class TianyanchaCrawler {
 				sfpmParser(document, driver, companyName, companyId);
 
 			}
-
 			if (zhibiaoNums.get("wechatCount") != null && zhibiaoNums.get("wechatCount") > 0) {
 				// 微信公众号
 				wechatParser(document, driver, companyName, companyId);
-
 			}
-
+			
+			
 			if (zhibiaoNums.get("investAbroadCount") != null && zhibiaoNums.get("investAbroadCount") > 0) {
 				// 对外投资
 				tianyanchaInvestOutSideParser.investAbroadParser(document, driver, companyName, companyId);
-
 			}
 			if (zhibiaoNums.get("coreTeamCount") != null && zhibiaoNums.get("coreTeamCount") > 0) {
 				// 核心团队
@@ -348,6 +346,8 @@ public class TianyanchaCrawler {
 				tianyanchaCompetitorsParser.coreTeamCountParser(document, driver, companyName, companyId);
 			}
 
+			
+			
 			// reportCount
 			if (zhibiaoNums.get("reportCount") != null && zhibiaoNums.get("reportCount") > 0) {
 				// 企业年报
