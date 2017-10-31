@@ -1,0 +1,62 @@
+19:12:07.900 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 开始采集航线http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 
+19:12:39.771 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 下的航班信息有37个航班信息 
+19:12:39.772 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第1个航班 
+19:12:42.114 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:13:00.169 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第2个航班 
+19:13:02.311 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:31:19.414 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 开始采集航线http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 
+19:31:44.687 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 下的航班信息有37个航班信息 
+19:31:44.688 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第1个航班 
+19:31:46.923 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:32:04.817 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第2个航班 
+19:32:06.969 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:33:17.401 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  2点击预定失败 
+19:33:17.424 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:34:17.474 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  2点击预定失败 
+19:34:17.495 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:34:24.340 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第3个航班 
+19:34:26.479 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:35:36.845 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  3点击预定失败 
+19:35:36.877 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:36:36.947 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  3点击预定失败 
+19:36:36.964 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:36:43.461 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第4个航班 
+19:36:45.611 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:37:55.900 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  4点击预定失败 
+19:37:55.919 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:38:55.953 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  4点击预定失败 
+19:38:55.973 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:39:02.372 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第5个航班 
+19:39:04.564 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:40:14.871 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  5点击预定失败 
+19:40:14.886 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:40:21.497 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第6个航班 
+19:40:23.664 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:41:34.069 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  6点击预定失败 
+19:41:34.091 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:41:40.578 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第7个航班 
+19:41:42.756 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:42:53.075 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  7点击预定失败 
+19:42:53.092 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:42:59.893 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第8个航班 
+19:43:02.027 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:43:19.014 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第9个航班 
+19:43:21.134 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:43:38.055 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第10个航班 
+19:43:40.193 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:43:57.329 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第11个航班 
+19:43:59.466 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:44:16.436 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第12个航班 
+19:44:18.574 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:45:29.069 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  12点击预定失败 
+19:45:29.088 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:45:36.379 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第13个航班 
+19:45:38.534 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:45:55.765 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第14个航班 
+19:45:57.897 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:46:15.088 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第15个航班 
+19:46:17.230 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 
+19:47:27.718 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s  15点击预定失败 
+19:47:27.734 [main] INFO  c.kf.data.core.CtripFlightsCrawler - 保存数据 
+19:47:34.494 [main] INFO  c.kf.data.core.CtripFlightsCrawler - http://flights.ctrip.com/international/beijing-macau-bjs-mfm?2017-11-07&y_s 开始采集第16个航班 
+19:47:36.689 [main] INFO  com.kf.data.parser.CtripBaseParser - 保存数据 

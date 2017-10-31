@@ -12,15 +12,19 @@ import com.google.gson.reflect.TypeToken;
 import com.kf.data.mybatis.entity.SqlAdapter;
 import com.kf.data.mybatis.entity.TycBaseCompanyCrawler;
 import com.kf.data.mybatis.entity.TycCompanyBranchCrawler;
+import com.kf.data.mybatis.entity.TycCompanyBusinessCrawler;
 import com.kf.data.mybatis.entity.TycCompanyChangeCrawler;
 import com.kf.data.mybatis.entity.TycCompanyChattelMortgageCrawler;
 import com.kf.data.mybatis.entity.TycCompanyCommonstockChangeCrawler;
 import com.kf.data.mybatis.entity.TycCompanyCommonstockCrawler;
+import com.kf.data.mybatis.entity.TycCompanyCompetitorsCrawler;
 import com.kf.data.mybatis.entity.TycCompanyCopyrightCrawler;
+import com.kf.data.mybatis.entity.TycCompanyCoreTeamCrawler;
 import com.kf.data.mybatis.entity.TycCompanyDomainRecordCrawler;
 import com.kf.data.mybatis.entity.TycCompanyEquityPledgedCrawler;
 import com.kf.data.mybatis.entity.TycCompanyExecutiveCrawler;
 import com.kf.data.mybatis.entity.TycCompanyImExPortCrawler;
+import com.kf.data.mybatis.entity.TycCompanyInvestOutsideCrawler;
 import com.kf.data.mybatis.entity.TycCompanyPatentCrawlerWithBLOBs;
 import com.kf.data.mybatis.entity.TycCompanyRecruitmentCrawler;
 import com.kf.data.mybatis.entity.TycCompanySfpmCrawler;
@@ -32,15 +36,19 @@ import com.kf.data.mybatis.entity.TycEventsInvestInvestorsCrawler;
 import com.kf.data.mybatis.mapper.SqlAdapterMapper;
 import com.kf.data.mybatis.mapper.TycBaseCompanyCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyBranchCrawlerMapper;
+import com.kf.data.mybatis.mapper.TycCompanyBusinessCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyChangeCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyChattelMortgageCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyCommonstockChangeCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyCommonstockCrawlerMapper;
+import com.kf.data.mybatis.mapper.TycCompanyCompetitorsCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyCopyrightCrawlerMapper;
+import com.kf.data.mybatis.mapper.TycCompanyCoreTeamCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyDomainRecordCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyEquityPledgedCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyExecutiveCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyImExPortCrawlerMapper;
+import com.kf.data.mybatis.mapper.TycCompanyInvestOutsideCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyPatentCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyRecruitmentCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanySfpmCrawlerMapper;
@@ -125,6 +133,22 @@ public class SaveJsonObjectServiceImpl implements SaveJsonObjectService {
 	@Autowired
 	TycEventsInvestCrawlerMapper tycEventsInvestCrawlerMapper;
 
+	// 对外投资
+	@Autowired
+	TycCompanyInvestOutsideCrawlerMapper tycCompanyInvestOutsideCrawlerMapper;
+
+	// 核心团队
+	@Autowired
+	TycCompanyCoreTeamCrawlerMapper tycCompanyCoreTeamCrawlerMapper;
+
+	// 企业业务
+	@Autowired
+	TycCompanyBusinessCrawlerMapper tycCompanyBusinessCrawlerMapper;
+
+	// 竞品信息
+	@Autowired
+	TycCompanyCompetitorsCrawlerMapper tycCompanyCompetitorsCrawlerMapper;
+
 	/***
 	 * 保存传送的json数据
 	 * 
@@ -207,6 +231,27 @@ public class SaveJsonObjectServiceImpl implements SaveJsonObjectService {
 			} else if (type.equals("tyc_events_invest")) {
 				TycEventsInvestCrawler tycEventsInvestCrawler = gson.fromJson(json, TycEventsInvestCrawler.class);
 				tycEventsInvestCrawlerMapper.insertSelective(tycEventsInvestCrawler);
+			} else if (type.equals("tyc_company_invest_outside")) {
+				// 对外投资
+				TycCompanyInvestOutsideCrawler tycCompanyInvestOutsideCrawler = gson.fromJson(json,
+						TycCompanyInvestOutsideCrawler.class);
+				tycCompanyInvestOutsideCrawlerMapper.insertSelective(tycCompanyInvestOutsideCrawler);
+
+			} else if (type.equals("tyc_company_core_team")) {
+				// 核心团队
+				TycCompanyCoreTeamCrawler tycCompanyCoreTeamCrawler = gson.fromJson(json,
+						TycCompanyCoreTeamCrawler.class);
+				tycCompanyCoreTeamCrawlerMapper.insertSelective(tycCompanyCoreTeamCrawler);
+			} else if (type.equals("tyc_company_business")) {
+				// 企业业务
+				TycCompanyBusinessCrawler tycCompanyBusinessCrawler = gson.fromJson(json,
+						TycCompanyBusinessCrawler.class);
+				tycCompanyBusinessCrawlerMapper.insertSelective(tycCompanyBusinessCrawler);
+			} else if (type.equals("tyc_company_competitors")) {
+				// 竞品信息
+				TycCompanyCompetitorsCrawler tycCompanyCompetitorsCrawler = gson.fromJson(json,
+						TycCompanyCompetitorsCrawler.class);
+				tycCompanyCompetitorsCrawlerMapper.insertSelective(tycCompanyCompetitorsCrawler);
 			} else {
 				try {
 					Map<String, Object> map = gson.fromJson(json, new TypeToken<HashMap<String, Object>>() {

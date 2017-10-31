@@ -26,11 +26,12 @@
 		</javaClientGenerator>
 
 
-		<table schema="crawler" tableName="pdf_classify_keywords"
-			domainObjectName="PdfClassifyKeywordsCrawler">
+		<table schema="crawler" tableName="tyc_company_competitors"
+			domainObjectName="TycCompanyCompetitorsCrawler">
 			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
 				identity="true" type="post" />
 		</table>
+
 		<!-- <table schema="crawler" tableName="tyc_events_invest" domainObjectName="TycEventsInvestCrawler"> 
 			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" 
 			type="post" /> </table> <table schema="crawler" tableName="tyc_events_invest_investors" 
