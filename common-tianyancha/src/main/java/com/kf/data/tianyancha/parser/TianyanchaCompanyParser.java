@@ -36,12 +36,25 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 	 * @param companyID
 	 * @return
 	 */
-	public String paseNode(Document document, String operatingStatus, String companyID) {
+	public String paseNode(Document document, String companyID) {
 
 		String companyName = null;
 		try {
 			TycBaseCompanyCrawler tycBaseCompanyCrawler = new TycBaseCompanyCrawler();
-			tycBaseCompanyCrawler.setOperatingStatus(operatingStatus);
+			
+			// 公司logo
+			Elements logoElements = document.select(".companyTitleBox55");
+			if (logoElements.size() > 0) {
+				Elements logDivElements = logoElements.first().select(".b-c-white");
+				if (logDivElements.size() > 0) {
+					Elements logoImgElements = logDivElements.first().select("img");
+					if (logoImgElements.size() > 0) {
+						String logo = logoImgElements.first().attr("src");
+						tycBaseCompanyCrawler.setCompanyLogoUrl(logo);
+					}
+				}
+			}
+
 			Element headerElement = getNodeByCssPath(document, headerCssPath);
 			/****
 			 * toubu
@@ -59,6 +72,13 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 					companyName = companyElements.get(0).text();
 					System.out.println("真实的名称是" + companyName);
 					tycBaseCompanyCrawler.setCompanyName(companyName);
+				}
+				// 曾用名称
+				String companyHisname = null;
+				Elements hisNameElements = headerElement.select(".historyName45Bottom");
+				if (hisNameElements.size() > 0) {
+					companyHisname = hisNameElements.first().text();
+					tycBaseCompanyCrawler.setCompanyHisName(companyHisname);
 				}
 				Elements inBlockElements = headerElement.select(".in-block.vertical-top:not(.sec-c3)");
 				for (Element element : inBlockElements) {
@@ -108,7 +128,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 			String registrationDate = null;
 			String registrationDateMachine = null;
 			// Date dtSetupCorp = null;
-			// String operatingStatus = null;
+			 String operatingStatus = null;
 			Element loaderElement = getNodeByCssPath(document, loaderCssPath);
 			if (loaderElement == null) {
 				System.out.println("法人信息没有");
@@ -130,6 +150,8 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 					registrationDate = registeredCapitalElement
 							.select("div:nth-child(2) > div:nth-child(2) > div:nth-child(1)").text().trim();
 					registrationDate = registrationDate.replace("-", "");
+					operatingStatus = registeredCapitalElement
+							.select("div:nth-child(3) > div:nth-child(2) > div:nth-child(1)").text().trim();
 
 				}
 
@@ -137,10 +159,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 			String approvedDate = null;
 			String approvedDateMachine = null;
 			String businessScope = null;
-			String companyAbout = null;
-			String companyLogoUrl = null;
 			String companyProperty = null;
-			String companyShortname = null;
 			String companySize = null;
 			String companyType = null;
 			String companyUsetypeId = null;
@@ -160,7 +179,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 			String registeredCityCode = null;
 			String registeredCityName = null;
 			String registrationAuthority = null;
-
+			String englishName = null;
 			String registrationNumber = null;
 			Element infoElement = getNodeByCssPath(document, infoCssPath);
 			if (infoElement == null) {
@@ -193,6 +212,9 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 								approvedDate = approvedDate.replace("-", "").trim().trim();
 							} else if (element.text().startsWith("登记机关")) {
 								registrationAuthority = trElement.select("td").get(1).text().trim();
+							} else if (element.text().startsWith("英文名称")) {
+								englishName = trElement.select("td").get(3).text().trim();
+								englishName = englishName.replace("未公开", "");
 							} else if (element.text().startsWith("注册地址")) {
 								registeredAddress = trElement.select("td").get(1).text().trim();
 							} else if (element.text().startsWith("经营范围")) {
@@ -200,7 +222,6 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 								businessScope = businessScope.replace("收起", "").trim();
 								businessScope = businessScope.replace("详细", "").trim();
 							}
-
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -218,10 +239,8 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 
 			tycBaseCompanyCrawler.setBusinessScope(businessScope);
 
-			// tycBaseCompanyCrawler.setCompanyAbout(companyAbout);
 			tycBaseCompanyCrawler.setCompanyId(companyID);
 
-			tycBaseCompanyCrawler.setCompanyLogoUrl(companyLogoUrl);
 			tycBaseCompanyCrawler.setCompanyName(tycBaseCompanyCrawler.getCompanyName());
 
 			tycBaseCompanyCrawler.setCompanyProperty(companyProperty);
@@ -244,8 +263,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 			tycBaseCompanyCrawler.setDtSetupCorp(null);
 
 			tycBaseCompanyCrawler.setEmail(email);
-			// tycBaseCompanyCrawler.setId();
-
+			tycBaseCompanyCrawler.setCompanyEnglishName(englishName);
 			tycBaseCompanyCrawler.setIndustry(industry);
 
 			tycBaseCompanyCrawler.setIndustryRecruitment(industryRecruitment);
@@ -258,7 +276,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 
 			tycBaseCompanyCrawler.setOperatingEndDate(operatingEndDate);
 
-			tycBaseCompanyCrawler.setOperatingStatus(operatingStatus);
+			 tycBaseCompanyCrawler.setOperatingStatus(operatingStatus);
 
 			tycBaseCompanyCrawler.setOrganizationCode(organizationCode);
 

@@ -26,6 +26,8 @@ import com.google.gson.GsonBuilder;
 import com.kf.data.fetcher.Fetcher;
 import com.kf.data.fetcher.tools.KfConstant;
 import com.kf.data.fetcher.tools.UUIDTools;
+import com.kf.data.parser.CtripBookParser;
+import com.kf.data.parser.CtripListParser;
 
 /***
  * 
@@ -39,8 +41,14 @@ import com.kf.data.fetcher.tools.UUIDTools;
 public class CtripFlightsCrawler {
 
 	public static Log logger = LogFactory.getLog(CtripFlightsCrawler.class);
-
+	// 订单解析
+	CtripBookParser ctripBookParser = new CtripBookParser();
+	// 列表页解析
+	CtripListParser ctripListParser = new CtripListParser();
+	// 控制第一个航班
 	private int i = 0;
+	// 控制不同价位的座位
+	private int j = 0;
 
 	public static void main(String[] args) {
 		KfConstant.init();
@@ -60,6 +68,19 @@ public class CtripFlightsCrawler {
 			WebDriverWait wait = new WebDriverWait(driver, 60);
 			// 读取首页链接
 			driver.get(url);
+			Thread.sleep(5000);
+			try {
+				// 按照时间点击
+				wait.until(new ExpectedCondition<WebElement>() {
+					@Override
+					public WebElement apply(WebDriver d) {
+						return d.findElement(By.xpath("//*[@id=\"sortControls\"]/ul[1]/li[2]/span"));
+					}
+				}).click();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			Thread.sleep(5000);
 			((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
 			Thread.sleep(5000);
@@ -102,129 +123,88 @@ public class CtripFlightsCrawler {
 						continue;
 					}
 					Element fightItem = fightItemElements.get(i);
-					Elements fightRowElements = fightItem.select(".flight-row");
-					if (fightItemElements.size() > 0) {
-						// 航空公司图标
-						String airlogo = null;
-						Element fightRowElement = fightRowElements.get(0);
-						Elements logoImgElements = fightRowElement.select(".airline-logo > img");
-						if (logoImgElements.size() > 0) {
-							airlogo = logoImgElements.first().attr("src");
-						}
-						// 航空公司名称
-						String airlineName = null;
-						Elements airlineNameElements = fightRowElement.select(".airline-name");
-						if (airlineNameElements.size() > 0) {
-							airlineName = airlineNameElements.first().text();
-						}
-						// 航空号码 // 飞机类型
-						String flightNo = null;
-						Elements flightNoElemens = fightRowElement.select(".flight-No");
-						if (flightNoElemens.size() > 0) {
-							flightNo = flightNoElemens.first().text();
-						}
-						String planeType = null;
-						Elements planeTypeElements = fightRowElement.select(".plane-type");
-						if (planeTypeElements.size() > 0) {
-							planeType = planeTypeElements.first().text();
-							flightNo = flightNo.replace(planeType, "");
-						}
-
-						// .flight-detail-depart
-						Elements departElements = fightRowElement.select(".flight-detail-depart");
-						String departTime = null;
-						String departAirport = null;
-						if (departElements.size() > 0) {
-
-							// 出发时间
-
-							Elements departTimeElements = departElements.first().select(".flight-detail-time");
-							if (departTimeElements.size() > 0) {
-								departTime = departTimeElements.first().text();
-							}
-							// 出发机场
-
-							Elements departAirportElements = departElements.first().select(".flight-detail-airport");
-							if (departAirportElements.size() > 0) {
-								departAirport = departAirportElements.first().text();
-							}
-						}
-						Elements returnElements = fightRowElement.select(".flight-detail-return");
-						String returnTime = null;
-						String returnAirport = null;
-						if (returnElements.size() > 0) {
-							// 到达时间 到达机场
-
-							Elements returnTimeElements = returnElements.first().select(".flight-detail-time");
-							if (returnTimeElements.size() > 0) {
-								returnTime = returnTimeElements.first().text();
-							}
-
-							Elements returnAirportElements = returnElements.first().select(".flight-detail-airport");
-							if (returnAirportElements.size() > 0) {
-								returnAirport = returnAirportElements.first().text();
-							}
-						}
-						// 飞行总时长
-						String totalTime = null;
-						Elements totalTimeElements = fightRowElement.select(".flight-total-time");
-						if (totalTimeElements.size() > 0) {
-							totalTime = totalTimeElements.first().text();
-						}
-						//
-						String stopInfo = null;
-						Elements stopInfoElements = fightRowElement.select(".flight-stop-info");
-						if (stopInfoElements.size() > 0) {
-							stopInfo = stopInfoElements.first().text();
-						}
+					ctripListParser.parserList(url, uuid, fightItem);
+					Elements seatElements = fightItem.select(".seat-row");
+					for (j = 1; j <= seatElements.size(); j++) {
 						try {
-							Map<String, Object> map = new HashMap<String, Object>();
-							map.put("url", url);
-							map.put("uuid", uuid);
-							map.put("airline_name", airlineName);
-							map.put("flight_no", flightNo);
-							map.put("plane_type", planeType);
-							map.put("depart_time", departTime);
-							map.put("depart_airport", departAirport);
-							map.put("return_time", returnTime);
-							map.put("return_airport", returnAirport);
-							map.put("stop_info", stopInfo);
-							map.put("total_time", totalTime);
-							map.put("airlogo", airlogo);
-							sendJson(map, "ctrip_flights");
-							logger.info("保存数据");
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+							logger.info("采集第" + i + "个航班的第" + j + "个座位信息");
+							if (i < 15) {
+								// 预定
+								try {
+									// *[@id="flightList"]/div[1]/div[3]/div[2]/div[6]/div/button
+									wait.until(new ExpectedCondition<WebElement>() {
+										@Override
+										public WebElement apply(WebDriver d) {
+											if (j == 1) {
+												return d.findElement(By.xpath("//*[@id=\"flightList\"]/div[" + (i + 1)
+														+ "]/div[3]/div/div[6]/div/button"));
 
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				try {
-
-					// 选定
-					// wait.until(new ExpectedCondition<WebElement>() {
-					// @Override
-					// public WebElement apply(WebDriver d) {
-					// return d.findElement(
-					// By.xpath("//*[@id=\"flightList\"]/div[" + i +
-					// "]/div[3]/div/div[6]/div/button"));
-					// }
-					// }).click();
-					// Thread.sleep(5000);
-
-					if (i < 15) {
-						// 预定
-						try {
-							wait.until(new ExpectedCondition<WebElement>() {
-								@Override
-								public WebElement apply(WebDriver d) {
-									return d.findElement(By.xpath("//*[@id=\"flightList\"]/div[" + (i + 1)
-											+ "]/div[3]/div/div[6]/div/button"));
+											} else {
+												return d.findElement(By.xpath("//*[@id=\"flightList\"]/div[" + (i + 1)
+														+ "]/div[3]/div[" + j + "]/div[6]/div/button"));
+											}
+										}
+									}).click();
+								} catch (Exception e) {
+									e.printStackTrace();
+									logger.info(url + "  " + (i + 1) + "点击预定失败");
+									try {
+										Map<String, Object> map = new HashMap<String, Object>();
+										map.put("url", url);
+										map.put("num", i + 1);
+										sendJson(map, "ctrip_error");
+										logger.info("保存数据");
+									} catch (Exception e1) {
+										e.printStackTrace();
+									}
+									continue;
 								}
-							}).click();
+							} else if (i >= 15) {
+								try {
+									wait.until(new ExpectedCondition<WebElement>() {
+										@Override
+										public WebElement apply(WebDriver d) {
+											if (j == 1) {
+												return d.findElement(By.xpath("//*[@id=\"flightList\"]/div/div["
+														+ (i - 15 + 1) + "]/div[3]/div/div[6]/div/button"));
+											} else {
+												return d.findElement(By.xpath("//*[@id=\"flightList\"]/div/div["
+														+ (i - 15 + 1) + "]/div[3]/div[" + j + "]/div[6]/div/button"));
+											}
+										}
+									}).click();
+								} catch (Exception e) {
+									e.printStackTrace();
+									logger.info(url + "  " + (i + 1) + "点击预定失败");
+									try {
+										Map<String, Object> map = new HashMap<String, Object>();
+										map.put("url", url);
+										map.put("num", i + 1);
+										sendJson(map, "ctrip_error");
+										logger.info("保存数据");
+									} catch (Exception e1) {
+										e.printStackTrace();
+									}
+									continue;
+								}
+							}
+
+							/// 点击之后
+							Thread.sleep(5000);
+							// close 不登录直接预定
+							try {
+								Elements ssoElements = Jsoup.parse(driver.getPageSource()).select("#sso_btnDirectBook");
+								if (ssoElements.size() > 0) {
+									WebElement closeWebElement = driver.findElement(By.id("sso_btnDirectBook"));
+									if (closeWebElement.isDisplayed()) {
+										closeWebElement.click();
+									}
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							Thread.sleep(5000);
+							parserBookDetail(driver, uuid, url);
 						} catch (Exception e) {
 							e.printStackTrace();
 							logger.info(url + "  " + (i + 1) + "点击预定失败");
@@ -238,46 +218,12 @@ public class CtripFlightsCrawler {
 								e.printStackTrace();
 							}
 							continue;
-						}
-					} else if (i >= 15) {
-						try {
-							wait.until(new ExpectedCondition<WebElement>() {
-								@Override
-								public WebElement apply(WebDriver d) {
-									return d.findElement(By.xpath("//*[@id=\"flightList\"]/div/div[" + (i - 15 + 1)
-											+ "]/div[3]/div/div[6]/div/button"));
-								}
-							}).click();
-						} catch (Exception e) {
-							e.printStackTrace();
-							logger.info(url + "  " + (i + 1) + "点击预定失败");
-							try {
-								Map<String, Object> map = new HashMap<String, Object>();
-								map.put("url", url);
-								map.put("num", i + 1);
-								sendJson(map, "ctrip_error");
-								logger.info("保存数据");
-							} catch (Exception e1) {
-								e.printStackTrace();
-							}
-							continue;
+						} finally {
+							driver.get(url);
+							Thread.sleep(5000);
 						}
 					}
-					Thread.sleep(5000);
-					// close 不登录直接预定
-					try {
-						Elements ssoElements = Jsoup.parse(driver.getPageSource()).select("#sso_btnDirectBook");
-						if (ssoElements.size() > 0) {
-							WebElement closeWebElement = driver.findElement(By.id("sso_btnDirectBook"));
-							if (closeWebElement.isDisplayed()) {
-								closeWebElement.click();
-							}
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					Thread.sleep(5000);
-					parserBookDetail(driver, uuid);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.info(url + "  " + (i + 1) + "点击预定失败");
@@ -292,7 +238,6 @@ public class CtripFlightsCrawler {
 					}
 					continue;
 				} finally {
-					driver.get(url);
 					Thread.sleep(5000);
 				}
 
@@ -338,18 +283,14 @@ public class CtripFlightsCrawler {
 	 * 
 	 * @param driver
 	 */
-	private void parserBookDetail(WebDriver driver, String uuid) {
+	private void parserBookDetail(WebDriver driver, String uuid, String url) {
 		String html = driver.getPageSource();
 		Document document = Jsoup.parse(html);
 		Elements sidebarElements = document.select("#sidebar");
 		if (sidebarElements.size() > 0) {
 			// 先保存一份文本
 			try {
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("uuid", uuid);
-				map.put("side", sidebarElements.first().toString());
-				sendJson(map, "ctrip_flights_detail");
-				logger.info("保存数据");
+				ctripBookParser.parserBook(document, uuid, url);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

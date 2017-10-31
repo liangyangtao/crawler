@@ -6,10 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.kf.data.fetcher.tools.ReportDataFormat;
-import com.kf.data.fetcher.tools.UUIDTools;
-import com.kf.data.mybatis.entity.TycEventsInvestCrawler;
-import com.kf.data.mybatis.entity.TycEventsInvestInvestorsCrawler;
+import com.kf.data.mybatis.entity.TycCompanyFinancingCrawler;
 
 /***
  * 
@@ -36,36 +33,28 @@ public class TianyanchaRongziParser extends TianyanchaBasePaser {
 			for (Element element : nodes) {
 				try {
 					Elements tdElements = element.select("td");
-					TycEventsInvestCrawler tycEventsInvestCrawler = new TycEventsInvestCrawler();
 					String date = tdElements.get(0).text();
-					date = date.replace("-", "");
 					String step = tdElements.get(1).text();
 					String valuation = tdElements.get(2).text();
 					String investmentAmount = tdElements.get(3).text();
 					String investRatio = tdElements.get(4).text();
 					String investorName = tdElements.get(5).text();
-					String uuid = UUIDTools.getUUID();
-					tycEventsInvestCrawler.setDate(date);
-					tycEventsInvestCrawler.setStep(step);
+					String source = tdElements.get(6).text();
+					TycCompanyFinancingCrawler tycCompanyFinancingCrawler = new TycCompanyFinancingCrawler();
+					tycCompanyFinancingCrawler.setAmount(investmentAmount);
+					tycCompanyFinancingCrawler.setCompanyId(companyId);
+					tycCompanyFinancingCrawler.setCompanyName(companyName);
+					tycCompanyFinancingCrawler.setCreatedAt(new Date());
+					tycCompanyFinancingCrawler.setFinancDate(date);
+					tycCompanyFinancingCrawler.setInvestors(investorName);
+					tycCompanyFinancingCrawler.setProportion(investRatio);
+					tycCompanyFinancingCrawler.setRound(step);
+					tycCompanyFinancingCrawler.setSource(source);
+					tycCompanyFinancingCrawler.setStatus((byte) 0);
+					tycCompanyFinancingCrawler.setUpdatedAt(new Date());
+					tycCompanyFinancingCrawler.setValuation(valuation);
+					sendJson(tycCompanyFinancingCrawler, "tyc_company_financing");
 
-					tycEventsInvestCrawler.setValuation(valuation);
-					tycEventsInvestCrawler.setInvestmentAmount(investmentAmount);
-					tycEventsInvestCrawler.setInvestRatio(ReportDataFormat.doubleValueChange(investRatio));
-					tycEventsInvestCrawler.setEventId(uuid);
-					tycEventsInvestCrawler.setCompanyName(companyName);
-					tycEventsInvestCrawler.setCompanyId(companyId);
-					tycEventsInvestCrawler.setCreatedAt(new Date());
-					tycEventsInvestCrawler.setUpdatedAt(new Date());
-					tycEventsInvestCrawler.setStatus(false);
-					sendJson(tycEventsInvestCrawler, "tyc_events_invest");
-					if (investorName != null && !investorName.isEmpty()) {
-						TycEventsInvestInvestorsCrawler tycEventsInvestInvestorsCrawler = new TycEventsInvestInvestorsCrawler();
-						tycEventsInvestInvestorsCrawler.setCreatedAt(new Date());
-						tycEventsInvestInvestorsCrawler.setUpdatedAt(new Date());
-						tycEventsInvestInvestorsCrawler.setEventId(uuid);
-						tycEventsInvestInvestorsCrawler.setInvestorName(investorName);
-						sendJson(tycEventsInvestInvestorsCrawler, "tyc_events_invest_investors");
-					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
