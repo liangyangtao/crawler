@@ -109,6 +109,7 @@ public class CtripFlightsCrawler {
 					((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
 					Thread.sleep(2000);
 					((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
+					
 					if (locadling(driver)) {
 						logger.info(url + "  " + (i + 1) + "航班信息加载失败");
 						try {
@@ -220,7 +221,7 @@ public class CtripFlightsCrawler {
 							continue;
 						} finally {
 							driver.get(url);
-							Thread.sleep(5000);
+							Thread.sleep(60 * 1000);
 						}
 					}
 

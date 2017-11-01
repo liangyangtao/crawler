@@ -34,9 +34,8 @@ public class CtripFlightsReaderWorker extends BaseWorker implements Runnable {
 					e.printStackTrace();
 					continue;
 				}
-			} else {
-				sleeping(1 * 60 * 1000);
 			}
+			sleeping(5 * 60 * 1000);
 
 		}
 

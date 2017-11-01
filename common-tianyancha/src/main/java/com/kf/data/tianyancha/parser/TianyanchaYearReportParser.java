@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.WebDriver;
 
 import com.kf.data.fetcher.tools.ReportDataFormat;
 import com.kf.data.mybatis.entity.TycCompanyShareholdersContributiveCrawler;
@@ -29,6 +31,41 @@ public class TianyanchaYearReportParser extends TianyanchaBasePaser {
 	 * @param document
 	 * @param companyName
 	 * @param companyId
+	 * @param driver
+	 */
+	public void yearPortParser(Document document, String companyName, String companyId, WebDriver driver) {
+		// 企业年报
+		Elements reportNodes = document.select(".report_item_2017");
+		for (Element element : reportNodes) {
+			try {
+				Element linkElement = element.select("a").first();
+				String reportLink = linkElement.absUrl("href");
+				driver.get(reportLink);
+				String reportHtml = driver.getPageSource();
+				Document reportDocument = Jsoup.parse(reportHtml, reportLink);
+				String reportdate = element.select(".pt15").first().text().trim();
+				paseNode(reportDocument, companyName, companyId, reportdate);
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				driver.navigate().back();
+			}
+
+		}
+
+	}
+
+	/***
+	 * 年报解析
+	 * 
+	 * @param document
+	 * @param companyName
+	 * @param companyId
 	 */
 	public void paseNode(Document document, String companyName, String companyId, String reportdate) {
 
@@ -41,8 +78,8 @@ public class TianyanchaYearReportParser extends TianyanchaBasePaser {
 			result.put("company_id", companyId);
 			result.put("company_name", companyName);
 			result.put("status", 0);
-			result.put("created_at", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format( new Date()));
-			result.put("updated_at", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format( new Date()));
+			result.put("created_at", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()));
+			result.put("updated_at", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()));
 			result.put("reportdate", reportdate);
 			sendJson(result, "tyc_company_report");
 		}

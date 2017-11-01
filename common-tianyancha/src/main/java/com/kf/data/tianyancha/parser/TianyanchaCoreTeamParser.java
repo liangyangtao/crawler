@@ -32,7 +32,7 @@ public class TianyanchaCoreTeamParser extends TianyanchaBasePaser {
 	 * @param companyName
 	 * @param companyId
 	 */
-	public void coreTeamCountParser(Document document, WebDriver driver, String companyName, String companyId) {
+	public void coreTeamParser(Document document, WebDriver driver, String companyName, String companyId) {
 		paseNode(document, companyName, companyId);
 		int pageIndex = 2;
 		int pageNum = 0;
