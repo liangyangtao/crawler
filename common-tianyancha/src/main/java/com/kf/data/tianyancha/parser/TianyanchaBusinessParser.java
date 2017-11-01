@@ -32,7 +32,7 @@ public class TianyanchaBusinessParser extends TianyanchaBasePaser {
 	 * @param companyName
 	 * @param companyId
 	 */
-	public void coreTeamCountParser(Document document, WebDriver driver, String companyName, String companyId) {
+	public void businessParser(Document document, WebDriver driver, String companyName, String companyId) {
 		paseNode(document, companyName, companyId);
 		int pageIndex = 2;
 		int pageNum = 0;
@@ -104,19 +104,19 @@ public class TianyanchaBusinessParser extends TianyanchaBasePaser {
 					if (logoElements.size() > 0) {
 						logo = logoElements.first().attr("src");
 					}
-					String product = null ;
+					String product = null;
 					Elements productElemens = element.select(".title");
-					if(productElemens.size() >0){
+					if (productElemens.size() > 0) {
 						product = productElemens.first().text();
 					}
-					String industry = null ;
+					String industry = null;
 					Elements industryElements = element.select(".hangye");
-					if(industryElements.size() > 0){
+					if (industryElements.size() > 0) {
 						industry = industryElements.first().text();
 					}
-					String business = null ;
+					String business = null;
 					Elements businessElements = element.select(".yeweu");
-					if(businessElements.size() > 0){
+					if (businessElements.size() > 0) {
 						business = businessElements.first().text();
 					}
 					TycCompanyBusinessCrawler tycCompanyBusinessCrawler = new TycCompanyBusinessCrawler();
@@ -127,7 +127,7 @@ public class TianyanchaBusinessParser extends TianyanchaBasePaser {
 					tycCompanyBusinessCrawler.setIndustry(industry);
 					tycCompanyBusinessCrawler.setLogo(logo);
 					tycCompanyBusinessCrawler.setProduct(product);
-					tycCompanyBusinessCrawler.setStatus((byte)0);
+					tycCompanyBusinessCrawler.setStatus((byte) 0);
 					tycCompanyBusinessCrawler.setUpdatedAt(new Date());
 					sendJson(tycCompanyBusinessCrawler, "tyc_company_business");
 				} catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.kf.data.tianyancha.parser;
 
+import java.net.URLEncoder;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,37 +13,36 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.kf.data.mybatis.entity.TycCompanySoftCopyrightCrawler;
+import com.kf.data.mybatis.entity.TycCompanyAnnouncementCrawler;
 
 import net.sf.json.JSONObject;
 
 /***
  * 
- * @Title: TianyanchaSoftCopyrightParser.java
+ * @Title: TianyanchaAnnouncementParser.java
  * @Package com.kf.data.tianyancha.parser
- * @Description: 软件著作权
+ * @Description: 开庭公告
  * @author liangyt
  * @date 2017年10月11日 下午2:14:10
  * @version V1.0
  */
-public class TianyanchaSoftCopyrightParser extends TianyanchaBasePaser {
+public class TianyanchaAnnouncementParser extends TianyanchaBasePaser {
 
 	/***
-	 * 软件著作权
+	 * 开庭公告
 	 * 
 	 * @param document
 	 * @param driver
 	 * @param companyName
 	 * @param companyId
 	 */
-	public void softCopyrightParser(Document document, WebDriver driver, String companyName, String companyId) {
+	public void announcementParser(Document document, WebDriver driver, String companyName, String companyId) {
 		paseNode(document, companyName, companyId);
 		int pageIndex = 2;
 		int pageNum = 0;
-		// 招聘 处理中
 		while (true) {
 			try {
-				Elements contentNodes = document.select("#_container_copyright");
+				Elements contentNodes = document.select("#_container_announcementcourt");
 				if (contentNodes.size() > 0) {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
@@ -59,8 +59,8 @@ public class TianyanchaSoftCopyrightParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
-							WebElement nextPageBt = driver.findElement(
-									By.xpath("//*[@id=\"_container_copyright\"]/div/div[last()]/ul/li[last()]/a"));
+							WebElement nextPageBt = driver.findElement(By.xpath(
+									"//*[@id=\"_container_announcementcourt\"]/div/div[last()]/ul/li[last()]/a"));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
 							try {
 								Thread.sleep(5000);
@@ -90,49 +90,50 @@ public class TianyanchaSoftCopyrightParser extends TianyanchaBasePaser {
 	}
 
 	/****
-	 * 软件著作权
+	 * 开庭公告解析
 	 * 
 	 * @param document
 	 * @param companyName
 	 * @param companyId
 	 */
 	public void paseNode(Document document, String companyName, String companyId) {
-		Elements contentNodes = document.select("#_container_copyright");
+		Elements contentNodes = document.select("#_container_announcementcourt");
 		if (contentNodes.size() > 0) {
 			Elements nodes = contentNodes.first().select(".companyInfo-table > tbody > tr");
 			for (Element element : nodes) {
 				try {
 					Elements tdElements = element.select("td");
-					if (tdElements.size() == 7) {
-						// openCopyrightPopup({"id":"2797175","regtime":"1505059200000","publishtime":"1503763200000","authorNationality":"北京百度网讯科技有限公司:中国",
-						// "simplename":"百度文库","regnum":"2017SR502655","catnum":"30200-0000","fullname":"百度文库Android终端软件","version":"V4.2.4"})
-						String text = tdElements.get(6).select("span").first().attr("onclick");
-						text = StringUtils.substringBetween(text, "openCopyrightPopup({", "})");
+
+					if (tdElements.size() == 5) {
+						String text = tdElements.get(4).select("span").first().attr("onclick");
+						text = StringUtils.substringBetween(text, "openAnnouncementPopup({", "})");
 						text = "{" + text + "}";
 						JSONObject obj = JSONObject.fromObject(text);
-						String authornationality = obj.getString("authorNationality");
-						String catnum = obj.getString("catnum");
-						String fullname = obj.getString("fullname");
-						String publishtime = obj.getString("publishtime");
-						String regnum = obj.getString("regnum");
-						String regtime = obj.getString("regtime");
-						String simplename = obj.getString("simplename");
-						String version = obj.getString("version");
-						TycCompanySoftCopyrightCrawler tycCompanySoftCopyrightCrawler = new TycCompanySoftCopyrightCrawler();
-						tycCompanySoftCopyrightCrawler.setAuthornationality(authornationality);
-						tycCompanySoftCopyrightCrawler.setCatnum(catnum);
-						tycCompanySoftCopyrightCrawler.setCompanyId(companyId);
-						tycCompanySoftCopyrightCrawler.setCompanyName(companyName);
-						tycCompanySoftCopyrightCrawler.setCreatedAt(new Date());
-						tycCompanySoftCopyrightCrawler.setFullname(fullname);
-						tycCompanySoftCopyrightCrawler.setPublishtime(publishtime);
-						tycCompanySoftCopyrightCrawler.setRegnum(regnum);
-						tycCompanySoftCopyrightCrawler.setRegtime(regtime);
-						tycCompanySoftCopyrightCrawler.setSimplename(simplename);
-						tycCompanySoftCopyrightCrawler.setStatus((byte) 0);
-						tycCompanySoftCopyrightCrawler.setUpdatedAt(new Date());
-						tycCompanySoftCopyrightCrawler.setVersion(version);
-						sendJson(tycCompanySoftCopyrightCrawler, "tyc_company_soft_copyright");
+						String caseNo = obj.getString("caseNo");
+						String caseReason = obj.getString("caseReason");
+						String contractors = obj.getString("contractors");
+						String court = obj.getString("court");
+						String courtRoom = obj.getString("courtroom");
+						String defendant = URLEncoder.encode(obj.getJSONArray("defendant").toString(), "utf-8");
+						String judge = obj.getString("judge");
+						String plaintiff = URLEncoder.encode(obj.getJSONArray("plaintiff").toString(), "utf-8");
+						String startDate = obj.getString("startDate");
+						TycCompanyAnnouncementCrawler tycCompanyAnnouncementCrawler = new TycCompanyAnnouncementCrawler();
+						tycCompanyAnnouncementCrawler.setCaseNo(caseNo);
+						tycCompanyAnnouncementCrawler.setCaseReason(caseReason);
+						tycCompanyAnnouncementCrawler.setCompanyId(companyId);
+						tycCompanyAnnouncementCrawler.setCompanyName(companyName);
+						tycCompanyAnnouncementCrawler.setContractors(contractors);
+						tycCompanyAnnouncementCrawler.setCourt(court);
+						tycCompanyAnnouncementCrawler.setCourtRoom(courtRoom);
+						tycCompanyAnnouncementCrawler.setCreatedAt(new Date());
+						tycCompanyAnnouncementCrawler.setDefendant(defendant);
+						tycCompanyAnnouncementCrawler.setJudge(judge);
+						tycCompanyAnnouncementCrawler.setPlaintiff(plaintiff);
+						tycCompanyAnnouncementCrawler.setStartDate(startDate);
+						tycCompanyAnnouncementCrawler.setStatus((byte) 0);
+						tycCompanyAnnouncementCrawler.setUpdatedAt(new Date());
+						sendJson(tycCompanyAnnouncementCrawler, "tyc_company_announcement");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

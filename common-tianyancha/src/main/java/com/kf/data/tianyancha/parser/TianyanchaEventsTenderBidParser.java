@@ -11,36 +11,34 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.kf.data.fetcher.tools.ReportDataFormat;
-import com.kf.data.mybatis.entity.TycCompanyCommonstockChangeCrawler;
+import com.kf.data.mybatis.entity.TycEventsTenderBidCrawler;
 
 /***
  * 
- * @Title: TianyanchaCommonstockChangeParser.java
+ * @Title: TianyanchaCaseParser.java
  * @Package com.kf.data.tianyancha.parser
- * @Description: 天眼查股本变动信息解析
+ * @Description: 招投标
  * @author liangyt
- * @date 2017年9月30日 下午3:01:32
+ * @date 2017年10月11日 下午2:14:10
  * @version V1.0
  */
-public class TianyanchaCommonstockChangeParser extends TianyanchaBasePaser {
+public class TianyanchaEventsTenderBidParser extends TianyanchaBasePaser {
 
 	/***
-	 * 股本变动
+	 * 招投标
 	 * 
 	 * @param document
 	 * @param driver
 	 * @param companyName
 	 * @param companyId
 	 */
-	public void commonstockChangeParser(Document document, WebDriver driver, String companyName, String companyId) {
-		paseNode(document, companyName, companyId);
+	public void eventsTenderBidParser(Document document, WebDriver driver, String companyName, String companyId) {
+		paseNode(document, companyName, companyId, driver);
 		int pageIndex = 2;
 		int pageNum = 0;
-		// 招聘 处理中
 		while (true) {
 			try {
-				Elements contentNodes = document.select("#_container_equityChange");
+				Elements contentNodes = document.select("#_container_bid");
 				if (contentNodes.size() > 0) {
 					Elements pageElements = contentNodes.first().select(".company_pager");
 					if (pageElements.size() > 0) {
@@ -58,7 +56,7 @@ public class TianyanchaCommonstockChangeParser extends TianyanchaBasePaser {
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
 							WebElement nextPageBt = driver.findElement(
-									By.xpath("//*[@id=\"_container_equityChange\"]/div/div[last()]/ul/li[last()]/a"));
+									By.xpath("//*[@id=\"_container_bid\"]/div/div[last()]/ul/li[last()]/a"));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
 							try {
 								Thread.sleep(5000);
@@ -66,7 +64,7 @@ public class TianyanchaCommonstockChangeParser extends TianyanchaBasePaser {
 								e.printStackTrace();
 							}
 							document = Jsoup.parse(driver.getPageSource());
-							paseNode(document, companyName, companyId);
+							paseNode(document, companyName, companyId, driver);
 							if (liElements.last().classNames().contains("disabled")) {
 								break;
 							}
@@ -87,44 +85,60 @@ public class TianyanchaCommonstockChangeParser extends TianyanchaBasePaser {
 		}
 	}
 
-	/***
-	 * 天眼查股本变动信息解析
+	/****
+	 * 招投标解析
 	 * 
 	 * @param document
 	 * @param companyName
 	 * @param companyId
 	 */
-	public void paseNode(Document document, String companyName, String companyId) {
-		Elements contentNodes = document.select("#_container_equityChange");
+	public void paseNode(Document document, String companyName, String companyId, WebDriver driver) {
+		Elements contentNodes = document.select("#_container_bid");
 		if (contentNodes.size() > 0) {
 			Elements nodes = contentNodes.first().select(".companyInfo-table > tbody > tr");
 			for (Element element : nodes) {
 				try {
 					Elements tdElements = element.select("td");
-					String date = tdElements.get(0).text();
-					String reason = tdElements.get(1).text();
-					String aAllEquity = tdElements.get(2).text();
-					String aCirculationEquity = tdElements.get(3).text();
-					String aLimitEquity = tdElements.get(4).text();
-					TycCompanyCommonstockChangeCrawler tycCompanyCommonstockChangeCrawler = new TycCompanyCommonstockChangeCrawler();
-					tycCompanyCommonstockChangeCrawler.setaAllEquity(ReportDataFormat.bigUnitChange(aAllEquity));
-					tycCompanyCommonstockChangeCrawler
-							.setaCirculationEquity(ReportDataFormat.bigUnitChange(aCirculationEquity));
-					tycCompanyCommonstockChangeCrawler.setaLimitEquity(ReportDataFormat.bigUnitChange(aLimitEquity));
-					tycCompanyCommonstockChangeCrawler.setCompanyId(companyId);
-					tycCompanyCommonstockChangeCrawler.setCompanyName(companyName);
-					tycCompanyCommonstockChangeCrawler.setCreatedAt(new Date());
-					tycCompanyCommonstockChangeCrawler.setDate(stringToDate(date));
-					tycCompanyCommonstockChangeCrawler.setReason(reason);
-					tycCompanyCommonstockChangeCrawler.setStatus((byte) 0);
-					tycCompanyCommonstockChangeCrawler.setUpdatedAt(new Date());
-					sendJson(tycCompanyCommonstockChangeCrawler, "tyc_company_commonstock_change");
+					String buyer = tdElements.get(2).text().trim();
+					String date = tdElements.get(0).text().trim();
+					String title = tdElements.get(1).text().trim();
+
+					TycEventsTenderBidCrawler tycEventsTenderBidCrawler = new TycEventsTenderBidCrawler();
+
+					tycEventsTenderBidCrawler.setBuyer(buyer);
+					tycEventsTenderBidCrawler.setCompanyId(companyId);
+					tycEventsTenderBidCrawler.setCompanyName(companyName);
+
+					tycEventsTenderBidCrawler.setCreatedAt(new Date());
+					tycEventsTenderBidCrawler.setDate(date);
+					tycEventsTenderBidCrawler.setStatus((byte) 0);
+					tycEventsTenderBidCrawler.setTitle(title);
+					tycEventsTenderBidCrawler.setUpdatedAt(new Date());
+
+					try {
+						Element linkElement = tdElements.get(1).select("a").first();
+						String reportLink = linkElement.absUrl("href");
+						driver.get(reportLink);
+						String reportHtml = driver.getPageSource();
+						Document reportDocument = Jsoup.parse(reportHtml, reportLink);
+						String judicialText = reportDocument.select(".lawsuit").toString();
+						tycEventsTenderBidCrawler.setContent(judicialText);
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						sendJson(tycEventsTenderBidCrawler, "tyc_events_tender_bid");
+						driver.navigate().back();
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
+					continue;
 				}
 			}
 		}
-
 	}
-
 }

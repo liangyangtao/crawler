@@ -41,7 +41,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 		String companyName = null;
 		try {
 			TycBaseCompanyCrawler tycBaseCompanyCrawler = new TycBaseCompanyCrawler();
-			
+
 			// 公司logo
 			Elements logoElements = document.select(".companyTitleBox55");
 			if (logoElements.size() > 0) {
@@ -128,7 +128,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 			String registrationDate = null;
 			String registrationDateMachine = null;
 			// Date dtSetupCorp = null;
-			 String operatingStatus = null;
+			String operatingStatus = null;
 			Element loaderElement = getNodeByCssPath(document, loaderCssPath);
 			if (loaderElement == null) {
 				System.out.println("法人信息没有");
@@ -218,7 +218,13 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 							} else if (element.text().startsWith("注册地址")) {
 								registeredAddress = trElement.select("td").get(1).text().trim();
 							} else if (element.text().startsWith("经营范围")) {
-								businessScope = trElement.select("td").get(1).text().trim();
+								Element tdElement = trElement.select("td").get(1);
+								Elements spanElements = tdElement.select(".js-full-container");
+								if (spanElements.size() > 0) {
+									businessScope = spanElements.get(0).text();
+								} else {
+									businessScope = tdElement.text();
+								}
 								businessScope = businessScope.replace("收起", "").trim();
 								businessScope = businessScope.replace("详细", "").trim();
 							}
@@ -276,7 +282,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 
 			tycBaseCompanyCrawler.setOperatingEndDate(operatingEndDate);
 
-			 tycBaseCompanyCrawler.setOperatingStatus(operatingStatus);
+			tycBaseCompanyCrawler.setOperatingStatus(operatingStatus);
 
 			tycBaseCompanyCrawler.setOrganizationCode(organizationCode);
 

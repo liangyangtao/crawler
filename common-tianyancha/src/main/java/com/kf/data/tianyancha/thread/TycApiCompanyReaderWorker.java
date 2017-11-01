@@ -69,6 +69,7 @@ public class TycApiCompanyReaderWorker extends BaseWorker implements Runnable {
 		// 中建材集团进出口公司
 		// 周宁县农村信用合作联社
 		// 杭州来拍网络科技有限公司
+		// 中国建设银行股份有限公司
 		//
 		// put(companyQueue, "中建材集团进出口公司");
 	}

@@ -3,9 +3,14 @@ package com.kf.data.tianyancha.parser;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import com.kf.data.mybatis.entity.TycCompanyRecruitmentCrawler;
 
@@ -21,13 +26,67 @@ import net.sf.json.JSONObject;
  * @version V1.0
  */
 public class TianyanchaRecruitParser extends TianyanchaBasePaser {
-	// <!--招聘信息oocss-->
-	// <!-- ngIf: items2.recruitCount.show&&dataItemCount.recruitCount>0 -->
-	// neeq_company_recruitment
-	public static final String cssPath = "div[ng-if=items2.recruitCount.show&&dataItemCount.recruitCount>0]";
-	public static final String bodyCssPath = "div[ng-if=dataItemCount.recruitCount>0]";
-	public static final String listCssPath = "tr[ng-repeat=check in changeinfoList.result]";
-	public static final String pageTotalCssPath = ".total";
+
+	/***
+	 * 招聘翻页抽取数据
+	 * 
+	 * @param document
+	 * @param driver
+	 */
+	public void recruitParser(Document document, WebDriver driver, String companyName, String companyId) {
+		paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_recruit");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0 && pageIndex == 2) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_recruit\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+
+	}
 
 	/****
 	 * 招聘信息解析
@@ -53,7 +112,7 @@ public class TianyanchaRecruitParser extends TianyanchaBasePaser {
 						String job_title = fromObj.getString("title");
 						String job_city = fromObj.getString("city");
 						String search_area = fromObj.getString("district");
-						String company_name = fromObj.getString("companyName");
+//						String company_name = fromObj.getString("companyName");
 						String salary_range = fromObj.getString("oriSalary");
 						String surl = fromObj.getString("urlPath");
 						String dt_start = fromObj.getString("startdate");
@@ -99,38 +158,6 @@ public class TianyanchaRecruitParser extends TianyanchaBasePaser {
 				}
 
 			}
-			// try {
-			// Elements pageElements =
-			// contentNodes.first().select(".company_pager");
-			// int linum = 0;
-			// if (pageElements.size() > 0) {
-			// Elements liElements = pageElements.first().select("li");
-			// if (liElements.size() > 0) {
-			// linum = liElements.size();
-			// if (i > linum - 2) {
-			// break;
-			// }
-			// if (liElements.last().classNames().contains("disabled")) {
-			// break;
-			// }
-			// }
-			// } else {
-			// break;
-			// }
-			// if (linum > 1) {
-			// System.out.println(linum+"--------------------------");
-			// driver.findElement(
-			// By.xpath("//*[@id=\"_container_recruit\"]/div/div[2]/ul/li[last()]/a")).click();
-			// Thread.sleep(5000);
-			// document = Jsoup.parse(driver.getPageSource());
-			// } else {
-			// break;
-			// }
-			// } catch (Exception e) {
-			// e.printStackTrace();
-			// break;
-			// }
-			// }
 
 		}
 

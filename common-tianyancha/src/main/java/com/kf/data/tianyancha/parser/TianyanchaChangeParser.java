@@ -6,6 +6,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import com.kf.data.mybatis.entity.TycCompanyChangeCrawler;
 
@@ -19,15 +23,71 @@ import com.kf.data.mybatis.entity.TycCompanyChangeCrawler;
  * @version V1.0
  */
 public class TianyanchaChangeParser extends TianyanchaBasePaser {
-	// <!--变更信息oocss-->
-	// <!-- ngIf: items2.changeCount.show&&dataItemCount.changeCount>0 -->
-	// neeq_company_change
 
-	// public static final String bodycCssPath =
-	// "div[ng-if=items2.changeCount.show&&dataItemCount.changeCount>0]";
-	// public static final String listCssPath = "tr[ng-repeat=change in
-	// changeinfoList.result]";
-	// public static final String pageTotalCssPath = ".total";
+	/****
+	 * 变更信息解析
+	 * 
+	 * @param document
+	 * @param driver
+	 * @param companyName
+	 * @param companyId
+	 */
+	public void changeParser(Document document, WebDriver driver, String companyName, String companyId) {
+		paseNode(document, companyName, companyId);
+		int pageIndex = 2;
+		int pageNum = 0;
+		// 招聘 处理中
+		while (true) {
+			try {
+				Elements contentNodes = document.select("#_container_changeinfo");
+				if (contentNodes.size() > 0) {
+					Elements pageElements = contentNodes.first().select(".company_pager");
+					if (pageElements.size() > 0) {
+						Elements totalElements = pageElements.first().select(".total");
+						if (totalElements.size() > 0 && pageIndex == 2) {
+							String totalStr = totalElements.first().text().trim();
+							totalStr = totalStr.replace("共", "");
+							totalStr = totalStr.replace("页", "");
+							if (totalStr.isEmpty()) {
+								pageNum = 0;
+							} else {
+								pageNum = Integer.parseInt(totalStr);
+							}
+						}
+						if (pageIndex <= pageNum) {
+							Elements liElements = pageElements.select("li");
+							// *[@id="_container_changeinfo"]/div/div[2]/ul/li[6]/a
+							// *[@id="_container_changeinfo"]/div/div[2]/ul/li[4]/a
+							WebElement nextPageBt = driver.findElement(
+									By.xpath("//*[@id=\"_container_changeinfo\"]/div/div[last()]/ul/li[last()]/a"));
+							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							document = Jsoup.parse(driver.getPageSource());
+							paseNode(document, companyName, companyId);
+							if (liElements.last().classNames().contains("disabled")) {
+								break;
+							}
+							pageIndex++;
+						} else {
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+
+	}
 
 	/***
 	 * 天眼查变更信息解析
