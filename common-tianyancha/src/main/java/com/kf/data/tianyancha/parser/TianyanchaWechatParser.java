@@ -59,6 +59,9 @@ public class TianyanchaWechatParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_wechat\"]/div/div[last()]/ul/li[last()]/a"));
@@ -68,7 +71,7 @@ public class TianyanchaWechatParser extends TianyanchaBasePaser {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							document = Jsoup.parse(driver.getPageSource());
+							document = Jsoup.parse(driver.getPageSource(), driver.getCurrentUrl());
 							paseNode(document, companyName, companyId);
 							if (liElements.last().classNames().contains("disabled")) {
 								break;

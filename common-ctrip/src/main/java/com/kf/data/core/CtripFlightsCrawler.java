@@ -68,7 +68,7 @@ public class CtripFlightsCrawler {
 			WebDriverWait wait = new WebDriverWait(driver, 60);
 			// 读取首页链接
 			driver.get(url);
-			Thread.sleep(5000);
+			Thread.sleep(10000);
 			try {
 				// 按照时间点击
 				wait.until(new ExpectedCondition<WebElement>() {
@@ -81,22 +81,22 @@ public class CtripFlightsCrawler {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Thread.sleep(5000);
+			Thread.sleep(10000);
 			((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
-			Thread.sleep(5000);
+			Thread.sleep(10000);
 			((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
 			Thread.sleep(5000);
 			String html = driver.getPageSource();
 			Document document = Jsoup.parse(html);
 			if (document.text().contains("对不起，您访问的太快了，休息一下吧。或者登录您的携程帐号继续访问")) {
-				Thread.sleep(5000);
+				Thread.sleep(60 * 1000);
 				String[] loadurls = new String[] { "http://hotels.ctrip.com/", "http://vacations.ctrip.com/",
 						"http://bus.ctrip.com/", "http://trains.ctrip.com", "http://piao.ctrip.com/" };
 				int n = (int) (Math.random() * 5);
 				driver.get(loadurls[n]);
-				Thread.sleep(5000);
+				Thread.sleep(30 * 1000);
 				driver.get(url);
-				Thread.sleep(5000);
+				Thread.sleep(30 * 1000);
 			}
 			// 表明有多少航班
 			Elements fightItemElements = document.select(".flight-item");
@@ -109,7 +109,7 @@ public class CtripFlightsCrawler {
 					((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
 					Thread.sleep(2000);
 					((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
-					
+
 					if (locadling(driver)) {
 						logger.info(url + "  " + (i + 1) + "航班信息加载失败");
 						try {

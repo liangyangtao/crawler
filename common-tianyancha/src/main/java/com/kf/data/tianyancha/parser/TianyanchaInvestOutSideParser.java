@@ -57,6 +57,9 @@ public class TianyanchaInvestOutSideParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_invest\"]/div/div[last()]/ul/li[last()]/a"));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
@@ -65,7 +68,7 @@ public class TianyanchaInvestOutSideParser extends TianyanchaBasePaser {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							document = Jsoup.parse(driver.getPageSource());
+							document = Jsoup.parse(driver.getPageSource(), driver.getCurrentUrl());
 							paseNode(document, companyName, companyId);
 							if (liElements.last().classNames().contains("disabled")) {
 								break;
@@ -106,7 +109,9 @@ public class TianyanchaInvestOutSideParser extends TianyanchaBasePaser {
 					String investMoney = tdElements.get(3).text().trim();
 					String investRadio = tdElements.get(4).text().trim();
 					String legalRepresentative = tdElements.get(1).text().trim();
-					legalRepresentative = StringUtils.substringBefore(legalRepresentative, "他有");
+					if (legalRepresentative.contains("他有")) {
+						legalRepresentative = StringUtils.substringBefore(legalRepresentative, "他有");
+					}
 					String registeredCapital = tdElements.get(2).text().trim();
 					String registerStatus = tdElements.get(6).text().trim();
 					String registerTime = tdElements.get(5).text().trim();

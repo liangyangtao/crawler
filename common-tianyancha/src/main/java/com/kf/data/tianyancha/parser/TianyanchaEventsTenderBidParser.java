@@ -1,6 +1,7 @@
 package com.kf.data.tianyancha.parser;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -55,6 +56,9 @@ public class TianyanchaEventsTenderBidParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_bid\"]/div/div[last()]/ul/li[last()]/a"));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
@@ -63,7 +67,7 @@ public class TianyanchaEventsTenderBidParser extends TianyanchaBasePaser {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							document = Jsoup.parse(driver.getPageSource());
+							document = Jsoup.parse(driver.getPageSource(), driver.getCurrentUrl());
 							paseNode(document, companyName, companyId, driver);
 							if (liElements.last().classNames().contains("disabled")) {
 								break;
@@ -114,11 +118,28 @@ public class TianyanchaEventsTenderBidParser extends TianyanchaBasePaser {
 					tycEventsTenderBidCrawler.setStatus((byte) 0);
 					tycEventsTenderBidCrawler.setTitle(title);
 					tycEventsTenderBidCrawler.setUpdatedAt(new Date());
-
+					String currenWindow = driver.getWindowHandle();
 					try {
 						Element linkElement = tdElements.get(1).select("a").first();
 						String reportLink = linkElement.absUrl("href");
-						driver.get(reportLink);
+						JavascriptExecutor executor = (JavascriptExecutor) driver;
+						executor.executeScript("window.open('" + reportLink + "')");
+						Set<String> allWindows = driver.getWindowHandles();
+						for (String string : allWindows) {
+							if (string.equals(currenWindow)) {
+								continue;
+							} else {
+								driver.switchTo().window(string);
+								try {
+									Thread.sleep(5000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								if (driver.getCurrentUrl().equals(reportLink)) {
+									break;
+								}
+							}
+						}
 						String reportHtml = driver.getPageSource();
 						Document reportDocument = Jsoup.parse(reportHtml, reportLink);
 						String judicialText = reportDocument.select(".lawsuit").toString();
@@ -132,7 +153,8 @@ public class TianyanchaEventsTenderBidParser extends TianyanchaBasePaser {
 						e.printStackTrace();
 					} finally {
 						sendJson(tycEventsTenderBidCrawler, "tyc_events_tender_bid");
-						driver.navigate().back();
+						driver.close();
+						driver.switchTo().window(currenWindow);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

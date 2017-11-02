@@ -57,7 +57,9 @@ public class TianyanchaPatentParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
-							int size = liElements.size();
+							if (liElements.size() < 3) {
+								break;
+							}
 							// *[@id="_container_patent"]/div/div/ul/li[13]/a
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_patent\"]/div/div[last()]/ul/li[last()]/a"));
@@ -67,7 +69,7 @@ public class TianyanchaPatentParser extends TianyanchaBasePaser {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							document = Jsoup.parse(driver.getPageSource());
+							document = Jsoup.parse(driver.getPageSource(), driver.getCurrentUrl());
 							paseNode(document, companyName, companyId);
 							if (liElements.last().classNames().contains("disabled")) {
 								break;

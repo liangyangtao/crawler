@@ -56,6 +56,9 @@ public class TianyanchaCompetitorsParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_jingpin\"]/div/div[last()]/ul/li[last()]/a"));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
@@ -64,7 +67,7 @@ public class TianyanchaCompetitorsParser extends TianyanchaBasePaser {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							document = Jsoup.parse(driver.getPageSource());
+							document = Jsoup.parse(driver.getPageSource(), driver.getCurrentUrl());
 							paseNode(document, companyName, companyId);
 							if (liElements.last().classNames().contains("disabled")) {
 								break;
@@ -103,9 +106,9 @@ public class TianyanchaCompetitorsParser extends TianyanchaBasePaser {
 					Elements tdElements = element.select("td");
 					String competitorName = tdElements.get(0).text().trim();
 					String competitorLogo = null;
-					Elements imgElements = tdElements.first().select("img");
+					Elements imgElements = tdElements.get(0).select("img");
 					if (imgElements.size() > 0) {
-						imgElements.first().attr("src");
+						competitorLogo = imgElements.first().attr("src");
 					}
 					String area = tdElements.get(1).text().trim();
 					String turn = tdElements.get(2).text().trim();

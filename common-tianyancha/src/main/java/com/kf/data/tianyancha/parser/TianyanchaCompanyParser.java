@@ -86,6 +86,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 						address = element.text();
 						address = address.replace("地址：", "").trim();
 						address = address.replace("暂无", "").trim();
+						address = address.replace("附近公司", "");
 					} else if (element.text().contains("邮箱：")) {
 						email = element.text();
 						email = email.replace("邮箱：", "").trim();
@@ -113,6 +114,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 					} else {
 						companyDetail = secElements.first().text();
 					}
+					companyDetail =companyDetail.replace("详情", "");
 					tycBaseCompanyCrawler.setCompanyAbout(companyDetail);
 				}
 
@@ -181,6 +183,9 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 			String registrationAuthority = null;
 			String englishName = null;
 			String registrationNumber = null;
+
+			String taxpayerNum = null;
+
 			Element infoElement = getNodeByCssPath(document, infoCssPath);
 			if (infoElement == null) {
 				System.out.println("主要信息没有");
@@ -198,6 +203,8 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 								creditCode = trElement.select("td").get(1).text().trim();
 							} else if (element.text().startsWith("企业类型")) {
 								companyType = trElement.select("td").get(3).text().trim();
+							} else if (element.text().startsWith("纳税人识别号")) {
+								taxpayerNum = trElement.select("td").get(1).text().trim();
 							} else if (element.text().startsWith("行业")) {
 								industryRecruitment = trElement.select("td").get(3).text().trim();
 							} else if (element.text().startsWith("营业期限")) {
@@ -217,6 +224,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 								englishName = englishName.replace("未公开", "");
 							} else if (element.text().startsWith("注册地址")) {
 								registeredAddress = trElement.select("td").get(1).text().trim();
+								registeredAddress = registeredAddress.replace("附近公司", "");
 							} else if (element.text().startsWith("经营范围")) {
 								Element tdElement = trElement.select("td").get(1);
 								Elements spanElements = tdElement.select(".js-full-container");
@@ -236,9 +244,8 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 
 				}
 			}
-
+			tycBaseCompanyCrawler.setTaxpayerNum(taxpayerNum);
 			tycBaseCompanyCrawler.setAddress(address);
-
 			tycBaseCompanyCrawler.setApprovedDate(approvedDate);
 
 			tycBaseCompanyCrawler.setApprovedDateMachine(approvedDateMachine);

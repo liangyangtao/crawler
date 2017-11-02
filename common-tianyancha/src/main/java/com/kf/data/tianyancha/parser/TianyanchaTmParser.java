@@ -57,7 +57,9 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
-							int size = liElements.size();
+							if (liElements.size() < 3) {
+								break;
+							}
 							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
 							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
 							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
@@ -74,7 +76,7 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							document = Jsoup.parse(driver.getPageSource());
+							document = Jsoup.parse(driver.getPageSource(), driver.getCurrentUrl());
 							paseNode(document, companyName, companyId);
 							if (liElements.last().classNames().contains("disabled")) {
 								break;

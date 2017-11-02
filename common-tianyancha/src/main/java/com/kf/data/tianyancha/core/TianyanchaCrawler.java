@@ -13,7 +13,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,25 +71,31 @@ import com.kf.data.tianyancha.sender.SendMail;
 public class TianyanchaCrawler {
 
 	private final static Logger logger = LoggerFactory.getLogger(TianyanchaCrawler.class);
+
 	private static final String url = "http://www.tianyancha.com";
-	ZhibiaoNumCrawler zhibiaoNumCrawler = new ZhibiaoNumCrawler();
 
+	private ZhibiaoNumCrawler zhibiaoNumCrawler = new ZhibiaoNumCrawler();
+
+	// 基本信息
 	private TianyanchaCompanyParser tianyanchaCompanyParser = new TianyanchaCompanyParser();
+	// 主要人员
 	private TianyanchaStaffParser tianyanchaStaffParser = new TianyanchaStaffParser();
+	// 股东信息
 	private TianyanchaHolderParser tianyanchaHolderParser = new TianyanchaHolderParser();
-	private TianyanchaBranchParser tianyanchaBranchParser = new TianyanchaBranchParser();
-	private TianyanchaChangeParser tianyanchaChangeParser = new TianyanchaChangeParser();
-
-	private TianyanchaYearReportParser tianyanchaYearReportParser = new TianyanchaYearReportParser();
-
-	private TianyanchaRongziParser tianyanchaRongziParser = new TianyanchaRongziParser();
-	private TianyanchaCommonstockParser tianyanchaCommonstockParser = new TianyanchaCommonstockParser();
-	private TianyanchaCommonstockChangeParser tianyanchaCommonstockChangeParser = new TianyanchaCommonstockChangeParser();
-
+	// 对外投资
 	private TianyanchaInvestOutSideParser tianyanchaInvestOutSideParser = new TianyanchaInvestOutSideParser();
+	// 变更记录
+	private TianyanchaChangeParser tianyanchaChangeParser = new TianyanchaChangeParser();
+	// 企业年报
+	private TianyanchaYearReportParser tianyanchaYearReportParser = new TianyanchaYearReportParser();
+	// 分支机构
+	private TianyanchaBranchParser tianyanchaBranchParser = new TianyanchaBranchParser();
+	// 融资历史
+	private TianyanchaRongziParser tianyanchaRongziParser = new TianyanchaRongziParser();
+	// 核心团队
 	private TianyanchaCoreTeamParser tianyanchaCoreTeamParser = new TianyanchaCoreTeamParser();
+	// 企业业务
 	private TianyanchaBusinessParser tianyanchaBusinessParser = new TianyanchaBusinessParser();
-
 	// 投资事件
 	private TianyanchaInvestParser tianyanchaInvestParser = new TianyanchaInvestParser();
 	// 竞品信息
@@ -147,9 +154,13 @@ public class TianyanchaCrawler {
 	private TianyanchaCpoyRightWorksParser tianyanchaCpoyRightWorksParser = new TianyanchaCpoyRightWorksParser();
 	// 域名备案信息
 	private TianyanchaIcpParser tianyanchaIcpParser = new TianyanchaIcpParser();
-
 	////////////////////////////////////////////////////
+	// 股本
+	private TianyanchaCommonstockParser tianyanchaCommonstockParser = new TianyanchaCommonstockParser();
+	// 股本变动
+	private TianyanchaCommonstockChangeParser tianyanchaCommonstockChangeParser = new TianyanchaCommonstockChangeParser();
 
+	// 邮件
 	private SendMail sendMail = new SendMail();
 
 	/***
@@ -161,32 +172,20 @@ public class TianyanchaCrawler {
 		WebDriver driver = createWebDrive();
 		driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		WebDriver childDriver = null;
 		logger.info("开始采集" + companyName);
 		try {
 			driver.get(url);
-			Thread.sleep(5 * 1000);
+			Thread.sleep(8 * 1000);
 			String title = driver.getTitle();
 			if (title.contains("访问禁止")) {
 				logger.info(companyName + "IP 已经被封不能采集了");
 				sendMail.sendMail("IP已经被封");
-				// int ok = JOptionPane.showConfirmDialog(null, "继续采集");
-				// if (ok == JOptionPane.OK_OPTION) {
-				//
-				// } else {
-				//
-				// }
 				// pidRecorder.reStart();
 				System.exit(0);
 			}
 			if (title.contains("403")) {
 				logger.info(companyName + "IP 已经被封不能采集了");
 				sendMail.sendMail("IP已经被封");
-				// int ok = JOptionPane.showConfirmDialog(null, "继续采集");
-				// if (ok == JOptionPane.OK_OPTION) {
-				// } else {
-				// System.exit(0);
-				// }
 				// pidRecorder.reStart();
 				System.exit(0);
 			}
@@ -194,11 +193,6 @@ public class TianyanchaCrawler {
 			if (loginUrl.contains("login")) {
 				sendMail.sendMail("IP已经被封");
 				logger.info(companyName + "需要登录 不能采集");
-				// int ok = JOptionPane.showConfirmDialog(null, "继续采集");
-				// if (ok == JOptionPane.OK_OPTION) {
-				// } else {
-				// System.exit(0);
-				// }
 				// pidRecorder.reStart();
 				System.exit(0);
 			}
@@ -213,24 +207,12 @@ public class TianyanchaCrawler {
 			if (current.contains("http://antirobot.tianyancha.com")) {
 				logger.info(companyName + "遇到验证码已经被封不能采集了");
 				sendMail.sendMail("IP已经被封");
-				// int ok = JOptionPane.showConfirmDialog(null, "继续采集");
-				// if (ok == JOptionPane.OK_OPTION) {
-				//
-				// } else {
-				// System.exit(0);
-				// }
 				// pidRecorder.reStart();
 				System.exit(0);
 			}
 			if (current.contains("www.tianyancha.com/login")) {
 				logger.info(companyName + "需要登录 不能采集");
 				sendMail.sendMail("IP已经被封");
-				// int ok = JOptionPane.showConfirmDialog(null, "继续采集");
-				// if (ok == JOptionPane.OK_OPTION) {
-				//
-				// } else {
-				// System.exit(0);
-				// }
 				// pidRecorder.reStart();
 				System.exit(0);
 			}
@@ -250,6 +232,7 @@ public class TianyanchaCrawler {
 			if (aElements.size() > 0) {
 			} else {
 				logger.info(companyName + "没有搜索到结果异常");
+				return;
 			}
 			try {
 				WebElement hrefElement = driver.findElement(
@@ -258,6 +241,7 @@ public class TianyanchaCrawler {
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.info(companyName + "没有搜索到结果异常");
+				return;
 			}
 
 			try {
@@ -269,24 +253,12 @@ public class TianyanchaCrawler {
 			if (current.contains("http://antirobot.tianyancha.com")) {
 				logger.info(companyName + "遇到验证码已经被封不能采集了");
 				sendMail.sendMail("IP已经被封");
-				// int ok = JOptionPane.showConfirmDialog(null, "继续采集");
-				// if (ok == JOptionPane.OK_OPTION) {
-				//
-				// } else {
-				// System.exit(0);
-				// }
 				// pidRecorder.reStart();
 				System.exit(0);
 			}
 			if (current.contains("www.tianyancha.com/login")) {
 				logger.info(companyName + "需要登录 不能采集");
 				sendMail.sendMail("IP已经被封");
-				// int ok = JOptionPane.showConfirmDialog(null, "继续采集");
-				// if (ok == JOptionPane.OK_OPTION) {
-				//
-				// } else {
-				// System.exit(0);
-				// }
 				System.exit(0);
 			}
 
@@ -300,11 +272,9 @@ public class TianyanchaCrawler {
 					key = string;
 				}
 			}
-			childDriver = driver.switchTo().window(key);
-			childDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
-			childDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-			String baseHtml = childDriver.getPageSource();
-			baseHtml = childDriver.getPageSource();
+			driver.switchTo().window(key);
+			String baseHtml = driver.getPageSource();
+
 			Document document = Jsoup.parse(baseHtml, "https://www.tianyancha.com");
 			// 统一companyId
 			String companyId = Md5Tools.GetMD5Code(companyName);
@@ -318,6 +288,7 @@ public class TianyanchaCrawler {
 			tianyanchaHolderParser.paseNode(document, companyName, companyId);
 
 			Map<String, Integer> zhibiaoNums = new HashMap<String, Integer>();
+
 			zhibiaoNumCrawler.fillZhibiaoNums(zhibiaoNums, document);
 
 			if (zhibiaoNums.get("investAbroadCount") != null && zhibiaoNums.get("investAbroadCount") > 0) {
@@ -391,7 +362,6 @@ public class TianyanchaCrawler {
 				// 经营异常
 				tianyanchaAbnormalOperationParser.abnormalOperationParser(document, driver, companyName, companyId);
 			}
-
 			if (zhibiaoNums.get("admPenaltyCount") != null && zhibiaoNums.get("admPenaltyCount") > 0) {
 				// 行政处罚
 				tianyanchaAdmPenaltyParser.admPenaltyParser(document, driver, companyName, companyId);
@@ -503,20 +473,15 @@ public class TianyanchaCrawler {
 				// 股本结构
 				tianyanchaCommonstockParser.commonstockParser(document, driver, companyName, companyId);
 			}
-
 			if (zhibiaoNums.get("commonstockChangeCount") != null && zhibiaoNums.get("commonstockChangeCount") > 0) {
 				tianyanchaCommonstockChangeParser.commonstockChangeParser(document, driver, companyName, companyId);
 				// 股本变动
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
-			if (childDriver != null) {
-				childDriver.close();
-			}
 			closeWebDrive(driver);
 		}
 	}
@@ -529,8 +494,10 @@ public class TianyanchaCrawler {
 	public WebDriver createWebDrive() {
 		System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 		WebDriver driver = null;
-		DesiredCapabilities cap = new DesiredCapabilities();
-		driver = new FirefoxDriver(cap);
+		// DesiredCapabilities cap = new DesiredCapabilities();
+		ProfilesIni pi = new ProfilesIni();
+		FirefoxProfile profile = pi.getProfile("default");
+		driver = new FirefoxDriver(profile);
 		driver.manage().window().maximize();
 		return driver;
 	}
