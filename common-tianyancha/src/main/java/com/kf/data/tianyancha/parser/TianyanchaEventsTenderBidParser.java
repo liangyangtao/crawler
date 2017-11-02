@@ -1,6 +1,7 @@
 package com.kf.data.tianyancha.parser;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -114,11 +115,23 @@ public class TianyanchaEventsTenderBidParser extends TianyanchaBasePaser {
 					tycEventsTenderBidCrawler.setStatus((byte) 0);
 					tycEventsTenderBidCrawler.setTitle(title);
 					tycEventsTenderBidCrawler.setUpdatedAt(new Date());
-
+					String currenWindow = driver.getWindowHandle();
 					try {
 						Element linkElement = tdElements.get(1).select("a").first();
 						String reportLink = linkElement.absUrl("href");
-						driver.get(reportLink);
+						JavascriptExecutor executor = (JavascriptExecutor) driver;
+						executor.executeScript("window.open('" + reportLink + "')");
+						Set<String> allWindows = driver.getWindowHandles();
+						for (String string : allWindows) {
+							if (string.equals(currenWindow)) {
+								continue;
+							} else {
+								driver.switchTo().window(string);
+								if (driver.getCurrentUrl().equals(reportLink)) {
+									break;
+								}
+							}
+						}
 						String reportHtml = driver.getPageSource();
 						Document reportDocument = Jsoup.parse(reportHtml, reportLink);
 						String judicialText = reportDocument.select(".lawsuit").toString();
@@ -132,7 +145,7 @@ public class TianyanchaEventsTenderBidParser extends TianyanchaBasePaser {
 						e.printStackTrace();
 					} finally {
 						sendJson(tycEventsTenderBidCrawler, "tyc_events_tender_bid");
-						driver.navigate().back();
+						driver.switchTo().window(currenWindow);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

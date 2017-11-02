@@ -11,9 +11,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
 
-import com.kf.data.fetcher.tools.ReportDataFormat;
-import com.kf.data.mybatis.entity.TycCompanyShareholdersContributiveCrawler;
-
 /***
  * 
  * @Title: TianyanchaYearReportParser.java
@@ -68,9 +65,6 @@ public class TianyanchaYearReportParser extends TianyanchaBasePaser {
 	 * @param companyId
 	 */
 	public void paseNode(Document document, String companyName, String companyId, String reportdate) {
-
-		// parserShareholders(document, companyName, companyId);
-
 		Map<String, Object> result = new HashMap<String, Object>();
 		Elements bodyElement = document.select(".report_body");
 		if (bodyElement.size() > 0) {
@@ -85,57 +79,64 @@ public class TianyanchaYearReportParser extends TianyanchaBasePaser {
 		}
 	}
 
-	/****
-	 * 解析股东出资
-	 * 
-	 * @param document
-	 * @param companyName
-	 * @param companyId
-	 */
-	private void parserShareholders(Document document, String companyName, String companyId) {
-		// 股东出资
-		Elements contentNodes = document.select(".report_holder");
-		if (contentNodes.size() > 0) {
-			Elements nodes = contentNodes.first().select(".table > tbody > tr");
-			for (Element element : nodes) {
-				try {
-					Elements tdElements = element.select("td");
-					String moneyChar = null;
-					String name = null;
-					Double ratio = null;
-					name = tdElements.get(0).text().trim();
-					moneyChar = tdElements.get(4).text();
-					moneyChar = moneyChar.replace("万", "");
-					moneyChar = moneyChar.replace("元", "");
-					moneyChar = moneyChar.replace("人民币", "");
-					moneyChar = moneyChar.trim() + "万";
-					TycCompanyShareholdersContributiveCrawler tycCompanyShareholdersContributive = new TycCompanyShareholdersContributiveCrawler();
-					tycCompanyShareholdersContributive.setCompanyId(companyId);
-					tycCompanyShareholdersContributive.setCompanyName(companyName);
-					tycCompanyShareholdersContributive.setCreatedAt(new Date());
-					// tycCompanyShareholdersContributive.setCurrencyCode(currencyCode);
-					// tycCompanyShareholdersContributive.setCurrencyId(currencyId);
-					// tycCompanyShareholdersContributive.setCurrenyName(currenyName);
-					// tycCompanyShareholdersContributive.setId(company.getId());
-					tycCompanyShareholdersContributive.setMoneyChar(moneyChar);
-					tycCompanyShareholdersContributive.setMoney(ReportDataFormat.bigUnitChange(moneyChar));
-					tycCompanyShareholdersContributive.setName(name);
-					// tycCompanyShareholdersContributive.setPrdName(prdName);
-					tycCompanyShareholdersContributive.setRatio(ratio);
-					tycCompanyShareholdersContributive.setStatus(false);
-					// tycCompanyShareholdersContributive.setStockholderDescribe(stockholderDescribe);
-					tycCompanyShareholdersContributive.setStockholderId(new Date().getTime() + "");
-					// tycCompanyShareholdersContributive.setStockholderType(stockholderType);
-					tycCompanyShareholdersContributive.setUpdatedAt(new Date());
-					sendJson(tycCompanyShareholdersContributive, "tyc_company_shareholders_contributive");
-				} catch (Exception e) {
-					e.printStackTrace();
-					continue;
-				}
-
-			}
-		}
-
-	}
+	// /****
+	// * 解析股东出资
+	// *
+	// * @param document
+	// * @param companyName
+	// * @param companyId
+	// */
+	// private void parserShareholders(Document document, String companyName,
+	// String companyId) {
+	// // 股东出资
+	// Elements contentNodes = document.select(".report_holder");
+	// if (contentNodes.size() > 0) {
+	// Elements nodes = contentNodes.first().select(".table > tbody > tr");
+	// for (Element element : nodes) {
+	// try {
+	// Elements tdElements = element.select("td");
+	// String moneyChar = null;
+	// String name = null;
+	// Double ratio = null;
+	// name = tdElements.get(0).text().trim();
+	// moneyChar = tdElements.get(4).text();
+	// moneyChar = moneyChar.replace("万", "");
+	// moneyChar = moneyChar.replace("元", "");
+	// moneyChar = moneyChar.replace("人民币", "");
+	// moneyChar = moneyChar.trim() + "万";
+	// TycCompanyShareholdersContributiveCrawler
+	// tycCompanyShareholdersContributive = new
+	// TycCompanyShareholdersContributiveCrawler();
+	// tycCompanyShareholdersContributive.setCompanyId(companyId);
+	// tycCompanyShareholdersContributive.setCompanyName(companyName);
+	// tycCompanyShareholdersContributive.setCreatedAt(new Date());
+	// // tycCompanyShareholdersContributive.setCurrencyCode(currencyCode);
+	// // tycCompanyShareholdersContributive.setCurrencyId(currencyId);
+	// // tycCompanyShareholdersContributive.setCurrenyName(currenyName);
+	// // tycCompanyShareholdersContributive.setId(company.getId());
+	// tycCompanyShareholdersContributive.setMoneyChar(moneyChar);
+	// tycCompanyShareholdersContributive.setMoney(ReportDataFormat.bigUnitChange(moneyChar));
+	// tycCompanyShareholdersContributive.setName(name);
+	// // tycCompanyShareholdersContributive.setPrdName(prdName);
+	// tycCompanyShareholdersContributive.setRatio(ratio);
+	// tycCompanyShareholdersContributive.setStatus(false);
+	// //
+	// tycCompanyShareholdersContributive.setStockholderDescribe(stockholderDescribe);
+	// tycCompanyShareholdersContributive.setStockholderId(new Date().getTime()
+	// + "");
+	// //
+	// tycCompanyShareholdersContributive.setStockholderType(stockholderType);
+	// tycCompanyShareholdersContributive.setUpdatedAt(new Date());
+	// sendJson(tycCompanyShareholdersContributive,
+	// "tyc_company_shareholders_contributive");
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// continue;
+	// }
+	//
+	// }
+	// }
+	//
+	// }
 
 }

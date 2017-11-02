@@ -26,8 +26,8 @@
 		</javaClientGenerator>
 
 
-		<table schema="crawler" tableName="tyc_company_bond"
-			domainObjectName="TycCompanyBoundCrawler">
+		<table schema="crawler" tableName="tyc_base_company"
+			domainObjectName="TycBaseCompanyCrawler">
 			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
 				identity="true" type="post" />
 		</table>
