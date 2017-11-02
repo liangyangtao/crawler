@@ -57,7 +57,9 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
-							int size = liElements.size();
+							if (liElements.size() < 3) {
+								break;
+							}
 							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
 							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a
 							// *[@id="_container_tmInfo"]/div/div/div[2]/ul/li[13]/a

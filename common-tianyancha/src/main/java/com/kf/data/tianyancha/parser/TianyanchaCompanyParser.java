@@ -86,6 +86,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 						address = element.text();
 						address = address.replace("地址：", "").trim();
 						address = address.replace("暂无", "").trim();
+						address = address.replace("附近公司", "");
 					} else if (element.text().contains("邮箱：")) {
 						email = element.text();
 						email = email.replace("邮箱：", "").trim();
@@ -113,6 +114,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 					} else {
 						companyDetail = secElements.first().text();
 					}
+					companyDetail =companyDetail.replace("详情", "");
 					tycBaseCompanyCrawler.setCompanyAbout(companyDetail);
 				}
 

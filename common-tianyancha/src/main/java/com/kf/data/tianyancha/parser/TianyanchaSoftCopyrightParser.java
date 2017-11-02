@@ -59,6 +59,9 @@ public class TianyanchaSoftCopyrightParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_copyright\"]/div/div[last()]/ul/li[last()]/a"));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
@@ -116,7 +119,13 @@ public class TianyanchaSoftCopyrightParser extends TianyanchaBasePaser {
 						String publishtime = obj.getString("publishtime");
 						String regnum = obj.getString("regnum");
 						String regtime = obj.getString("regtime");
-						String simplename = obj.getString("simplename");
+						String simplename = null;
+						try {
+							simplename = obj.getString("simplename");
+						} catch (Exception e) {
+							e.printStackTrace();
+							simplename = "";
+						}
 						String version = obj.getString("version");
 						TycCompanySoftCopyrightCrawler tycCompanySoftCopyrightCrawler = new TycCompanySoftCopyrightCrawler();
 						tycCompanySoftCopyrightCrawler.setAuthornationality(authornationality);

@@ -54,24 +54,26 @@ public class TycApiCompanyReaderWorker extends BaseWorker implements Runnable {
 	 * 通过API 获取公司名称
 	 */
 	private void fillCompanyQueue() {
-//		String url = KfConstant.serverIp;
-//		String html = Fetcher.getInstance().get(url);
-//		JSONObject jsonObject = JSONObject.fromObject(html);
-//		int err_code = jsonObject.getInt("err_code");
-//		if (err_code == 200) {
-//			String companyName = jsonObject.getString("companyName").trim();
-//			if (companyName.isEmpty()) {
-//				logger.info("获取公司名称为API为空");
-//				return;
-//			}
-//			put(companyQueue, companyName);
-//		}
+		String url = KfConstant.serverIp;
+		String html = Fetcher.getInstance().get(url);
+		JSONObject jsonObject = JSONObject.fromObject(html);
+		int err_code = jsonObject.getInt("err_code");
+		if (err_code == 200) {
+			String companyName = jsonObject.getString("companyName").trim();
+			if (companyName.isEmpty()) {
+				logger.info("获取公司名称为API为空");
+				return;
+			}
+			put(companyQueue, companyName);
+		}
 		// 中建材集团进出口公司
 		// 周宁县农村信用合作联社
 		// 杭州来拍网络科技有限公司
 		// 中国建设银行股份有限公司
-		//
-		 put(companyQueue, "中国建设银行股份有限公司");
+		// 北京中搜网络技术股份有限公司
+		// 河南高氏实业有限公司
+		// 天津莱特进出口有限公司
+		// put(companyQueue, "河南高氏实业有限公司");
 	}
 
 }

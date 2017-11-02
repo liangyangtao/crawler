@@ -54,6 +54,9 @@ public class TianyanchaCpoyRightWorksParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							// *[@id="_container_copyrightWorks"]/div/div/ul/li[13]/a
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_copyrightWorks\"]/div/div[last()]/ul/li[last()]/a"));

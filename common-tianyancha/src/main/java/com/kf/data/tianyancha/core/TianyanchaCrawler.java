@@ -13,7 +13,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -493,8 +494,10 @@ public class TianyanchaCrawler {
 	public WebDriver createWebDrive() {
 		System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 		WebDriver driver = null;
-		DesiredCapabilities cap = new DesiredCapabilities();
-		driver = new FirefoxDriver(cap);
+		// DesiredCapabilities cap = new DesiredCapabilities();
+		ProfilesIni pi = new ProfilesIni();
+		FirefoxProfile profile = pi.getProfile("default");
+		driver = new FirefoxDriver(profile);
 		driver.manage().window().maximize();
 		return driver;
 	}

@@ -56,6 +56,9 @@ public class TianyanchaBranchParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							// *[@id="_container_wechat"]/div/div[11]/ul/li[5]/a
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_branch\"]/div/div[last()]/ul/li[last()]/a"));

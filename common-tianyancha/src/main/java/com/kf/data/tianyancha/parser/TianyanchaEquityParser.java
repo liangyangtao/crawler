@@ -25,8 +25,6 @@ import net.sf.json.JSONObject;
  */
 public class TianyanchaEquityParser extends TianyanchaBasePaser {
 
-	
-	
 	/***
 	 * 股权出质
 	 * 
@@ -59,6 +57,9 @@ public class TianyanchaEquityParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_equity\"]/div/div[last()]/ul/li[last()]/a"));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
@@ -89,8 +90,6 @@ public class TianyanchaEquityParser extends TianyanchaBasePaser {
 		}
 	}
 
-	
-	
 	/***
 	 * 股权出质解析
 	 * 
@@ -121,7 +120,13 @@ public class TianyanchaEquityParser extends TianyanchaBasePaser {
 					// 状态
 					String state = obj.getString("state");
 					// 出质人
-					String pledgor = obj.getString("pledgor");
+					String pledgor =null;
+					try {
+						 pledgor = obj.getString("pledgor");
+					} catch (Exception e) {
+						e.printStackTrace();
+						 pledgor ="";
+					}
 					// 质权人号码
 					String certifNumberR = obj.getString("certifNumberR");
 					// 质权人

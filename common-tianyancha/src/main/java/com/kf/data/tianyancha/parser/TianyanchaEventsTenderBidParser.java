@@ -56,6 +56,9 @@ public class TianyanchaEventsTenderBidParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_bid\"]/div/div[last()]/ul/li[last()]/a"));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
@@ -127,6 +130,11 @@ public class TianyanchaEventsTenderBidParser extends TianyanchaBasePaser {
 								continue;
 							} else {
 								driver.switchTo().window(string);
+								try {
+									Thread.sleep(5000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
 								if (driver.getCurrentUrl().equals(reportLink)) {
 									break;
 								}
@@ -145,6 +153,7 @@ public class TianyanchaEventsTenderBidParser extends TianyanchaBasePaser {
 						e.printStackTrace();
 					} finally {
 						sendJson(tycEventsTenderBidCrawler, "tyc_events_tender_bid");
+						driver.close();
 						driver.switchTo().window(currenWindow);
 					}
 				} catch (Exception e) {

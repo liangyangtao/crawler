@@ -56,6 +56,9 @@ public class TianyanchaCaseParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							WebElement nextPageBt = driver.findElement(
 									By.xpath("//*[@id=\"_container_lawsuit\"]/div/div[last()]/ul/li[last()]/a"));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
@@ -128,6 +131,11 @@ public class TianyanchaCaseParser extends TianyanchaBasePaser {
 								continue;
 							} else {
 								driver.switchTo().window(string);
+								try {
+									Thread.sleep(5000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
 								if (driver.getCurrentUrl().equals(reportLink)) {
 									break;
 								}
@@ -145,7 +153,9 @@ public class TianyanchaCaseParser extends TianyanchaBasePaser {
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
+
 						sendJson(tycCompanyCaseCrawler, "tyc_company_case");
+						driver.close();
 						driver.switchTo().window(currenWindow);
 					}
 				} catch (Exception e) {

@@ -56,6 +56,9 @@ public class TianyanchaChangeParser extends TianyanchaBasePaser {
 						}
 						if (pageIndex <= pageNum) {
 							Elements liElements = pageElements.select("li");
+							if (liElements.size() < 3) {
+								break;
+							}
 							// *[@id="_container_changeinfo"]/div/div[2]/ul/li[6]/a
 							// *[@id="_container_changeinfo"]/div/div[2]/ul/li[4]/a
 							WebElement nextPageBt = driver.findElement(
