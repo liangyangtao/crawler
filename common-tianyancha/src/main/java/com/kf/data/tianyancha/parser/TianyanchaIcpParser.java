@@ -79,6 +79,8 @@ public class TianyanchaIcpParser extends TianyanchaBasePaser {
 						break;
 					}
 
+				} else {
+					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

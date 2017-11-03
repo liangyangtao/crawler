@@ -82,6 +82,8 @@ public class TianyanchaCommonstockChangeParser extends TianyanchaBasePaser {
 						break;
 					}
 
+				} else {
+					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

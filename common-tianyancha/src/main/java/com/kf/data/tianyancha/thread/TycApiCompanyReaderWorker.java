@@ -38,6 +38,7 @@ public class TycApiCompanyReaderWorker extends BaseWorker implements Runnable {
 					fillCompanyQueue();
 				} catch (Exception e) {
 					e.printStackTrace();
+					sleeping(1 * 60 * 1000);
 					continue;
 				}
 				// }
@@ -73,8 +74,8 @@ public class TycApiCompanyReaderWorker extends BaseWorker implements Runnable {
 		// 北京中搜网络技术股份有限公司
 		// 河南高氏实业有限公司
 		// 天津莱特进出口有限公司
-		// 
-//		 put(companyQueue, "乐视控股（北京）有限公司");
+		//
+		// put(companyQueue, "乐视控股（北京）有限公司");
 	}
 
 }

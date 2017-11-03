@@ -37,6 +37,7 @@ public class TianyanchaInvestOutSideParser extends TianyanchaBasePaser {
 		paseNode(document, companyName, companyId);
 		int pageIndex = 2;
 		int pageNum = 0;
+
 		// 招聘 处理中
 		while (true) {
 			try {
@@ -82,6 +83,8 @@ public class TianyanchaInvestOutSideParser extends TianyanchaBasePaser {
 						break;
 					}
 
+				} else {
+					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
