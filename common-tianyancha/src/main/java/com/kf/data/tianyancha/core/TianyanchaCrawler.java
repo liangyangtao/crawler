@@ -15,6 +15,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public class TianyanchaCrawler {
 	private static final String url = "http://www.tianyancha.com";
 
 	private ZhibiaoNumCrawler zhibiaoNumCrawler = new ZhibiaoNumCrawler();
-
+	boolean isLoadloacal = false;
 	// 基本信息
 	private TianyanchaCompanyParser tianyanchaCompanyParser = new TianyanchaCompanyParser();
 	// 主要人员
@@ -196,7 +197,6 @@ public class TianyanchaCrawler {
 				// pidRecorder.reStart();
 				System.exit(0);
 			}
-
 			// 将搜索词输入文本框
 			driver.findElement(By.xpath("//*[@id=\"home-main-search\"]")).sendKeys(companyName);
 			// 点击搜索按钮
@@ -494,10 +494,15 @@ public class TianyanchaCrawler {
 	public WebDriver createWebDrive() {
 		System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 		WebDriver driver = null;
-		// DesiredCapabilities cap = new DesiredCapabilities();
-		ProfilesIni pi = new ProfilesIni();
-		FirefoxProfile profile = pi.getProfile("default");
-		driver = new FirefoxDriver(profile);
+
+		if (isLoadloacal) {
+			ProfilesIni pi = new ProfilesIni();
+			FirefoxProfile profile = pi.getProfile("default");
+			driver = new FirefoxDriver(profile);
+		} else {
+			DesiredCapabilities cap = new DesiredCapabilities();
+			driver = new FirefoxDriver(cap);
+		}
 		driver.manage().window().maximize();
 		return driver;
 	}
