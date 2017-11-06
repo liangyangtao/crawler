@@ -84,6 +84,8 @@ public class TianyanchaShixinParser extends TianyanchaBasePaser {
 						break;
 					}
 
+				} else {
+					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -107,25 +109,88 @@ public class TianyanchaShixinParser extends TianyanchaBasePaser {
 				try {
 					Elements tdElements = element.select("td");
 					if (tdElements.size() == 6) {
-						Element spanElement = tdElements.get(5).select("span").first();
-						String text = spanElement.attr("onclick");
-						text = StringUtils.substringBetween(text, "openDishonestPopup({", "})");
-						text = "{" + text + "}";
+						// Element spanElement =
+						// tdElements.get(5).select("span").first();
+						// String text = spanElement.attr("onclick");
+						// text = StringUtils.substringBetween(text,
+						// "openDishonestPopup({", "})");
+						// text = "{" + text + "}";
+						// JSONObject obj = JSONObject.fromObject(text);
+
+						String text = tdElements.get(5).select("script").first().toString();
+						text = StringUtils.substringBetween(text, "<script type=\"text/html\">", "</script>");
 						JSONObject obj = JSONObject.fromObject(text);
-						String iname = obj.getString("iname");
-						String businessentity = obj.getString("businessentity");
-						String gistid = obj.getString("gistid");
-						String areaname = obj.getString("areaname");
-						String cardnum = obj.getString("cardnum");
-						String courtname = obj.getString("courtname");
-						String type = obj.getString("type");
-						String publishdate = obj.getString("publishdate");
-						String gistunit = obj.getString("gistunit");
-						String duty = obj.getString("duty");
-						String performance = obj.getString("performance");
-						String regdate = obj.getString("regdate");
-						String disrupttypename = obj.getString("disrupttypename");
-						String casecode = obj.getString("casecode");
+						String iname = null;
+						try {
+							iname = obj.getString("iname");
+						} catch (Exception e) {
+						}
+						String businessentity = null;
+						try {
+							businessentity = obj.getString("businessentity");
+						} catch (Exception e) {
+						}
+						String gistid = null;
+						try {
+							gistid = obj.getString("gistid");
+						} catch (Exception e) {
+						}
+						String areaname = null;
+						try {
+							areaname = obj.getString("areaname");
+						} catch (Exception e) {
+						}
+						String cardnum = null;
+						try {
+							cardnum = obj.getString("cardnum");
+						} catch (Exception e) {
+						}
+						String courtname = null;
+						try {
+							courtname = obj.getString("courtname");
+						} catch (Exception e) {
+						}
+						String type = null;
+						try {
+							type = obj.getString("type");
+						} catch (Exception e) {
+						}
+						String publishdate = null;
+						try {
+							publishdate = obj.getString("publishdate");
+						} catch (Exception e) {
+						}
+						String gistunit = null;
+						try {
+							gistunit = obj.getString("gistunit");
+						} catch (Exception e) {
+						}
+						String duty = null;
+						try {
+							duty = obj.getString("duty");
+						} catch (Exception e) {
+						}
+
+						String performance = null;
+						try {
+							performance = obj.getString("performance");
+						} catch (Exception e) {
+						}
+						String regdate = null;
+						try {
+							regdate = obj.getString("regdate");
+						} catch (Exception e) {
+						}
+						String disrupttypename = null;
+						try {
+							disrupttypename = obj.getString("disrupttypename");
+						} catch (Exception e) {
+						}
+						String casecode = null;
+						try {
+							casecode = obj.getString("casecode");
+						} catch (Exception e) {
+						}
 						TycCompanyShixinCrawler tycCompanyShixinCrawler = new TycCompanyShixinCrawler();
 						tycCompanyShixinCrawler.setAreaname(areaname);
 						tycCompanyShixinCrawler.setBusinessentity(businessentity);

@@ -82,6 +82,8 @@ public class TianyanchaEquityParser extends TianyanchaBasePaser {
 						break;
 					}
 
+				} else {
+					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -114,25 +116,52 @@ public class TianyanchaEquityParser extends TianyanchaBasePaser {
 					onclick = StringUtils.substringBetween(onclick, "text/html\">", "</script>");
 					obj = JSONObject.fromObject(onclick);
 					// 出质股权数额
-					String equityAmount = obj.getString("equityAmount");
-					// 登记编号
-					String regNumber = obj.getString("regNumber");
-					// 状态
-					String state = obj.getString("state");
-					// 出质人
-					String pledgor =null;
+					String equityAmount = null;
 					try {
-						 pledgor = obj.getString("pledgor");
+						equityAmount = obj.getString("equityAmount");
+					} catch (Exception e) {
+
+					}
+					// 登记编号
+					String regNumber = null;
+					try {
+						regNumber = obj.getString("regNumber");
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+					// 状态
+					String state = null;
+					try {
+						state = obj.getString("state");
+					} catch (Exception e) {
+					}
+					// 出质人
+					String pledgor = null;
+					try {
+						pledgor = obj.getString("pledgor");
 					} catch (Exception e) {
 						e.printStackTrace();
-						 pledgor ="";
+						pledgor = "";
 					}
 					// 质权人号码
-					String certifNumberR = obj.getString("certifNumberR");
+					String certifNumberR = null;
+					try {
+						certifNumberR = obj.getString("certifNumberR");
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
 					// 质权人
-					String pledgee = obj.getString("pledgee");
+					String pledgee = null;
+					try {
+						pledgee = obj.getString("pledgee");
+					} catch (Exception e) {
+					}
 					// 登记日
-					String regDate = obj.getString("regDate");
+					String regDate = null;
+					try {
+						regDate = obj.getString("regDate");
+					} catch (Exception e) {
+					}
 					Date date = timestampToDate(regDate);
 					TycCompanyEquityPledgedCrawler tycCompanyEquityPledged = new TycCompanyEquityPledgedCrawler();
 					tycCompanyEquityPledged.setCompanyId(companyID);

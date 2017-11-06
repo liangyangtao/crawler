@@ -86,6 +86,8 @@ public class TianyanchaImExPortParser extends TianyanchaBasePaser {
 						break;
 					}
 
+				} else {
+					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -109,28 +111,94 @@ public class TianyanchaImExPortParser extends TianyanchaBasePaser {
 				try {
 					Elements tdElements = element.select("td");
 					if (tdElements.size() == 4) {
-						String text = tdElements.get(3).select("span").attr("onclick");
-						text = StringUtils.substringBetween(text, "openImportAndExportPopup({", "})");
-						text = "{" + text + "}";
-						JSONObject fromObj = JSONObject.fromObject(text);
-						JSONObject baseInfo = fromObj.getJSONObject("baseInfo");
+
+						// String text =
+						// tdElements.get(3).select("span").attr("onclick");
+						// text = StringUtils.substringBetween(text,
+						// "openImportAndExportPopup({", "})");
+						// text = "{" + text + "}";
+						// JSONObject fromObj = JSONObject.fromObject(text);
+
+						Element scriptElement = tdElements.get(3).select("script").first();
+						String text = StringUtils.substringBetween(scriptElement.toString(),
+								"<script type=\"text/html\">", "</script>");
+						JSONObject obj = JSONObject.fromObject(text);
+
+						JSONObject baseInfo = null;
+						try {
+							baseInfo = obj.getJSONObject("baseInfo");
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
 						// openImportAndExportPopup(
 						// {"creditRating":[{"creditRating":"一般认证企业","authenticationCode":"","identificationTime":"2012-12-27"}],
 						// "baseInfo":{"industryCategory":"建材批发","annualReport":"超期未报送","status":"注销","administrativeDivision":"北京市海淀区","managementCategory":"进出口收发货人",
 						// "customsRegisteredAddress":"北京关区","validityDate":"2016-07-31","economicDivision":"一般经济区域","recordDate":"1999-12-16","crCode":"1108910143","specialTradeArea":"非特殊区域","types":""},"sanction":[{"penaltyDate":"2016-03-28","decisionNumber":"09460322016000132","party":"中建材集团进出口公司","natureOfCase":""},{"penaltyDate":"2014-08-28","decisionNumber":"60306022013234346","party":"中建材集团进出口公司","natureOfCase":"违规"},{"penaltyDate":"2014-02-20","decisionNumber":"22307022014265641","party":"中建材集团进出口公司","natureOfCase":""},{"penaltyDate":"2014-02-20","decisionNumber":"22307022014265650","party":"中建材集团进出口公司","natureOfCase":""},{"penaltyDate":"2014-02-20","decisionNumber":"22307022014265665","party":"中建材集团进出口公司","natureOfCase":""},{"penaltyDate":"2013-12-11","decisionNumber":"53311022013236863","party":"中建材集团进出口公司","natureOfCase":"违规"},{"penaltyDate":"2013-03-04","decisionNumber":"42311022013154519","party":"中建材集团进出口公司","natureOfCase":""},{"penaltyDate":"2013-03-04","decisionNumber":"42311022013155258","party":"中建材集团进出口公司","natureOfCase":""}]})
+						String registerDate = null;
+						try {
+							registerDate = baseInfo.getString("recordDate");
+						} catch (Exception e) {
+						}
+						String registerNumber = null;
+						try {
+							registerNumber = baseInfo.getString("crCode");
+						} catch (Exception e) {
+						}
+						String registerOrg = null;
+						try {
+							registerOrg = baseInfo.getString("customsRegisteredAddress");
+						} catch (Exception e) {
+						}
+						String adminPrecincts = null;
+						try {
+							adminPrecincts = baseInfo.getString("administrativeDivision");
+						} catch (Exception e) {
+						}
+						String economyPrecincts = null;
+						try {
+							economyPrecincts = baseInfo.getString("economicDivision");
+						} catch (Exception e) {
+						}
+						String operateType = null;
+						try {
+							operateType = baseInfo.getString("managementCategory");
+						} catch (Exception e) {
+						}
 
-						String registerDate = baseInfo.getString("recordDate");
-						String registerNumber = baseInfo.getString("crCode");
-						String registerOrg = baseInfo.getString("customsRegisteredAddress");
-						String adminPrecincts = baseInfo.getString("administrativeDivision");
-						String economyPrecincts = baseInfo.getString("economicDivision");
-						String operateType = baseInfo.getString("managementCategory");
-						String specialPrecincts = baseInfo.getString("specialTradeArea");
-						String industryType = baseInfo.getString("industryCategory");
-						String declareDate = baseInfo.getString("validityDate");
-						String identifier = baseInfo.getString("status");
-						String reportStatus = baseInfo.getString("annualReport");
-						String electronicType = baseInfo.getString("types");
+						String specialPrecincts = null;
+						try {
+							specialPrecincts = baseInfo.getString("specialTradeArea");
+						} catch (Exception e) {
+						}
+
+						String industryType = null;
+						try {
+							industryType = baseInfo.getString("industryCategory");
+						} catch (Exception e) {
+						}
+						String declareDate = null;
+						try {
+							declareDate = baseInfo.getString("validityDate");
+						} catch (Exception e) {
+						}
+
+						String identifier = null;
+						try {
+							identifier = baseInfo.getString("status");
+						} catch (Exception e) {
+						}
+						String reportStatus = null;
+						try {
+							reportStatus = baseInfo.getString("annualReport");
+						} catch (Exception e) {
+						}
+
+						String electronicType = null;
+						try {
+							electronicType = baseInfo.getString("types");
+						} catch (Exception e) {
+
+						}
 						TycCompanyImExPortCrawler tycCompanyImExPortCrawler = new TycCompanyImExPortCrawler();
 						tycCompanyImExPortCrawler.setAdminPrecincts(adminPrecincts);
 						tycCompanyImExPortCrawler.setCompanyId(companyId);

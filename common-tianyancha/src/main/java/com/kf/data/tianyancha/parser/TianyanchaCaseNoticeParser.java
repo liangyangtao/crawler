@@ -85,6 +85,8 @@ public class TianyanchaCaseNoticeParser extends TianyanchaBasePaser {
 						break;
 					}
 
+				} else {
+					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -112,37 +114,174 @@ public class TianyanchaCaseNoticeParser extends TianyanchaBasePaser {
 						String text = scriptElement.toString();
 						text = StringUtils.substringBetween(text, "<script type=\"text/html\">", "</script>");
 						JSONObject obj = JSONObject.fromObject(text);
-						String bltnno = obj.getString("bltnno");
-						String bltnstate = obj.getString("bltnstate");
-						String bltntype = obj.getString("bltntype");
+						String bltnno = null;
+						try {
+							bltnno = obj.getString("bltnno");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String bltnstate = null;
+						try {
+							bltnstate = obj.getString("bltnstate");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String bltntype = null;
+						try {
+							bltntype = obj.getString("bltntype");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String bltntypename = null;
+						try {
 
-						String bltntypename = obj.getString("bltntypename");
-						String caseno = obj.getString("caseno");
-						String content = obj.getString("content");
-						String courtflag = obj.getString("courtflag");
+							bltntypename = obj.getString("bltntypename");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 
-						String courtcode = obj.getString("courtcode");
-						String customno = obj.getString("customno");
-						String dealgrade = obj.getString("dealgrade");
+						String caseno = null;
+						try {
+							caseno = obj.getString("caseno");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String content = null;
+						try {
+							content = obj.getString("content");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String courtflag = null;
+						try {
+							courtflag = obj.getString("courtflag");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String courtcode = null;
+						try {
+							courtcode = obj.getString("courtcode");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 
-						String dealgradename = obj.getString("dealgradename");
+						String customno = null;
+						try {
+							customno = obj.getString("customno");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String dealgrade = null;
+						try {
+							dealgrade = obj.getString("dealgrade");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 
-						String judge = obj.getString("judge");
-						String judgephone = obj.getString("judgephone");
-						String mobilephone = obj.getString("mobilephone");
-						String party1 = obj.getString("party1");
-						String party2 = obj.getString("party2");
-						String companyList = URLEncoder.encode(obj.getJSONArray("companyList").toString(), "utf-8");
+						String dealgradename = null;
+						try {
 
-						String party1Str = obj.getString("party1Str");
-						String party2Str = obj.getString("party2Str");
-						String province = obj.getString("province");
+							dealgradename = obj.getString("dealgradename");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String judge = null;
 
-						String publishdate = obj.getString("publishdate");
-						String publishpage = obj.getString("publishpage");
-						String reason = obj.getString("reason");
-						String showtxtdate = obj.getString("showtxtdate");
-						String tmpsaversn = obj.getString("tmpsaversn");
+						try {
+
+							judge = obj.getString("judge");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String judgephone = null;
+						try {
+							judgephone = obj.getString("judgephone");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String mobilephone = null;
+						try {
+							mobilephone = obj.getString("mobilephone");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String party1 = null;
+						try {
+							party1 = obj.getString("party1");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String party2 = null;
+						try {
+							party2 = obj.getString("party2");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String companyList = null;
+						try {
+							companyList = URLEncoder.encode(obj.getJSONArray("companyList").toString(), "utf-8");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String party1Str = null;
+
+						try {
+							party1Str = obj.getString("party1Str");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String party2Str = null;
+						try {
+							party2Str = obj.getString("party2Str");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String province = null;
+						try {
+							province = obj.getString("province");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String publishdate = null;
+						try {
+							publishdate = obj.getString("publishdate");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String publishpage = null;
+						try {
+							publishpage = obj.getString("publishpage");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String reason = null;
+						try {
+							reason = obj.getString("reason");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String showtxtdate = null;
+						try {
+							showtxtdate = obj.getString("showtxtdate");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String tmpsaversn = null;
+						try {
+							tmpsaversn = obj.getString("tmpsaversn");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 
 						TycCompanyCaseNoticeCrawler tycCompanyCaseNoticeCrawler = new TycCompanyCaseNoticeCrawler();
 						tycCompanyCaseNoticeCrawler.setBltnno(bltnno);

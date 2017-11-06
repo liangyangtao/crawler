@@ -81,6 +81,8 @@ public class TianyanchaTaxRatingParser extends TianyanchaBasePaser {
 						break;
 					}
 
+				} else {
+					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

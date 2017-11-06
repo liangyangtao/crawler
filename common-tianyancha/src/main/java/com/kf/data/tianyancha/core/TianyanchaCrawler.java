@@ -272,7 +272,23 @@ public class TianyanchaCrawler {
 					key = string;
 				}
 			}
-			driver.switchTo().window(key);
+			if (key == null) {
+				Thread.sleep(8000);
+				allWindows = driver.getWindowHandles();
+				for (String string : allWindows) {
+					if (string.equals(currenWindow)) {
+						continue;
+					} else {
+						key = string;
+					}
+				}
+			}
+
+			if (key != null) {
+				driver.switchTo().window(key);
+			} else {
+				return;
+			}
 			String baseHtml = driver.getPageSource();
 
 			Document document = Jsoup.parse(baseHtml, "https://www.tianyancha.com");

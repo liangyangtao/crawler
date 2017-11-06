@@ -1,5 +1,6 @@
 package com.kf.data.tianyancha.parser;
 
+import java.net.URLEncoder;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -82,6 +83,8 @@ public class TianyanchaRecruitParser extends TianyanchaBasePaser {
 						break;
 					}
 
+				} else {
+					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -106,33 +109,83 @@ public class TianyanchaRecruitParser extends TianyanchaBasePaser {
 				try {
 					Elements tdElements = element.select("td");
 					if (tdElements.size() == 7) {
-						String text = tdElements.get(6).select("span").attr("onclick");
-						text = StringUtils.substringBetween(text, "employePopup({", "})");
-						text = "{" + text + "}";
-						TycCompanyRecruitmentCrawler tycCompanyRecruitmentCrawler = new TycCompanyRecruitmentCrawler();
+						// String text =
+						// tdElements.get(6).select("span").attr("onclick");
+						// text = StringUtils.substringBetween(text,
+						// "employePopup({", "})");
+						// text = "{" + text + "}";
+						// JSONObject fromObj = JSONObject.fromObject(text);
+						String text = tdElements.get(6).select("script").first().toString();
+						text = StringUtils.substringBetween(text, "<script type=\"text/html\">", "</script>");
 						JSONObject fromObj = JSONObject.fromObject(text);
+
+						TycCompanyRecruitmentCrawler tycCompanyRecruitmentCrawler = new TycCompanyRecruitmentCrawler();
 						// 招聘职位
-						String job_title = fromObj.getString("title");
-						String job_city = fromObj.getString("city");
-						String search_area = fromObj.getString("district");
-//						String company_name = fromObj.getString("companyName");
-						String salary_range = fromObj.getString("oriSalary");
-						String surl = fromObj.getString("urlPath");
-						String dt_start = fromObj.getString("startdate");
-						String dt_end = fromObj.getString("enddate");
-						Date start = timestampToDate(dt_start);
-						Date end = null;
-						if (dt_end != null) {
-							end = timestampToDate(dt_end);
+						String job_title = null;
+						try {
+							job_title = fromObj.getString("title");
+						} catch (Exception e) {
 						}
-						String source = fromObj.getString("source");
-						String academic_requirements = fromObj.getString("education");
-						String job_count = fromObj.getString("employerNumber");
-						String experience_requirements = fromObj.getString("experience");
-						String release_date = fromObj.getString("createTime");
-						String update_date = fromObj.getString("updateTime");
-						String release = dateTo8char(release_date);
-						String update = dateTo8char(update_date);
+						String job_city = null;
+						try {
+							job_city = fromObj.getString("city");
+						} catch (Exception e) {
+						}
+						String search_area = null;
+						try {
+							search_area = fromObj.getString("district");
+						} catch (Exception e) {
+						}
+						String salary_range = null;
+						try {
+							salary_range = fromObj.getString("oriSalary");
+						} catch (Exception e) {
+						}
+						String surl = null;
+						try {
+							surl = fromObj.getString("urlPath");
+						} catch (Exception e) {
+						}
+						Date start = null;
+						Date end = null;
+						try {
+							String dt_start = fromObj.getString("startdate");
+							String dt_end = fromObj.getString("enddate");
+							start = timestampToDate(dt_start);
+							if (dt_end != null) {
+								end = timestampToDate(dt_end);
+							}
+						} catch (Exception e) {
+						}
+						String source = null;
+						try {
+							source = fromObj.getString("source");
+						} catch (Exception e) {
+						}
+						String academic_requirements = null;
+						try {
+							academic_requirements = fromObj.getString("education");
+						} catch (Exception e) {
+						}
+						String job_count = null;
+						try {
+							job_count = fromObj.getString("employerNumber");
+						} catch (Exception e) {
+						}
+						String experience_requirements = null;
+						try {
+							experience_requirements = fromObj.getString("experience");
+						} catch (Exception e) {
+						}
+						String release = null;
+						String update = null;
+						try {
+							String release_date = fromObj.getString("createTime");
+							String update_date = fromObj.getString("updateTime");
+							release = dateTo8char(release_date);
+							update = dateTo8char(update_date);
+						} catch (Exception e) {
+						}
 						String job_description = fromObj.getString("description");
 						tycCompanyRecruitmentCrawler.setCompanyId(companyId);
 						tycCompanyRecruitmentCrawler.setJobTitle(job_title);
