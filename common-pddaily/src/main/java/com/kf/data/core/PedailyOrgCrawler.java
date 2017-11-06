@@ -28,7 +28,7 @@ public class PedailyOrgCrawler {
 	}
 
 	public void crawlerList() {
-		for (int i = 21; i <= (15849 / 20 + 1); i++) {
+		for (int i = 232; i <= (15855 / 20 + 1); i++) {
 			System.out.println(i);
 			String url = "http://zdb.pedaily.cn/company/all-p" + i;
 			String html = Fetcher.getInstance().get(url);
@@ -37,6 +37,8 @@ public class PedailyOrgCrawler {
 			for (Element companyElement : companylistElements) {
 				try {
 					String href = companyElement.select("a").first().absUrl("href");
+					// String companyName =
+					// companyElement.select("a").first().text();
 					System.out.println(href);
 					crawlerDetail(href);
 				} catch (Exception e) {
@@ -114,11 +116,26 @@ public class PedailyOrgCrawler {
 		}
 		Elements zdbShowElements = document.select(".zdb-show");
 		if (zdbShowElements.size() > 0) {
+
 			// 简介
-			Element descElement = zdbShowElements.first().select("#desc").first();
-			descElement.select("div.zdb-share").remove();
-			descElement.select(".noline").remove();
-			description = descElement.toString();
+			Elements descElements = zdbShowElements.first().select("#desc");
+
+			if (descElements.size() > 0) {
+
+				Element descElement = descElements.first();
+				try {
+					descElement.select("div.zdb-share").remove();
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				try {
+					descElement.select(".noline").remove();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				description = descElement.toString();
+			}
 			// 联系方式
 			Elements contactElements = zdbShowElements.first().select("#contact");
 			if (contactElements.size() > 0) {
