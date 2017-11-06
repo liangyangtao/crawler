@@ -110,47 +110,210 @@ public class TianyanchaBondParser extends TianyanchaBasePaser {
 					Elements tdElements = element.select("td");
 
 					if (tdElements.size() == 6) {
-						String text = tdElements.get(5).select("span").first().attr("onclick");
-						text = StringUtils.substringBetween(text, "openBondPopup({", "})");
-						text = "{" + text + "}";
+						// String text =
+						// tdElements.get(5).select("span").first().attr("onclick");
+						// text = StringUtils.substringBetween(text,
+						// "openBondPopup({", "})");
+						// text = "{" + text + "}";
+						// JSONObject obj = JSONObject.fromObject(text);
+						Element scriptElement = tdElements.get(5).select("script").first();
+						String text = StringUtils.substringBetween(scriptElement.toString(),
+								"<script type=\"text/html\">", "</script>");
 						JSONObject obj = JSONObject.fromObject(text);
+						String bondName = null;
+						try {
+							bondName = obj.getString("bondName");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String bondNum = null;
+						try {
+							bondNum = obj.getString("bondNum");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String publisherName = null;
+						try {
+							publisherName = obj.getString("publisherName");
+						} catch (Exception e) {
+							e.getMessage();
+						}
+						String bondType = null;
+						try {
+							bondType = obj.getString("bondType");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String publishTime = null;
+						try {
+							publishTime = obj.getString("publishTime");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String publishExpireTime = null;
+						try {
+							publishExpireTime = obj.getString("publishExpireTime");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String bondTimeLimit = null;
+						try {
+							bondTimeLimit = obj.getString("bondTimeLimit");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String bondTradeTime = null;
+						try {
+							bondTradeTime = obj.getString("bondTradeTime");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String calInterestType = null;
+						try {
+							calInterestType = obj.getString("calInterestType");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 
-						String bondName = obj.getString("bondName");
-						String bondNum = obj.getString("bondNum");
-						String publisherName = obj.getString("publisherName");
-						String bondType = obj.getString("bondType");
+						String bondStopTime = null;
+						try {
+							bondStopTime = obj.getString("bondStopTime");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String creditRatingGov = null;
+						try {
 
-						String publishTime = obj.getString("publishTime");
-						String publishExpireTime = obj.getString("publishExpireTime");
-						String bondTimeLimit = obj.getString("bondTimeLimit");
-						String bondTradeTime = obj.getString("bondTradeTime");
-						String calInterestType = obj.getString("calInterestType");
+							creditRatingGov = obj.getString("creditRatingGov");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String debtRating = null;
+						try {
+							debtRating = obj.getString("debtRating");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String faceValue = null;
+						try {
 
-						String bondStopTime = obj.getString("bondStopTime");
-						String creditRatingGov = obj.getString("creditRatingGov");
-						String debtRating = obj.getString("debtRating");
+							faceValue = obj.getString("faceValue");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 
-						String faceValue = obj.getString("faceValue");
-						String refInterestRate = obj.getString("refInterestRate");
+						String refInterestRate = null;
+						try {
+							refInterestRate = obj.getString("refInterestRate");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String faceInterestRate = null;
 
-						String faceInterestRate = obj.getString("faceInterestRate");
-						String realIssuedQuantity = obj.getString("realIssuedQuantity");
-						String planIssuedQuantity = obj.getString("planIssuedQuantity");
+						try {
 
-						String issuedPrice = obj.getString("issuedPrice");
-						String interestDiff = obj.getString("interestDiff");
-						String payInterestHZ = obj.getString("payInterestHZ");
-						String startCalInterestTime = obj.getString("startCalInterestTime");
-						String exeRightType = obj.getString("exeRightType");
+							faceInterestRate = obj.getString("faceInterestRate");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 
-						String exeRightTime = obj.getString("exeRightTime");
-						String escrowAgent = obj.getString("escrowAgent");
-						String flowRange = obj.getString("flowRange");
-						String remark = obj.getString("remark");
-						String tip = obj.getString("tip");
-						String createTime = obj.getString("createTime");
-						String updateTime = obj.getString("updateTime");
-						String isDelete = obj.getString("isDelete");
+						String realIssuedQuantity = null;
+						try {
+							realIssuedQuantity = obj.getString("realIssuedQuantity");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String planIssuedQuantity = null;
+						try {
+							planIssuedQuantity = obj.getString("planIssuedQuantity");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String issuedPrice = null;
+						try {
+
+							issuedPrice = obj.getString("issuedPrice");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String interestDiff = null;
+
+						try {
+							interestDiff = obj.getString("interestDiff");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String payInterestHZ = null;
+
+						try {
+							payInterestHZ = obj.getString("payInterestHZ");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						String startCalInterestTime = null;
+						try {
+							startCalInterestTime = obj.getString("startCalInterestTime");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String exeRightType = null;
+						try {
+							exeRightType = obj.getString("exeRightType");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String exeRightTime = null;
+						try {
+
+							exeRightTime = obj.getString("exeRightTime");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String escrowAgent = null;
+						try {
+							escrowAgent = obj.getString("escrowAgent");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String flowRange = null;
+						try {
+							flowRange = obj.getString("flowRange");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String remark = null;
+						try {
+							remark = obj.getString("remark");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String tip = null;
+						try {
+							tip = obj.getString("tip");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String createTime = null;
+						try {
+							createTime = obj.getString("createTime");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String updateTime = null;
+						try {
+							updateTime = obj.getString("updateTime");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String isDelete = null;
+						try {
+							isDelete = obj.getString("isDelete");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						TycCompanyBoundCrawler tycCompanyBoundCrawler = new TycCompanyBoundCrawler();
 						tycCompanyBoundCrawler.setBondName(bondName);
 						tycCompanyBoundCrawler.setBondNum(bondNum);

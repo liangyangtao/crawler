@@ -108,11 +108,7 @@ public class TianyanchaWechatParser extends TianyanchaBasePaser {
 			Elements nodes = contentNodes.first().select(".wechat > div");
 			for (Element element : nodes) {
 				try {
-
-					// Elements wechatImgElements =
-					// element.select(".wechatImg");
 					String wechatImg = null;
-
 					String wechatName = null;
 					String wechatNumber = null;
 					String wechatAbort = null;
@@ -122,14 +118,30 @@ public class TianyanchaWechatParser extends TianyanchaBasePaser {
 						if (divs.size() == 3) {
 							Elements spanElements = divs.get(2).select("span");
 							if (spanElements.size() == 3) {
-								String text = spanElements.get(2).attr("onclick");
-								text = StringUtils.substringBetween(text, "wechatPopup({", "})");
-								text = "{" + text + "}";
+								// String text =
+								// spanElements.get(2).attr("onclick");
+								// text = StringUtils.substringBetween(text,
+								// "wechatPopup({", "})");
+								// text = "{" + text + "}";
+								String text = spanElements.get(2).select("script").first().toString();
+								text = StringUtils.substringBetween(text, "<script type=\"text/html\">", "</script>");
 								JSONObject fromObj = JSONObject.fromObject(text);
-								wechatName = fromObj.getString("title");
-								wechatNumber = fromObj.getString("publicNum");
-								wechatImg = fromObj.getString("titleImgURL");
-								wechatAbort = fromObj.getString("recommend");
+								try {
+									wechatName = fromObj.getString("title");
+								} catch (Exception e) {
+								}
+								try {
+									wechatNumber = fromObj.getString("publicNum");
+								} catch (Exception e) {
+								}
+								try {
+									wechatImg = fromObj.getString("titleImgURL");
+								} catch (Exception e) {
+								}
+								try {
+									wechatAbort = fromObj.getString("recommend");
+								} catch (Exception e) {
+								}
 							}
 
 						}

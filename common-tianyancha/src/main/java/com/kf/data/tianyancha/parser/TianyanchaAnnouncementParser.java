@@ -110,19 +110,68 @@ public class TianyanchaAnnouncementParser extends TianyanchaBasePaser {
 					Elements tdElements = element.select("td");
 
 					if (tdElements.size() == 5) {
-						String text = tdElements.get(4).select("span").first().attr("onclick");
-						text = StringUtils.substringBetween(text, "openAnnouncementPopup({", "})");
-						text = "{" + text + "}";
+						// String text =
+						// tdElements.get(4).select("span").first().attr("onclick");
+						// text = StringUtils.substringBetween(text,
+						// "openAnnouncementPopup({", "})");
+						Element scriptElement = tdElements.get(4).select("script").first();
+						String text = StringUtils.substringBetween(scriptElement.toString(),
+								"<script type=\"text/html\">", "</script>");
 						JSONObject obj = JSONObject.fromObject(text);
-						String caseNo = obj.getString("caseNo");
-						String caseReason = obj.getString("caseReason");
-						String contractors = obj.getString("contractors");
-						String court = obj.getString("court");
-						String courtRoom = obj.getString("courtroom");
-						String defendant = URLEncoder.encode(obj.getJSONArray("defendant").toString(), "utf-8");
-						String judge = obj.getString("judge");
-						String plaintiff = URLEncoder.encode(obj.getJSONArray("plaintiff").toString(), "utf-8");
-						String startDate = obj.getString("startDate");
+						String caseNo = null;
+						try {
+							caseNo = obj.getString("caseNo");
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+						String caseReason = null;
+						try {
+							caseReason = obj.getString("caseReason");
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+						String contractors = null;
+						try {
+							contractors = obj.getString("contractors");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String court = null;
+						try {
+							court = obj.getString("court");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String courtRoom = null;
+						try {
+							courtRoom = obj.getString("courtroom");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String defendant = null;
+						try {
+							defendant = URLEncoder.encode(obj.getJSONArray("defendant").toString(), "utf-8");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String judge = null;
+						try {
+							judge = obj.getString("judge");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String plaintiff = null;
+						try {
+							plaintiff = URLEncoder.encode(obj.getJSONArray("plaintiff").toString(), "utf-8");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String startDate = null;
+						try {
+							startDate = obj.getString("startDate");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						TycCompanyAnnouncementCrawler tycCompanyAnnouncementCrawler = new TycCompanyAnnouncementCrawler();
 						tycCompanyAnnouncementCrawler.setCaseNo(caseNo);
 						tycCompanyAnnouncementCrawler.setCaseReason(caseReason);

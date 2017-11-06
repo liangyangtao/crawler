@@ -93,7 +93,6 @@ public class TianyanchaPatentParser extends TianyanchaBasePaser {
 		}
 	}
 
-
 	/***
 	 * 专利信息解析
 	 * 
@@ -109,47 +108,116 @@ public class TianyanchaPatentParser extends TianyanchaBasePaser {
 				try {
 					Elements tdElements = element.select("td");
 					if (tdElements.size() == 5) {
-						String text = tdElements.get(4).select("span").first().attr("onclick");
-						text = StringUtils.substringBetween(text, "openPatentPopup({", "})");
-						text = "{" + text + "}";
+						// String text =
+						// tdElements.get(4).select("span").first().attr("onclick");
+						// text = StringUtils.substringBetween(text,
+						// "openPatentPopup({", "})");
+						String text = tdElements.get(4).select("script").first().toString();
+						text = StringUtils.substringBetween(text, "<script type=\"text/html\">", "</script>");
 						JSONObject obj = JSONObject.fromObject(text);
-						String classification_main_number = obj.getString("mainCatNum");
-						String publish_number = obj.getString("applicationPublishNum");
+						String classification_main_number = null;
+						try {
+							classification_main_number = obj.getString("mainCatNum");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String publish_number = null;
+						try {
+							publish_number = obj.getString("applicationPublishNum");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						String proxy_agency = "";
 						try {
 							proxy_agency = obj.getString("agency");
 						} catch (Exception e) {
 							logger.info(companyName + "agency 不存在");
 						}
-						String inventor = obj.getString("inventor");
+						String inventor = null;
+						try {
+							inventor = obj.getString("inventor");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						String agent = "";
 						try {
 							agent = obj.getString("agent");
 						} catch (Exception e) {
 							logger.info(companyName + "agent 不存在");
-							// e.printStackTrace();
 						}
-						String application_number = obj.getString("patentNum");
-						String classification_number = obj.getString("allCatNum");
-						String patent_name = obj.getString("patentName");
-						String summary = obj.getString("abstracts");
-						String address = obj.getString("address");
-						String application_date = obj.getString("applicationTime");
-						String patent_type = obj.getString("patentType");
-						String applicant = obj.getString("applicantName");
-						String publish_date = obj.getString("applicationPublishTime");
-						publish_date = publish_date.replace("-", "");
+						String application_number = null;
+						try {
+							application_number = obj.getString("patentNum");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String classification_number = null;
+						try {
+							classification_number = obj.getString("allCatNum");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String patent_name = null;
+						try {
+							patent_name = obj.getString("patentName");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String summary = null;
+						try {
+							summary = obj.getString("abstracts");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String address = null;
+						try {
+							address = obj.getString("address");
+						} catch (Exception e) {
+							e.printStackTrace();
+
+						}
+						String application_date = null;
+						try {
+							application_date = obj.getString("applicationTime");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						String patent_type = null;
+						try {
+							patent_type = obj.getString("patentType");
+						} catch (Exception e) {
+							e.printStackTrace();
+
+						}
+						String applicant = null;
+						try {
+							applicant = obj.getString("applicantName");
+						} catch (
+
+						Exception e) {
+							e.printStackTrace();
+						}
+						String publish_date = null;
+						try {
+							publish_date = obj.getString("applicationPublishTime");
+							publish_date = publish_date.replace("-", "");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
 						// 修改图片使用专利网的图片
 						String imgurl = null;
-//						String kfImgUrl = null;
+						// String kfImgUrl = null;
 						try {
 							imgurl = obj.getString("imgUrl");
-//							kfImgUrl = new AliOssSender().uploadObject(imgurl);
-//							if (kfImgUrl.startsWith("https://") || kfImgUrl.startsWith("http://")) {
-//
-//							} else {
-//								kfImgUrl = "https:" + kfImgUrl;
-//							}
+							// kfImgUrl = new
+							// AliOssSender().uploadObject(imgurl);
+							// if (kfImgUrl.startsWith("https://") ||
+							// kfImgUrl.startsWith("http://")) {
+							//
+							// } else {
+							// kfImgUrl = "https:" + kfImgUrl;
+							// }
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -187,10 +255,13 @@ public class TianyanchaPatentParser extends TianyanchaBasePaser {
 						tycCompanyPatentCrawler.setPublishDate(publish_date);
 						tycCompanyPatentCrawler.setStatus(false);
 						tycCompanyPatentCrawler.setImgUrl(imgurl);
+
 						sendJson(tycCompanyPatentCrawler, "tyc_company_patent");
 					}
 
-				} catch (Exception e) {
+				} catch (
+
+				Exception e) {
 					e.printStackTrace();
 					continue;
 				}

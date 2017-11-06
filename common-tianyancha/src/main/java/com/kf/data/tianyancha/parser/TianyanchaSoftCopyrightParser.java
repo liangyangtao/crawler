@@ -111,16 +111,45 @@ public class TianyanchaSoftCopyrightParser extends TianyanchaBasePaser {
 					if (tdElements.size() == 7) {
 						// openCopyrightPopup({"id":"2797175","regtime":"1505059200000","publishtime":"1503763200000","authorNationality":"北京百度网讯科技有限公司:中国",
 						// "simplename":"百度文库","regnum":"2017SR502655","catnum":"30200-0000","fullname":"百度文库Android终端软件","version":"V4.2.4"})
-						String text = tdElements.get(6).select("span").first().attr("onclick");
-						text = StringUtils.substringBetween(text, "openCopyrightPopup({", "})");
-						text = "{" + text + "}";
+						// String text =
+						// tdElements.get(6).select("span").first().attr("onclick");
+						// text = StringUtils.substringBetween(text,
+						// "openCopyrightPopup({", "})");
+						// text = "{" + text + "}";
+						// JSONObject obj = JSONObject.fromObject(text);
+						String text = tdElements.get(6).select("script").first().toString();
+						text = StringUtils.substringBetween(text, "<script type=\"text/html\">", "</script>");
 						JSONObject obj = JSONObject.fromObject(text);
-						String authornationality = obj.getString("authorNationality");
-						String catnum = obj.getString("catnum");
-						String fullname = obj.getString("fullname");
-						String publishtime = obj.getString("publishtime");
-						String regnum = obj.getString("regnum");
-						String regtime = obj.getString("regtime");
+						String authornationality = null;
+						try {
+							authornationality = obj.getString("authorNationality");
+						} catch (Exception e) {
+						}
+						String catnum = null;
+						try {
+							catnum = obj.getString("catnum");
+						} catch (Exception e) {
+						}
+						String fullname = null;
+						try {
+							fullname = obj.getString("fullname");
+						} catch (Exception e) {
+						}
+						String publishtime = null;
+						try {
+							publishtime = obj.getString("publishtime");
+						} catch (Exception e) {
+						}
+						String regnum = null;
+						try {
+							regnum = obj.getString("regnum");
+						} catch (Exception e) {
+						}
+						String regtime = null;
+						try {
+							regtime = obj.getString("regtime");
+						} catch (Exception e) {
+						}
 						String simplename = null;
 						try {
 							simplename = obj.getString("simplename");
@@ -128,7 +157,11 @@ public class TianyanchaSoftCopyrightParser extends TianyanchaBasePaser {
 							e.printStackTrace();
 							simplename = "";
 						}
-						String version = obj.getString("version");
+						String version = null;
+						try {
+							version = obj.getString("version");
+						} catch (Exception e) {
+						}
 						TycCompanySoftCopyrightCrawler tycCompanySoftCopyrightCrawler = new TycCompanySoftCopyrightCrawler();
 						tycCompanySoftCopyrightCrawler.setAuthornationality(authornationality);
 						tycCompanySoftCopyrightCrawler.setCatnum(catnum);

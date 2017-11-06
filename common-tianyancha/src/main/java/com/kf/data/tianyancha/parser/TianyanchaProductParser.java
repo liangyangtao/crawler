@@ -112,12 +112,36 @@ public class TianyanchaProductParser extends TianyanchaBasePaser {
 						String text = tdElements.get(5).select("script").first().toString();
 						text = StringUtils.substringBetween(text, "<script type=\"text/html\">", "</script>");
 						JSONObject obj = JSONObject.fromObject(text);
-						String area = obj.getString("classes");
-						String description = obj.getString("brief");
-						String productLogo = obj.getString("icon");
-						String productShortname = obj.getString("filterName");
-						String productType = obj.getString("type");
-						String productName = obj.getString("name");
+						String area = null;
+						try {
+							area = obj.getString("classes");
+						} catch (Exception e) {
+						}
+						String description = null;
+						try {
+							description = obj.getString("brief");
+						} catch (Exception e) {
+						}
+						String productLogo = null;
+						try {
+							productLogo = obj.getString("icon");
+						} catch (Exception e) {
+						}
+						String productShortname = null;
+						try {
+							productShortname = obj.getString("filterName");
+						} catch (Exception e) {
+						}
+						String productType = null;
+						try {
+							productType = obj.getString("type");
+						} catch (Exception e) {
+						}
+						String productName = null;
+						try {
+							productName = obj.getString("name");
+						} catch (Exception e) {
+						}
 						TycCompanyProductCrawler tycCompanyProductCrawler = new TycCompanyProductCrawler();
 						tycCompanyProductCrawler.setArea(area);
 						tycCompanyProductCrawler.setCompanyId(companyId);

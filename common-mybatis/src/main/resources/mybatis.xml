@@ -62,6 +62,11 @@
 			type="com.kf.data.mybatis.entity.TycEventsTenderBidCrawler" />
 		<!-- tyc end -->
 
+		<!-- Pedaily -->
+		<typeAlias alias="PdPedailyOrgCrawler"
+			type="com.kf.data.mybatis.entity.PdPedailyOrgCrawler" />
+
+
 	</typeAliases>
 	<!--数据源配置 这块用 BD2数据库 -->
 	<environments default="localMysql">
@@ -163,6 +168,7 @@
 			resource="com/kf/data/mybatis/mapper/TycEventsTenderBidCrawlerMapper.xml" />
 
 		<!-- tyc end -->
-
+		<!-- -->
+		<mapper resource="com/kf/data/mybatis/mapper/PdPedailyOrgCrawlerMapper.xml" />
 	</mappers>
 </configuration> 

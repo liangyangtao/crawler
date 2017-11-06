@@ -109,9 +109,17 @@ public class TianyanchaMortgageParser extends TianyanchaBasePaser {
 				try {
 					Elements tdElements = element.select("td");
 					if (tdElements.size() == 7) {
-						String text = tdElements.get(6).select("span").attr("onclick");
-						text = StringUtils.substringBetween(text, "openMortgagePopup({", "})");
-						text = "{" + text + "}";
+						// String text =
+						// tdElements.get(6).select("span").attr("onclick");
+						// text = StringUtils.substringBetween(text,
+						// "openMortgagePopup({", "})");
+						// text = "{" + text + "}";
+
+						Element scriptElement = tdElements.get(6).select("script").first();
+						String text = StringUtils.substringBetween(scriptElement.toString(),
+								"<script type=\"text/html\">", "</script>");
+						JSONObject obj = JSONObject.fromObject(text);
+
 						// openMortgagePopup({"baseInfo":{"overviewAmount":"55万元","scope":"融资租赁合同项下所有应付款项，包括但不限于租金，租赁费用，逾期利息，违约金，损害赔偿金和实现地债券的费用等。","status":"无效","remark":"","regDate":"2999-08-28","overviewType":"融资租赁合同","type":"融资租赁合同","overviewScope":"融资租赁合同项下所有应付款项，包括但不限于租金，租赁费用，逾期利息，违约金，损害赔偿金和实现地债券的费用等。","id":8775083,"amount":"55万元","overviewRemark":"","overviewTerm":"自
 						// 2015年05月27日 至
 						// 2017年05月31日","regDepartment":"大连金普新区市场监督管理局","regNum":"2015112","term":"自
@@ -119,17 +127,29 @@ public class TianyanchaMortgageParser extends TianyanchaBasePaser {
 						// 2017年05月31日","base":"ln","publishDate":"Dec 7, 2016
 						// 12:00:00
 						// AM"},"changeInfoList":[],"pawnInfoList":[],"peopleInfo":[{"licenseNum":"非公示项","peopleName":"仲利国际租赁有限公司","liceseType":""}]})
-						JSONObject fromObj = JSONObject.fromObject(text);
-						JSONObject baseInfo = fromObj.getJSONObject("baseInfo");
+						// JSONObject fromObj = JSONObject.fromObject(text);
+						JSONObject baseInfo = obj.getJSONObject("baseInfo");
 						String credit_guaranteed_amt = null;
 						try {
 							credit_guaranteed_amt = baseInfo.getString("overviewAmount");// 被担保债权数额
 						} catch (Exception e) {
 
 						}
-						String guarantee_scope = baseInfo.getString("scope");// 担保范围
-						String case_status = baseInfo.getString("status");// 状态
-						String dt_register = baseInfo.getString("regDate");// 登记日期
+						String guarantee_scope = null;
+						try {
+							guarantee_scope = baseInfo.getString("scope");// 担保范围
+						} catch (Exception e) {
+						}
+						String case_status = null;
+						try {
+							case_status = baseInfo.getString("status");// 状态
+						} catch (Exception e) {
+						}
+						String dt_register = null;
+						try {
+							dt_register = baseInfo.getString("regDate");// 登记日期
+						} catch (Exception e) {
+						}
 						String credit_guaranteed_type = "";
 						try {
 							credit_guaranteed_type = baseInfo.getString("overviewType");// 被担保债权类型
@@ -165,7 +185,7 @@ public class TianyanchaMortgageParser extends TianyanchaBasePaser {
 						tycCompanyChattelMortgage.setCompanyId(companyId);
 						tycCompanyChattelMortgage.setCompanyName(companyName);
 						tycCompanyChattelMortgage.setRegisterAgency(regDepartment);
-						JSONArray pepoleInfo = fromObj.getJSONArray("peopleInfo");
+						JSONArray pepoleInfo = obj.getJSONArray("peopleInfo");
 						for (Object object : pepoleInfo) {
 							JSONObject objs = JSONObject.fromObject(object);
 							String mortgagee = objs.getString("peopleName");
