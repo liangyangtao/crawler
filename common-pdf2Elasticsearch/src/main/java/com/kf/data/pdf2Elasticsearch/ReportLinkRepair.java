@@ -23,27 +23,42 @@ public class ReportLinkRepair {
 
 	public static void main(String[] args) {
 
-		List<PdfReportLinks> pdfReportLinks = pdfReportLinksReader.readNoLink();
-		for (PdfReportLinks pdfReportLink : pdfReportLinks) {
-			System.out.println(pdfReportLink.getId());
-			StringBuffer canshu = new StringBuffer();
-			canshu.append(
-					"select id, downurl as pdf_link ,concat('https://static.kaifengdata.com/neeq/',md5,'/',htmlfilepath) as link ,pdftitle as title from pdf2html_storm_message_queue where   bucket='neeq' and ");
-			canshu.append(" neeq_company_notice_id  = ");
-			canshu.append(pdfReportLink.getNoticeId());
-			List<NeeqNotice> neeqNotices = neeqNoticeReader.readNeeqNotice(canshu.toString());
-			if (neeqNotices.size() > 0) {
-				for (NeeqNotice neeqNotice : neeqNotices) {
-					String link = neeqNotice.getLink();
-					if (link.endsWith("//")) {
-						continue;
-					}
-					pdfReportLink.setLink(link);
-					pdfReportLinksReader.updatePdfReportLinkByid(pdfReportLink);
+		while (true) {
+			List<PdfReportLinks> pdfReportLinks = pdfReportLinksReader.readNoLink();
+			if (pdfReportLinks.size() == 0) {
+				break;
+			}
+			for (PdfReportLinks pdfReportLink : pdfReportLinks) {
+				System.out.println(pdfReportLink.getId());
+				StringBuffer canshu = new StringBuffer();
+				canshu.append(
+						"select id, downurl as pdf_link ,concat('https://static.kaifengdata.com/neeq/',md5,'/',htmlfilepath) as link ,pdftitle as title from pdf2html_storm_message_queue where   bucket='neeq' and ");
+				canshu.append(" neeq_company_notice_id  = ");
+				canshu.append(pdfReportLink.getNoticeId());
+				List<NeeqNotice> neeqNotices = neeqNoticeReader.readNeeqNotice(canshu.toString());
+				if (neeqNotices.size() > 0) {
+					for (NeeqNotice neeqNotice : neeqNotices) {
+						String link = neeqNotice.getLink();
+						if (link.endsWith("/")) {
 
+						} else {
+							System.out.println(link);
+							pdfReportLink.setLink(link);
+						}
+						pdfReportLink.setRank(2);
+						pdfReportLinksReader.updatePdfReportLinkByid(pdfReportLink);
+
+					}
+				} else {
+					pdfReportLink.setRank(2);
+					pdfReportLinksReader.updatePdfReportLinkByid(pdfReportLink);
 				}
 			}
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-
 	}
 }

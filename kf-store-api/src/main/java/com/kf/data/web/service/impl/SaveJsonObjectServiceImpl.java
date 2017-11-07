@@ -299,8 +299,6 @@ public class SaveJsonObjectServiceImpl implements SaveJsonObjectService {
 				TycCompanyTrademarkCrawler tycCompanyTrademarkCrawler = gson.fromJson(json,
 						TycCompanyTrademarkCrawler.class);
 				tycCompanyTrademarkCrawlerMapper.insertSelective(tycCompanyTrademarkCrawler);
-			} else if (type.equals("tyc_events_tender_bid")) {
-
 			} else if (type.equals("tyc_company_commonstock")) {
 				TycCompanyCommonstockCrawler tycCompanyCommonstockCrawler = gson.fromJson(json,
 						TycCompanyCommonstockCrawler.class);

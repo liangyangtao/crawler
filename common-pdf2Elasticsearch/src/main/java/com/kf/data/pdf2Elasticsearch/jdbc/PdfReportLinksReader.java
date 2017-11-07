@@ -57,7 +57,6 @@ public class PdfReportLinksReader {
 		PdfReportLinksExample example = new PdfReportLinksExample();
 		example.or().andNoticeIdEqualTo(pdfReportLinks.getNoticeId());
 		List<PdfReportLinks> pdfReportLinkses = pdfReportLinksMapper.selectByExample(example);
-
 		if (pdfReportLinkses.size() > 0) {
 			return pdfReportLinkses.get(0).getId();
 		}
@@ -75,10 +74,9 @@ public class PdfReportLinksReader {
 		try {
 			PdfReportLinksMapper pdfReportLinksMapper = sqlSession.getMapper(PdfReportLinksMapper.class);
 			PdfReportLinksExample example = new PdfReportLinksExample();
-			example.or().andLinkEqualTo("https://static.kaifengdata.com/neeq//");
-			example.setOrderByClause("id limit 10");
+			example.or().andLinkLike("%/").andRankEqualTo(0);
+			example.setOrderByClause("id desc  limit 1000");
 			pdfReportLinks = pdfReportLinksMapper.selectByExample(example);
-
 			sqlSession.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
