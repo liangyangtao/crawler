@@ -134,12 +134,12 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 					} catch (Exception e) {
 					}
 					String trademark_img_url = tdElements.get(1).select("img").first().attr("src");
-					String kfImgUrl = new AliOssSender().uploadObject(trademark_img_url);
-					if (kfImgUrl.startsWith("https://") || kfImgUrl.startsWith("http://")) {
-
-					} else {
-						kfImgUrl = "https:" + kfImgUrl;
-					}
+//					String kfImgUrl = new AliOssSender().uploadObject(trademark_img_url);
+//					if (kfImgUrl.startsWith("https://") || kfImgUrl.startsWith("http://")) {
+//
+//					} else {
+//						kfImgUrl = "https:" + kfImgUrl;
+//					}
 					tycCompanyTrademarkCrawler.setCreatedAt(new Date());
 					tycCompanyTrademarkCrawler.setCompanyId(companyId);
 					tycCompanyTrademarkCrawler.setCompanyName(companyName);
@@ -149,9 +149,10 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 					tycCompanyTrademarkCrawler.setRegistrationNumber(registration_number);
 					// tycCompanyTrademarkCrawler.setTrademarkName(trademark_name);
 					tycCompanyTrademarkCrawler.setTrademarkImgUrl(trademark_img_url);
+					tycCompanyTrademarkCrawler.setTrademarkName(trademark_name);
 					// tycCompanyTrademarkCrawler.setKfImgUrl(kfImgUrl);
 					tycCompanyTrademarkCrawler.setTrademarkId("trademark_id");
-					tycCompanyTrademarkCrawler.setStatus(false);
+					tycCompanyTrademarkCrawler.setStatus((byte) 0);
 					sendJson(tycCompanyTrademarkCrawler, "tyc_company_trademark");
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -14,7 +14,7 @@ public class AliOssSender {
 	public static void main(String[] args) {
 
 		System.out.println(new AliOssSender()
-				.uploadObject("http://tm-image.tianyancha.com/tm/774c76d01380590081006d2c810fb381.jpg"));
+				.uploadObject("https://img.tianyancha.com/logo/lll/a2eaf80f40ce6290a217b32899baccb9.png@!watermark01"));
 	}
 
 	public String uploadObject(String objUrl) {

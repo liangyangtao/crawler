@@ -1,5 +1,9 @@
 package com.kf.data.tianyancha;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +27,28 @@ import com.kf.data.fetcher.tools.KfConstant;
  * @version V1.0
  */
 public class CompanyApp {
+
+	public static String companyCityIndex = "北京";
+	public static boolean isSupCrawler = false;
+
 	public static void main(String[] args) {
 		KfConstant.init();
+		try {
+			String path = CompanyApp.class.getClassLoader().getResource("").toURI().getPath();
+			File file = new File(path + File.separator + "city.txt");
+			if (file.exists()) {
+				InputStreamReader reader = new InputStreamReader(new FileInputStream(file));
+				BufferedReader br = new BufferedReader(reader); // 建立一个对象，它把文件内容转成计算机能读懂的语言
+				String line = "";
+				line = br.readLine();
+				companyCityIndex = line.trim();
+				br.close();
+				reader.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		new CompanyApp().crawlerCitys();
 	}
 
@@ -35,12 +59,17 @@ public class CompanyApp {
 		String url = "https://www.tianyancha.com/companies/cities";
 		String html = Fetcher.getInstance().get(url);
 		Document document = Jsoup.parse(html, url);
-		Elements citys = document.select("a.new-c2");
+		Elements citys = document.select("a.baseFirstLine,a.new-c2");
 		for (Element element : citys) {
 			String city = element.text();
 			String href = element.attr("href");
 			System.out.println(city);
-			crawlerType(city, href);
+			if (city.equals(companyCityIndex)) {
+				isSupCrawler = true;
+			}
+			if (isSupCrawler) {
+				crawlerType(city, href);
+			}
 		}
 	}
 
