@@ -1,6 +1,7 @@
 package com.kf.data.pdf2Elasticsearch.jdbc;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -56,8 +57,10 @@ public class NeeqCompanyNoticeReader {
 		try {
 			NeeqCompanyNoticeMapper neeqCompanyNoticeMapper = sqlSession.getMapper(NeeqCompanyNoticeMapper.class);
 			NeeqCompanyNoticeExample example = new NeeqCompanyNoticeExample();
-			example.or().andIdGreaterThan(id);
-			example.setOrderByClause("id limit 20");
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date value = simpleDateFormat.parse("2016-12-31");
+			example.or().andIdGreaterThan(id).andReportDateEqualTo(value);
+			example.setOrderByClause("id limit 100");
 			neeqCompanyNotices = neeqCompanyNoticeMapper.selectByExample(example);
 			sqlSession.commit(true);
 		} catch (Exception e) {

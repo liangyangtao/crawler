@@ -133,6 +133,7 @@ public class Notice2LinkApp {
 					neeqCompanyNotices.clear();
 					neeqCompanyNotices = null;
 				} else {
+					System.out.println("没有数据啦");
 					try {
 						Thread.sleep(6 * 60 * 60 * 1000);
 					} catch (InterruptedException e) {
@@ -196,6 +197,8 @@ public class Notice2LinkApp {
 				neeqNotice = null;
 			}
 
+		} else {
+			System.out.println("没有找到link");
 		}
 		neeqNotices.clear();
 		neeqNotices = null;
