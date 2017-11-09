@@ -29,7 +29,7 @@ public class NeeqCompanyNoticeReader {
 	 * @return
 	 */
 	public NeeqCompanyNotice readNeeqCompanyNoticesById(long id) {
-		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
+		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerHisMysql").openSession();
 		NeeqCompanyNotice neeqCompanyNotice = null;
 		try {
 			NeeqCompanyNoticeMapper neeqCompanyNoticeMapper = sqlSession.getMapper(NeeqCompanyNoticeMapper.class);
@@ -58,7 +58,7 @@ public class NeeqCompanyNoticeReader {
 			NeeqCompanyNoticeMapper neeqCompanyNoticeMapper = sqlSession.getMapper(NeeqCompanyNoticeMapper.class);
 			NeeqCompanyNoticeExample example = new NeeqCompanyNoticeExample();
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			Date value = simpleDateFormat.parse("2016-12-31");
+			Date value = simpleDateFormat.parse("2015-12-31");
 			example.or().andIdGreaterThan(id).andReportDateEqualTo(value);
 			example.setOrderByClause("id limit 100");
 			neeqCompanyNotices = neeqCompanyNoticeMapper.selectByExample(example);

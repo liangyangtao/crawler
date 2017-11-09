@@ -105,7 +105,7 @@ public class TianyanchaInvestParser extends TianyanchaBasePaser {
 			for (Element element : nodes) {
 				try {
 					Elements tdElements = element.select("td");
-					String area = tdElements.get(4).text().trim();
+					String area = tdElements.get(5).text().trim();
 					String business = tdElements.get(7).text().trim();
 					String date = tdElements.get(0).text().trim();
 					String industry = tdElements.get(6).text().trim();
@@ -117,6 +117,7 @@ public class TianyanchaInvestParser extends TianyanchaBasePaser {
 					}
 					String step = tdElements.get(1).text().trim();
 					String product = tdElements.get(4).text().trim();
+					
 					TycEventsInvestCrawler tycEventsInvestCrawler = new TycEventsInvestCrawler();
 					tycEventsInvestCrawler.setArea(area);
 					tycEventsInvestCrawler.setBusiness(business);

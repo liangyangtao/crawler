@@ -108,7 +108,7 @@ public class TianyanchaAdmPenaltyParser extends TianyanchaBasePaser {
 			for (Element element : nodes) {
 				try {
 					Elements tdElements = element.select("td");
-					if (tdElements.size() == 4) {
+					if (tdElements.size() == 5) {
 						// openPunishPopup({"content":"没收违法所得 11508.65 元;罚款
 						// 80000.0
 						// 元","regNum":"310108000095592","punishNumber":"浦市监案处字〔2016〕第150201610696号","name":"上海好来喜糖业烟酒有限公司","base":"sh","decisionDate":"2016-07-18","type":"经营者采用财物或者其他手段进行贿赂以销售或者购买商品","legalPersonName":"顾传宏","departmentName":"上海市浦东新区市场监督管理局","publishDate":"2016-07-18"})
@@ -118,9 +118,10 @@ public class TianyanchaAdmPenaltyParser extends TianyanchaBasePaser {
 						// "openPunishPopup({", "})");
 						// text = "{" + text + "}";
 						//<script type="text/html">{"content":"没收违法所得 11508.65 元;罚款 80000.0 元","regNum":"310108000095592","punishNumber":"浦市监案处字〔2016〕第150201610696号","name":"上海好来喜糖业烟酒有限公司","base":"sh","decisionDate":"2016-07-18","type":"经营者采用财物或者其他手段进行贿赂以销售或者购买商品","legalPersonName":"顾传宏","departmentName":"上海市浦东新区市场监督管理局","publishDate":"2016-07-18"}</script>
-						Element scriptElement = tdElements.get(3).select("script").first();
+						Element scriptElement = tdElements.get(4).select("script").first();
 						String text = StringUtils.substringBetween(scriptElement.toString(),
 								"<script type=\"text/html\">", "</script>");
+						
 						JSONObject obj = JSONObject.fromObject(text);
 						String agency = null;
 						try {
