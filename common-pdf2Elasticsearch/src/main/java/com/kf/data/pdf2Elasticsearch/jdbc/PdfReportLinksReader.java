@@ -88,6 +88,30 @@ public class PdfReportLinksReader {
 
 	}
 
+	/***
+	 * 更具noticeid 读取链接
+	 * 
+	 * @return
+	 */
+	public List<PdfReportLinks> readLinkByNoticeid(int id) {
+		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
+		List<PdfReportLinks> pdfReportLinks = null;
+		try {
+			PdfReportLinksMapper pdfReportLinksMapper = sqlSession.getMapper(PdfReportLinksMapper.class);
+			PdfReportLinksExample example = new PdfReportLinksExample();
+			example.or().andNoticeIdEqualTo(id);
+			pdfReportLinks = pdfReportLinksMapper.selectByExample(example);
+			sqlSession.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			sqlSession.rollback(true);
+		} finally {
+			sqlSession.close();
+		}
+		return pdfReportLinks;
+
+	}
+
 	/****
 	 * 更新没有链接的公告
 	 * 

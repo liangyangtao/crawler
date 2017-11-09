@@ -137,38 +137,42 @@ public class TableSpliter {
 					continue;
 				}
 				// 如果包含
-				if (rules.contains(aa[i][0])) {
+				if (rules != null && rules.contains(aa[i][0])) {
 					// do nothing
 				} else {
-					//
-					boolean match = false;
-					for (String rule : rules) {
-						if (levenshtein.getSimilarityRatio(rule, aa[i][0]) > 0.7) {
-							match = true;
-							break;
-						}
-						if (!match) {
-							// 如果包含第一行
-							if (rule.contains(aa[i][0])) {
-								if (i + 1 < aa.length) {
-									// 也包含他的下一行
-									if (rule.contains(aa[i + 1][0])) {
-										match = true;
-										// 就合并这两行,将第二行清空
-										aa[i][0] = rule;
-										aa[i + 1][0] = null;
-										for (int j = 1; j < aa.length; j++) {
-											if (j < aa[i + 1].length) {
-												aa[i][j] = aa[i][j] + aa[i + 1][j];
-												aa[i + 1][j] = null;
+
+					if (rules != null) {
+						boolean match = false;
+						for (String rule : rules) {
+							if (levenshtein.getSimilarityRatio(rule, aa[i][0]) > 0.7) {
+								match = true;
+								break;
+							}
+							if (!match) {
+								// 如果包含第一行
+								if (rule.contains(aa[i][0])) {
+									if (i + 1 < aa.length) {
+										// 也包含他的下一行
+										if (rule.contains(aa[i + 1][0])) {
+											match = true;
+											// 就合并这两行,将第二行清空
+											aa[i][0] = rule;
+											aa[i + 1][0] = null;
+											for (int j = 1; j < aa.length; j++) {
+												if (j < aa[i + 1].length) {
+													aa[i][j] = aa[i][j] + aa[i + 1][j];
+													aa[i + 1][j] = null;
+												}
 											}
+											break;
 										}
-										break;
 									}
 								}
 							}
 						}
+
 					}
+					//
 
 				}
 			}

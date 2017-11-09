@@ -69,6 +69,12 @@ public class CompanyApp {
 			}
 			if (isSupCrawler) {
 				crawlerType(city, href);
+				try {
+					Thread.sleep(10 * 1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -88,6 +94,11 @@ public class CompanyApp {
 			String type = element.text();
 			System.out.println(type);
 			crawlerCompany(city, type, href);
+			try {
+				Thread.sleep(10 * 1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
