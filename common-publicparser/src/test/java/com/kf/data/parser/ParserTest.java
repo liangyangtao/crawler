@@ -25,11 +25,12 @@ public class ParserTest {
 	
 	
 	public static void main(String[] args) {
-		String url = "https://static.kaifengdata.com/neeq/7ade7ee63f3cb87e3224b8b4318628d6/2173418.pdf.html";
+		String url = "https://static.kaifengdata.com/neeq/d22ac8dc4e553c5a5dec7ae72670491a/359818.pdf.html";
 		String chagelink = changeHanzi(url);
 		String html = Fetcher.getInstance().get(chagelink, "gbk");
 		Document document = Jsoup.parse(html);
 		document = new DocumentSimpler().simpleDocument(document);
+//		System.out.println(document);
 		PdfCodeTable pdfCodeTable = new PdfCodeTable();
 		pdfCodeTable.setPdfType("公转书_主要客户");
 		PdfReportLinks pdfReportLinks = new PdfReportLinks();

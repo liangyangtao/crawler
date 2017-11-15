@@ -23,9 +23,9 @@ import com.kf.data.pdfparser.es.PdfReportTextReader;
 public class DocumentTest {
 
 	public static void main(String[] args) {
-		String url = "https://static.kaifengdata.com/neeq/59765b3238e4ff1607a730a5f80e9cbc/2158901.pdf.html";
+		String url = "https://static.kaifengdata.com/neeq/8a2b01747688e6c84c86b877a325e840/1441006212_677038.pdf.html";
 		url = changeHanzi(url);
-		String html = Fetcher.getInstance().get(url);
+		String html = Fetcher.getInstance().get(url,"gbk");
 		Document document = Jsoup.parse(html);
 //		KfConstant.init();
 //		List<PdfLinkEsEntity> pdfLinkEsEntities = new PdfReportTextReader().readPdfLinkInEsByNoticId(2670640);

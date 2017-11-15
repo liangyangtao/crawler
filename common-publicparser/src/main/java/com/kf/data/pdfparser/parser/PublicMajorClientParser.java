@@ -89,11 +89,16 @@ public class PublicMajorClientParser extends PublicBaseParser {
 				Element element = result.get(l);
 				if (element.tagName().equals("table")) {
 					String time = null;
-					if (l - 1 > 0) {
+					if (l - 1 >= 0) {
 						Element preElement = result.get(l - 1);
 						if (preElement.tagName().equals("p")) {
 							String preText = preElement.text();
-							time = StringUtils.substringBefore(preText, "公司前五名客户");
+							if (preText.contains("公司前五名客户")) {
+								time = StringUtils.substringBefore(preText, "公司前五名客户");
+							} else {
+								time = preText;
+							}
+
 						}
 					}
 
@@ -112,7 +117,7 @@ public class PublicMajorClientParser extends PublicBaseParser {
 
 					}
 					Map<String, String> salesInfoMap = new HashMap<String, String>();
-					salesInfoMap.put("value", time);
+					salesInfoMap.put("value", time == null ? "" : time);
 					salesInfoMap.put("tableName", tableName);
 					salesInfoMap.put("property", "sales_date");
 
@@ -126,20 +131,25 @@ public class PublicMajorClientParser extends PublicBaseParser {
 						}
 						for (int k = 0; k < tdElements.size(); k++) {
 							String key = firstTdElements.get(k).text().trim();
+							key = key.replace("  ", "");
+							key = key.replace(" ", "");
+							key = key.replace("	", "");
+							key = key.replace(" ", "");
+							key = key.replace("&nbsp;", "");
 							String value = tdElements.get(k).text().trim();
 							Map<String, String> resultInfoMap = new HashMap<String, String>();
 							if (value.contains("合计") || value.contains("客户名称") || value.contains("合  计")) {
-								break;
+								continue;
 							}
 							String property = null;
-							
-							if (key.contains("名称")) {
+							if (key.contains("名称") || key.contains("项目")) {
 								property = "client_name";
-							} else if (key.contains("比例")) {
+							} else if (key.contains("比例") || key.contains("比重")) {
 								property = "sales_amount_ratio";
-							} else if (key.contains("收入") || key.contains("销售额")) {
+							} else if (key.contains("收入") || key.contains("销售额") || key.contains("金额")
+									|| key.contains("采购额")) {
 								property = "sales_amount";
-							} else if(key.contains("序号")){
+							} else if (key.contains("序号")) {
 								property = "num";
 							}
 							if (property != null) {
@@ -147,7 +157,6 @@ public class PublicMajorClientParser extends PublicBaseParser {
 								resultInfoMap.put("tableName", tableName);
 								resultInfoMap.put("property", property);
 								infoEntity.add(resultInfoMap);
-
 							}
 						}
 						if (infoEntity.size() != 0) {
@@ -218,12 +227,17 @@ public class PublicMajorClientParser extends PublicBaseParser {
 					firstTrText = firstTrText.replace(" ", "");
 					firstTrText = firstTrText.replace("	", "");
 					firstTrText = firstTrText.replace(" ", "");
-					System.out.println(firstTrText);
-					if (firstTrText.contains("客户名称") && (firstTrText.contains("收入") || firstTrText.contains("销售额"))
-							&& firstTrText.contains("比例")) {
+					firstTrText = firstTrText.replace("&nbsp;", "");
+
+					if ((firstTrText.contains("客户名称") || firstTrText.contains("项目"))
+							&& (firstTrText.contains("收入") || firstTrText.contains("销售额")
+									|| firstTrText.contains("销售金额") || firstTrText.contains("销售收入")
+									|| firstTrText.contains("采购额"))
+							&& (firstTrText.contains("比例") || firstTrText.contains("比重"))) {
 						if (j - 1 > 0) {
 							Element preElement = elements.get(j - 1);
-							if (preElement.text().contains("前五名客户")) {
+							if (preElement.text().contains("前五名客户") || preElement.text().contains("主要客户")
+									|| preElement.text().contains("前五大客户")) {
 								result.add(preElement);
 								result.add(childElement);
 								Elements trElements = childElement.select("tr");
@@ -238,7 +252,7 @@ public class PublicMajorClientParser extends PublicBaseParser {
 							} else {
 								if (j - 2 > 0) {
 									Element preElement2 = elements.get(j - 2);
-									if (preElement2.text().contains("前五名客户")) {
+									if (preElement2.text().contains("前五名客户") || preElement2.text().contains("主要客户")) {
 										result.add(preElement);
 										result.add(childElement);
 										Elements trElements = childElement.select("tr");
@@ -259,6 +273,10 @@ public class PublicMajorClientParser extends PublicBaseParser {
 					}
 				}
 
+			} else {
+				if (isFind && childElement.text().contains("主要供应商")) {
+					break;
+				}
 			}
 		}
 		return result;
