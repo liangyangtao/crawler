@@ -31,14 +31,22 @@ public class KfPdfParser {
 			"4）", "5）", "6）", "7）", "8）", "9）", "第一节", "第二节", "第三节", "第四节", "第五节", "第六节", "第七节", "第八节", "第九节", "第十节",
 			"第十一节", "第十二节", "第十三节", "第十四节", "第十五节", "一、", "二、", "三、", "四、", "五、", "六、", "七、", "八、", "九、", "十、" };
 
+	// 风险提示
 	PublicRiskParser publicRiskParser = new PublicRiskParser();
+	// 商业模式
 	PublicBusinessModelParser publicBusinessModelParser = new PublicBusinessModelParser();
+	// 股东
 	PublicShareholdersParser publicShareholdersParser = new PublicShareholdersParser();
+	// 主营业务
 	PublicMainBusinessParser publicMainBusinessParser = new PublicMainBusinessParser();
+	//
 	PublicLiabilitiesParser publicLiabilitiesParser = new PublicLiabilitiesParser();
 	PublicProfitParser publicProfitParser = new PublicProfitParser();
 	PublicCashParser publicCashParser = new PublicCashParser();
+	//主要客户
 	PublicMajorClientParser publicMajorClientParser = new PublicMajorClientParser();
+    //特许经营权
+	PublicFranchiseParser publicFranchiseParser = new PublicFranchiseParser();
 
 	/****
 	 * 
@@ -56,6 +64,7 @@ public class KfPdfParser {
 		try {
 			// 83 公转书_证书 pdf_public_certificate 0
 			// 84 公转书_特许经营权 pdf_public_franchise 0
+
 			// 53 公转书_母公司资产负债表 pdf_public_liabilities_parent 0
 			// 55 公转书_母公司现金流量表 pdf_public_cash_parent 0
 			// 54 公转书_母公司利润表 pdf_public_profit_parent 0
@@ -87,6 +96,8 @@ public class KfPdfParser {
 			} else if (pdfCodeTable.getPdfType().equals("公转书_合并现金流量表")) {
 				resultMap = publicCashParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			} else if (pdfCodeTable.getPdfType().equals("公转书_主要客户")) {
+				resultMap = publicMajorClientParser.getResult(pdfCodeTable, pdfReportLinks, document);
+			} else if (pdfCodeTable.getPdfType().equals("公转书_特许经营权")) {
 				resultMap = publicMajorClientParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			}
 

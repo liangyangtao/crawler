@@ -83,15 +83,15 @@ public class PublicRiskParser extends PublicBaseParser {
 			begins.add("重大事项及风险提示");
 			begins.add("重大事项提示");
 			// 存储结束位置
-			List<String> ends = new ArrayList<String>();
-			ends.add("目录");
-			ends.add("目录");
+			// List<String> ends = new ArrayList<String>();
+			// ends.add("目录");
+			// ends.add("目录");
 
 			List<String> result = new ArrayList<>();
 			Elements pElements = document.select("div").first().children();
 			for (int i = 0; i < begins.size(); i++) {
 				String preText = begins.get(i);
-				String endText = ends.get(i);
+				String endText = "目录";
 				if (document.toString().contains(preText) && document.toString().contains(endText)) {
 				} else {
 					continue;
@@ -107,6 +107,9 @@ public class PublicRiskParser extends PublicBaseParser {
 						pText = pText.replace(" ", "");
 						pText = pText.replace("	", "");
 						pText = pText.replace(" ", "");
+						if (pText.contains(".......")) {
+							continue;
+						}
 						if (pText.length() > 100) {
 							continue;
 						}

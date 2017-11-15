@@ -69,13 +69,14 @@ public class PdfReportLinkPaserWorker implements Runnable {
 					document = documentSimpler.simpleDocument(document);
 					List<PdfCodeTable> pdftables = pdfCodetableReader.readPdfTable();
 					for (PdfCodeTable pdfCodeTable : pdftables) {
-						if (pdfCodeTable.getTask() == 1) {
-							new Thread(new PdfTableThread(pdfCodeTable, pdfReportLinks, document.clone())).start();
+						if (pdfCodeTable.getTask() == 2) {
+							new Thread(new PdfTableThread(pdfCodeTable, pdfReportLinks, document)).start();
 						}
 					}
 					pdfReportLinksWriter.updatePdfReportRankById(pdfReportLinks.getId(), 2);
 					document = null;
 					html = null;
+					pdfReportLinks = null;
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;

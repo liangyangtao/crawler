@@ -35,6 +35,5 @@ public class PublicApp {
 		for (int i = 0; i < 1; i++) {
 			executor.execute(new PdfReportLinkPaserWorker(pdfcodeLinkQueue, pdfCodetableReader, pdfReportLinksWriter));
 		}
-
 	}
 }

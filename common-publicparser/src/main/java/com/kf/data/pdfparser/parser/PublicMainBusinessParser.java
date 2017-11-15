@@ -80,20 +80,32 @@ public class PublicMainBusinessParser extends PublicBaseParser {
 			List<List<Map<String, String>>> infoList = new ArrayList<List<Map<String, String>>>();
 			// 存储开始位置
 			List<String> begins = new ArrayList<String>();
-			begins.add("（一）主要业务 ");
-			begins.add("（一）主要业务 ");
+			begins.add("（一）公司的业务情况");
+			begins.add("（一）公司的主营业务");
+			begins.add("（一）公司主要服务情况");
+			begins.add("（一）公司主营业务介绍");
+			begins.add("（一）公司业务概况");
+			begins.add("（一）主营业务概况");
+			begins.add("（一）主营业务概述");
+			begins.add("（一）主营业务情况");
+			begins.add("（一）公司主要业务");
+			begins.add("（一）公司主营业务");
+			begins.add("（一）主要业务");
 			begins.add("（一）主营业务");
-			// 存储结束位置
-			List<String> ends = new ArrayList<String>();
-			ends.add("（二）主要产品及其用途");
-			ends.add("（二）主要服务及其用途");
-			ends.add("（二）主要产品及服务情况");
 			List<String> result = new ArrayList<>();
 			Elements pElements = document.select("div").first().children();
 			for (int i = 0; i < begins.size(); i++) {
 				String preText = begins.get(i);
-				String endText = ends.get(i);
-				if (document.toString().contains(preText) && document.toString().contains(endText)) {
+				String endText = "（二）";
+				String documentText = document.toString();
+				// （一） 主营业务概述
+				documentText = documentText.replace("  ", "");
+				documentText = documentText.replace("  ", "");
+				documentText = documentText.replace(" ", "");
+				documentText = documentText.replace("	", "");
+				documentText = documentText.replace(" ", "");
+				documentText = documentText.replace("&nbsp;", "");
+				if (documentText.contains(preText) && documentText.contains(endText)) {
 				} else {
 					continue;
 				}
@@ -108,9 +120,17 @@ public class PublicMainBusinessParser extends PublicBaseParser {
 						pText = pText.replace(" ", "");
 						pText = pText.replace("	", "");
 						pText = pText.replace(" ", "");
+						pText = pText.replace("&nbsp;", "");
 						if (pText.length() > 100) {
 							continue;
 						}
+						if (pText.contains("主营业务") && pText.contains("收入")) {
+							continue;
+						}
+						if (pText.contains(".......")) {
+							continue;
+						}
+
 						if (pText.contains(endText)) {
 							if (preIndex == 0) {
 								continue;
@@ -120,7 +140,17 @@ public class PublicMainBusinessParser extends PublicBaseParser {
 							}
 							endIndex = j;
 							indexs.put(preIndex, endIndex);
+						} else if (pText.contains("二、公司")) {
+							if (preIndex == 0) {
+								continue;
+							}
+							if (j > endIndex && endIndex > preIndex) {
+								continue;
+							}
+							endIndex = j;
+							indexs.put(preIndex, endIndex);
 						}
+						
 						if (pText.equals(preText)) {
 							preIndex = j;
 						} else if (pText.equals("、" + preText)) {

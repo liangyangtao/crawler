@@ -101,10 +101,12 @@ public class TableSpliter {
 										} else {
 											aa[titleNum - 1][i] = aa[titleNum - 1][i - 1] + aa[titleNum - 1][i];
 										}
-										if (aa[titleNum - 1][j - 1].contains("上期")) {
-											aa[titleNum - 1][j] = "上期" + aa[titleNum - 1][j];
-										} else {
-											aa[titleNum - 1][j] = aa[titleNum - 1][j - 1] + aa[titleNum - 1][j];
+										if (aa[titleNum - 1][j - 1] != null) {
+											if (aa[titleNum - 1][j - 1].contains("上期")) {
+												aa[titleNum - 1][j] = "上期" + aa[titleNum - 1][j];
+											} else {
+												aa[titleNum - 1][j] = aa[titleNum - 1][j - 1] + aa[titleNum - 1][j];
+											}
 										}
 									}
 
