@@ -18,17 +18,17 @@ import com.kf.data.mybatis.entity.PdfReportLinks;
 
 /****
  * 
- * @Title: PublicMajorClientParser.java
+ * @Title: PublicMajorSupplierParser.java
  * @Package com.kf.data.pdfparser.parser
- * @Description: 公转书 主要客户
+ * @Description: 公转书 主要供应商
  * @author liangyt
  * @date 2017年10月24日 下午5:16:46
  * @version V1.0
  */
-public class PublicMajorClientParser extends PublicBaseParser {
+public class PublicMajorSupplierParser extends PublicBaseParser {
 
 	/****
-	 * 解析公转书 主要客户
+	 * 解析公转书 主要供应商
 	 * 
 	 * @param pdfCodeTable
 	 * @param pdfReportLinks
@@ -93,8 +93,8 @@ public class PublicMajorClientParser extends PublicBaseParser {
 						Element preElement = result.get(l - 1);
 						if (preElement.tagName().equals("p")) {
 							String preText = preElement.text();
-							if (preText.contains("公司前五名客户")) {
-								time = StringUtils.substringBefore(preText, "公司前五名客户");
+							if (preText.contains("公司前五名供应商")) {
+								time = StringUtils.substringBefore(preText, "公司前五名供应商");
 							} else {
 								time = preText;
 							}
@@ -138,17 +138,16 @@ public class PublicMajorClientParser extends PublicBaseParser {
 							key = key.replace("&nbsp;", "");
 							String value = tdElements.get(k).text().trim();
 							Map<String, String> resultInfoMap = new HashMap<String, String>();
-							if (value.contains("合计") || value.contains("客户名称") || value.contains("合  计")) {
+							if (value.contains("合计") || value.contains("供应商名称") || value.contains("合  计")) {
 								continue;
 							}
 							String property = null;
 							if (key.contains("名称") || key.contains("项目")) {
-								property = "client_name";
+								property = "supplier_name";
 							} else if (key.contains("比例") || key.contains("比重")) {
-								property = "sales_amount_ratio";
-							} else if (key.contains("收入") || key.contains("销售额") || key.contains("金额")
-									|| key.contains("采购额")) {
-								property = "sales_amount";
+								property = "purchase_amount_ratio";
+							} else if (key.contains("交易额") || key.contains("金额") || key.contains("采购额")) {
+								property = "purchase_amount";
 							} else if (key.contains("序号")) {
 								property = "num";
 							}
@@ -229,15 +228,14 @@ public class PublicMajorClientParser extends PublicBaseParser {
 					firstTrText = firstTrText.replace(" ", "");
 					firstTrText = firstTrText.replace("&nbsp;", "");
 
-					if ((firstTrText.contains("客户名称") || firstTrText.contains("项目"))
-							&& (firstTrText.contains("收入") || firstTrText.contains("销售额")
-									|| firstTrText.contains("销售金额") || firstTrText.contains("销售收入")
+					if ((firstTrText.contains("单位名称") || firstTrText.contains("项目") || firstTrText.contains("供应商名称"))
+							&& (firstTrText.contains("交易额") || firstTrText.contains("采购金额")
 									|| firstTrText.contains("采购额"))
 							&& (firstTrText.contains("比例") || firstTrText.contains("比重"))) {
 						if (j - 1 > 0) {
 							Element preElement = elements.get(j - 1);
-							if (preElement.text().contains("前五名客户") || preElement.text().contains("主要客户")
-									|| preElement.text().contains("前五大客户")) {
+							if (preElement.text().contains("前五名供应商") || preElement.text().contains("主要供应商")
+									|| preElement.text().contains("前五大供应商")) {
 								result.add(preElement);
 								result.add(childElement);
 								Elements trElements = childElement.select("tr");
@@ -252,8 +250,8 @@ public class PublicMajorClientParser extends PublicBaseParser {
 							} else {
 								if (j - 2 > 0) {
 									Element preElement2 = elements.get(j - 2);
-									if (preElement2.text().contains("前五名客户") || preElement2.text().contains("主要客户")
-											|| preElement2.text().contains("前五大客户")) {
+									if (preElement2.text().contains("前五名供应商") || preElement2.text().contains("主要供应商")
+											|| preElement2.text().contains("前五大供应商")) {
 										result.add(preElement);
 										result.add(childElement);
 										Elements trElements = childElement.select("tr");
@@ -275,9 +273,11 @@ public class PublicMajorClientParser extends PublicBaseParser {
 				}
 
 			} else {
-				if (isFind && childElement.text().contains("主要供应商")) {
+				if (isFind && (childElement.text().contains("重点合同") || childElement.text().contains("重大业务合同")
+						|| childElement.text().contains("重大合同"))) {
 					break;
 				}
+
 			}
 		}
 		return result;

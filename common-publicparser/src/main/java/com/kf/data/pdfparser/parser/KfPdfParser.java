@@ -43,9 +43,12 @@ public class KfPdfParser {
 	PublicLiabilitiesParser publicLiabilitiesParser = new PublicLiabilitiesParser();
 	PublicProfitParser publicProfitParser = new PublicProfitParser();
 	PublicCashParser publicCashParser = new PublicCashParser();
-	//主要客户
+	// 主要客户
 	PublicMajorClientParser publicMajorClientParser = new PublicMajorClientParser();
-    //特许经营权
+
+	// 主要供应商
+	PublicMajorSupplierParser publicMajorSupplierParser = new PublicMajorSupplierParser();
+	// 特许经营权
 	PublicFranchiseParser publicFranchiseParser = new PublicFranchiseParser();
 
 	/****
@@ -97,6 +100,8 @@ public class KfPdfParser {
 				resultMap = publicCashParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			} else if (pdfCodeTable.getPdfType().equals("公转书_主要客户")) {
 				resultMap = publicMajorClientParser.getResult(pdfCodeTable, pdfReportLinks, document);
+			} else if (pdfCodeTable.getPdfType().equals("公转书_主要供应商")) {
+				resultMap = publicMajorSupplierParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			} else if (pdfCodeTable.getPdfType().equals("公转书_特许经营权")) {
 				resultMap = publicMajorClientParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			}
