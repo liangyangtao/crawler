@@ -45,9 +45,14 @@ public class KfPdfParser {
 	PublicCashParser publicCashParser = new PublicCashParser();
 	// 主要客户
 	PublicMajorClientParser publicMajorClientParser = new PublicMajorClientParser();
-
 	// 主要供应商
 	PublicMajorSupplierParser publicMajorSupplierParser = new PublicMajorSupplierParser();
+	// 按照工作岗位或专业 分类
+	PublicStaffJobParser publicStaffJobParser = new PublicStaffJobParser();
+	// 安装年龄划分
+	PublicStaffAgeParser publicStaffAgeParser = new PublicStaffAgeParser();
+	// 学历划分
+	PublicStaffEducationParser publicStaffEducationParser = new PublicStaffEducationParser();
 	// 特许经营权
 	PublicFranchiseParser publicFranchiseParser = new PublicFranchiseParser();
 
@@ -102,6 +107,12 @@ public class KfPdfParser {
 				resultMap = publicMajorClientParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			} else if (pdfCodeTable.getPdfType().equals("公转书_主要供应商")) {
 				resultMap = publicMajorSupplierParser.getResult(pdfCodeTable, pdfReportLinks, document);
+			} else if (pdfCodeTable.getPdfType().equals("公转书_岗位专业_员工情况")) {
+				resultMap = publicStaffJobParser.getResult(pdfCodeTable, pdfReportLinks, document);
+			} else if (pdfCodeTable.getPdfType().equals("公转书_年龄_员工情况")) {
+				resultMap = publicStaffAgeParser.getResult(pdfCodeTable, pdfReportLinks, document);
+			} else if (pdfCodeTable.getPdfType().equals("公转书_学历_员工情况")) {
+				resultMap = publicStaffEducationParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			} else if (pdfCodeTable.getPdfType().equals("公转书_特许经营权")) {
 				resultMap = publicMajorClientParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			}
