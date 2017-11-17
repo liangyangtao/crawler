@@ -7,28 +7,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
-import com.kf.data.fetcher.tools.TableSpliter;
 import com.kf.data.mybatis.entity.PdfCodeTable;
 import com.kf.data.mybatis.entity.PdfReportLinks;
 
 /****
  * 
- * @Title: PublicMajorClientParser.java
+ * @Title: PublicStaffAgeParser.java
  * @Package com.kf.data.pdfparser.parser
- * @Description: 公转书 主要客户
+ * @Description: 公转书 年龄员工情况
  * @author liangyt
  * @date 2017年10月24日 下午5:16:46
  * @version V1.0
  */
-public class PublicMajorClientParser extends PublicBaseParser {
+public class PublicStaffAgeParser extends PublicBaseParser {
 
 	/****
-	 * 解析公转书 主要客户
+	 * 解析公转书年龄员工情况
 	 * 
 	 * @param pdfCodeTable
 	 * @param pdfReportLinks
@@ -84,102 +83,68 @@ public class PublicMajorClientParser extends PublicBaseParser {
 			if (result.size() == 0) {
 				return null;
 			}
+			Element resultTable = new Element(Tag.valueOf("table"), "");
+			for (int k = 0; k < result.size(); k++) {
+				Element element = result.get(k);
+				Elements trElements = element.select("tr");
+				trElements = element.select("tr");
+				// 是表头的那个表
+				for (Element trElement : trElements) {
+					resultTable.appendChild(trElement);
+				}
+			}
+			Elements trElements = resultTable.select("tr");
+			Elements firstTdElements = trElements.first().select("td");
 
-			for (int l = 0; l < result.size(); l++) {
-				Element element = result.get(l);
-				if (element.tagName().equals("table")) {
-					String time = null;
-					if (l - 1 >= 0) {
-						Element preElement = result.get(l - 1);
-						if (preElement.tagName().equals("p")) {
-							String preText = preElement.text();
-							if (preText.contains("公司前五名客户")) {
-								time = StringUtils.substringBefore(preText, "公司前五名客户");
-							} else {
-								time = preText;
-							}
-
-						}
+			for (int j = 1; j < trElements.size(); j++) {
+				List<Map<String, String>> infoEntity = new ArrayList<Map<String, String>>();
+				Element trElement = trElements.get(j);
+				Elements tdElements = trElement.select("td");
+				if (tdElements.size() == 0) {
+					continue;
+				}
+				for (int k = 0; k < tdElements.size(); k++) {
+					String key = firstTdElements.get(k).text().trim();
+					key = key.replace("  ", "");
+					key = key.replace(" ", "");
+					key = key.replace("	", "");
+					key = key.replace(" ", "");
+					key = key.replace("&nbsp;", "");
+					String value = tdElements.get(k).text().trim();
+					Map<String, String> resultInfoMap = new HashMap<String, String>();
+					if (value.contains("合计") || value.contains("序号")) {
+						break;
 					}
-
-					Element resultTable = element;
-					Elements trElements = resultTable.select("tr");
-					Elements firstTdElements = trElements.first().select("td");
-					if (time == null) {
-						if (trElements.text().contains("@@")) {
-							for (Element element2 : firstTdElements) {
-								if (element2.text().contains("@@")) {
-									time = StringUtils.substringBefore(element2.text().trim(), "@@");
-									break;
-								}
-							}
-						}
-
+					String property = null;
+					if (key.contains("年龄") || key.contains("类别")) {
+						property = "category";
+					} else if (key.contains("人数") && !key.contains("比例")) {
+						property = "staff_num";
+					} else if (key.contains("比例") || key.contains("占比")) {
+						property = "staff_num_ratio";
 					}
-					Map<String, String> salesInfoMap = new HashMap<String, String>();
-					salesInfoMap.put("value", time == null ? "" : time);
-					salesInfoMap.put("tableName", tableName);
-					salesInfoMap.put("property", "sales_date");
-
-					for (int j = 1; j < trElements.size(); j++) {
-
-						List<Map<String, String>> infoEntity = new ArrayList<Map<String, String>>();
-						Element trElement = trElements.get(j);
-						Elements tdElements = trElement.select("td");
-						if (tdElements.size() == 0) {
-							continue;
-						}
-						for (int k = 0; k < tdElements.size(); k++) {
-							String key = firstTdElements.get(k).text().trim();
-							key = key.replace("  ", "");
-							key = key.replace(" ", "");
-							key = key.replace("	", "");
-							key = key.replace(" ", "");
-							key = key.replace("&nbsp;", "");
-							String value = tdElements.get(k).text().trim();
-							Map<String, String> resultInfoMap = new HashMap<String, String>();
-							if (value.contains("合计") || value.contains("客户名称") || value.contains("合  计")) {
-								continue;
-							}
-							String property = null;
-							if (key.contains("名称") || key.contains("项目")) {
-								property = "client_name";
-							} else if (key.contains("比例") || key.contains("比重")) {
-								property = "sales_amount_ratio";
-							} else if (key.contains("收入") || key.contains("销售额") || key.contains("金额")
-									|| key.contains("采购额")) {
-								property = "sales_amount";
-							} else if (key.contains("序号")) {
-								property = "num";
-							}
-							if (property != null) {
-								resultInfoMap.put("value", value);
-								resultInfoMap.put("tableName", tableName);
-								resultInfoMap.put("property", property);
-								infoEntity.add(resultInfoMap);
-							}
-						}
-						if (infoEntity.size() != 0) {
-							infoEntity.add(companyidMap);
-							// link
-							infoEntity.add(linkMap);
-							// pdfType
-							infoEntity.add(pdfTypeMap);
-							// 时间
-							infoEntity.add(timeMap);
-							// noticeId
-							infoEntity.add(noticeIdMap);
-							// report
-							infoEntity.add(reportDateMap);
-							//
-							infoEntity.add(salesInfoMap);
-							infoList.add(infoEntity);
-						}
+					if (property != null) {
+						resultInfoMap.put("value", value);
+						resultInfoMap.put("tableName", tableName);
+						resultInfoMap.put("property", property);
+						infoEntity.add(resultInfoMap);
 
 					}
 				}
+				if (infoEntity.size() != 0) {
+					infoEntity.add(companyidMap);
+					// link
+					infoEntity.add(linkMap);
+					// pdfType
+					infoEntity.add(pdfTypeMap);
+					// 时间
+					infoEntity.add(timeMap);
+					// noticeId
+					infoEntity.add(noticeIdMap);
+					infoEntity.add(reportDateMap);
+					infoList.add(infoEntity);
+				}
 			}
-
 			resultMap.put("state", "ok");
 			resultMap.put("info", infoList);
 		} catch (Exception e) {
@@ -201,26 +166,13 @@ public class PublicMajorClientParser extends PublicBaseParser {
 		for (int j = 0; j < elements.size(); j++) {
 			Element childElement = elements.get(j);
 			if (childElement.tagName().equals("table")) {
-				childElement = new TableSpliter().splitTable(childElement, false, null);
 				Elements firstTrElements = childElement.select("tr");
 				if (firstTrElements == null || firstTrElements.size() == 0) {
 					continue;
 				}
 				Element firstTrElement = firstTrElements.first();
 				if (isFind) {
-					int col = 0;
-					Elements trElements = childElement.select("tr");
-					for (Element trElement : trElements) {
-						Elements tdElements = trElement.select("td,th");
-						if (col < tdElements.size()) {
-							col = tdElements.size();
-						}
-					}
-					if (col == colNum) {
-						result.add(childElement);
-					} else {
-						break;
-					}
+					break;
 				} else {
 					String firstTrText = firstTrElement.text();
 					firstTrText = firstTrText.replace("  ", "");
@@ -228,17 +180,12 @@ public class PublicMajorClientParser extends PublicBaseParser {
 					firstTrText = firstTrText.replace("	", "");
 					firstTrText = firstTrText.replace(" ", "");
 					firstTrText = firstTrText.replace("&nbsp;", "");
-
-					if ((firstTrText.contains("客户名称") || firstTrText.contains("项目"))
-							&& (firstTrText.contains("收入") || firstTrText.contains("销售额")
-									|| firstTrText.contains("销售金额") || firstTrText.contains("销售收入")
-									|| firstTrText.contains("采购额"))
-							&& (firstTrText.contains("比例") || firstTrText.contains("比重"))) {
+					if ((firstTrText.contains("年龄")) && firstTrText.contains("人数")
+							&& (firstTrText.contains("占比") || firstTrText.contains("比例"))) {
 						if (j - 1 > 0) {
 							Element preElement = elements.get(j - 1);
-							if (preElement.text().contains("前五名客户") || preElement.text().contains("主要客户")
-									|| preElement.text().contains("前五大客户")) {
-								result.add(preElement);
+							if (preElement.text().contains("年龄结构") || preElement.text().contains("年龄划分")
+									|| preElement.text().contains("年龄构成")) {
 								result.add(childElement);
 								Elements trElements = childElement.select("tr");
 								// 是表头的那个表
@@ -252,9 +199,8 @@ public class PublicMajorClientParser extends PublicBaseParser {
 							} else {
 								if (j - 2 > 0) {
 									Element preElement2 = elements.get(j - 2);
-									if (preElement2.text().contains("前五名客户") || preElement2.text().contains("主要客户")
-											|| preElement2.text().contains("前五大客户")) {
-										result.add(preElement);
+									if (preElement2.text().contains("年龄结构") || preElement2.text().contains("年龄划分")
+											|| preElement2.text().contains("年龄构成")) {
 										result.add(childElement);
 										Elements trElements = childElement.select("tr");
 										// 是表头的那个表
@@ -274,10 +220,6 @@ public class PublicMajorClientParser extends PublicBaseParser {
 					}
 				}
 
-			} else {
-				if (isFind && childElement.text().contains("主要供应商")) {
-					break;
-				}
 			}
 		}
 		return result;
