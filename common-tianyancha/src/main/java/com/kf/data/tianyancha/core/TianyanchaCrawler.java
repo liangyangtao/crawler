@@ -235,8 +235,9 @@ public class TianyanchaCrawler {
 				return;
 			}
 			try {
+				                    //*[@id="web-content"]/div/div/div/div[1]/div[4]/div[1]/div[2]/div[1]/a
 				WebElement hrefElement = driver.findElement(
-						By.xpath("//*[@id=\"web-content\"]/div/div/div/div[1]/div[3]/div[1]/div[2]/div[1]/a"));
+						By.xpath("//*[@id=\"web-content\"]/div/div/div/div[1]/div[4]/div[1]/div[2]/div[1]/a"));
 				hrefElement.click();
 			} catch (Exception e) {
 				e.printStackTrace();
