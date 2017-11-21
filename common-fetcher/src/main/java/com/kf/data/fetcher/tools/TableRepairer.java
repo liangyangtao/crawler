@@ -402,6 +402,9 @@ public class TableRepairer {
 				// do noting
 				break;
 			}
+			if (titleNum > 1 && i == titleNum - 1) {
+				break;
+			}
 			Element trElement = trElements.get(i);
 			Elements tdElements = trElement.select("td");
 			for (int j = 0; j < tdElements.size(); j++) {
@@ -412,10 +415,12 @@ public class TableRepairer {
 				}
 				int width = Integer.parseInt(tdElement.attr("width"));
 				int nextColIndex = j;
+				// 如果上一行的有
+
+				// 如果前面的表格有rowspan
 				for (int k = 0; k < j; k++) {
 					Element preTdElement = tdElements.get(k);
 					if (preTdElement.hasAttr("rowspan")) {
-
 						if (i <= Integer.parseInt(preTdElement.attr("rowspan"))) {
 							if (tdElement.hasAttr("rowspan")) {
 								if (i + Integer.parseInt(tdElement.attr("rowspan")) >= Integer
