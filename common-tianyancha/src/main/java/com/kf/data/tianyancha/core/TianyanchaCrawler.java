@@ -235,9 +235,10 @@ public class TianyanchaCrawler {
 				return;
 			}
 			try {
-				                    //*[@id="web-content"]/div/div/div/div[1]/div[4]/div[1]/div[2]/div[1]/a
-				WebElement hrefElement = driver.findElement(
-						By.xpath("//*[@id=\"web-content\"]/div/div/div/div[1]/div[4]/div[1]/div[2]/div[1]/a"));
+				// *[@id="web-content"]/div/div/div/div[1]/div[4]/div[1]/div[2]/div[1]/a
+				// *[@id="web-content"]/div/div/div/div[1]/div[3]/div[1]/div[2]/div[1]/a
+				WebElement hrefElement = driver.findElement(By.cssSelector(
+						"#web-content > div > div > div > div.col-9.search-2017-2.pr15.pl0 > div.b-c-white.search_result_container > div:nth-child(1) > div.search_right_item > div:nth-child(1) > a"));
 				hrefElement.click();
 			} catch (Exception e) {
 				e.printStackTrace();
