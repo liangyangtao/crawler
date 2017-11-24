@@ -65,6 +65,10 @@
 		<!-- Pedaily -->
 		<typeAlias alias="PdPedailyOrgCrawler"
 			type="com.kf.data.mybatis.entity.PdPedailyOrgCrawler" />
+		<typeAlias alias="PdPedailyEventCrawler"
+			type="com.kf.data.mybatis.entity.PdPedailyEventCrawler" />
+
+
 
 
 	</typeAliases>
@@ -170,5 +174,8 @@
 		<!-- tyc end -->
 		<!-- -->
 		<mapper resource="com/kf/data/mybatis/mapper/PdPedailyOrgCrawlerMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/PdPedailyEventCrawlerMapper.xml" />
+
+
 	</mappers>
 </configuration> 

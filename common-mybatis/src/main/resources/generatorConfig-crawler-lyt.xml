@@ -26,8 +26,8 @@
 		</javaClientGenerator>
 
 
-		<table schema="crawler" tableName="tyc_company_trademark"
-			domainObjectName="TycCompanyTrademarkCrawler">
+		<table schema="crawler" tableName="pd_pedaily_event"
+			domainObjectName="PdPedailyEventCrawler">
 			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
 				identity="true" type="post" />
 		</table>
