@@ -56,6 +56,9 @@ public class KfPdfParser {
 	// 特许经营权
 	PublicFranchiseParser publicFranchiseParser = new PublicFranchiseParser();
 
+	// 基本信息
+	PublicCompanyInfoParser publicCompanyInfoParser = new PublicCompanyInfoParser();
+
 	/****
 	 * 
 	 * @param pdfCodeTable
@@ -115,6 +118,8 @@ public class KfPdfParser {
 				resultMap = publicStaffEducationParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			} else if (pdfCodeTable.getPdfType().equals("公转书_特许经营权")) {
 				resultMap = publicMajorClientParser.getResult(pdfCodeTable, pdfReportLinks, document);
+			} else if (pdfCodeTable.getPdfType().equals("公转书_基本信息")) {
+				resultMap = publicCompanyInfoParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			}
 
 		} catch (Exception e) {

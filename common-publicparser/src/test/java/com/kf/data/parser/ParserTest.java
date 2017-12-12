@@ -32,7 +32,7 @@ public class ParserTest {
 		document = new DocumentSimpler().simpleDocument(document);
 //		System.out.println(document);
 		PdfCodeTable pdfCodeTable = new PdfCodeTable();
-		pdfCodeTable.setPdfType("公转书_学历_员工情况");
+		pdfCodeTable.setPdfType("公转书_基本信息");
 		PdfReportLinks pdfReportLinks = new PdfReportLinks();
 		pdfReportLinks.setLink(url);
 		System.out.println(new KfPdfParser().parserPdfHtmlByPdfTypeAndLink(pdfCodeTable, pdfReportLinks, document));
