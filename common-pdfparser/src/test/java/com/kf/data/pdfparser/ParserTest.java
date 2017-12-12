@@ -24,7 +24,7 @@ public class ParserTest {
 		// PdfReportTextReader().readPdfLinkInEsByNoticId(1627189);
 		// String html = pdfLinkEsEntities.get(0).getContent();
 
-		String url = "https://static.kaifengdata.com/neeq/0241a141ebecc50138fa630a8657355f/[%E5%AE%9A%E6%9C%9F%E6%8A%A5%E5%91%8A]%E6%B4%81%E8%AF%BA%E8%82%A1%E4%BB%BD%202015%E5%B9%B4%E5%B9%B4%E5%BA%A6%E6%8A%A5%E5%91%8A.pdf.html";
+		String url = "https://static.kaifengdata.com/neeq/244988cc72810f7fdcc15a44200683e7/12664.pdf.html";
 		String chagelink = changeHanzi(url);
 		String html = Fetcher.getInstance().get(chagelink, "gbk");
 		Document document = Jsoup.parse(html);

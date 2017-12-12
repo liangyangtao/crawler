@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.kf.data</groupId>
 	<artifactId>crawler</artifactId>
@@ -189,6 +190,17 @@
 				<version>1.4.01</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.quartz-scheduler</groupId>
+				<artifactId>quartz</artifactId>
+				<version>2.3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.quartz-scheduler</groupId>
+				<artifactId>quartz-jobs</artifactId>
+				<version>2.3.0</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -202,10 +214,13 @@
 		<module>common-pdfparser2</module>
 		<module>common-tianyancha</module>
 		<module>kf-store-api</module>
-    <module>common-publicparser</module>
-    <module>common-ctrip</module>
-    <module>common-pddaily</module>
-  </modules>
+		<module>common-publicparser</module>
+		<module>common-ctrip</module>
+		<module>common-pddaily</module>
+		<module>common-neeq</module>
+		<module>common-approved</module>
+		<module>common-seeyii</module>
+	</modules>
 
 	<build>
 		<plugins>
