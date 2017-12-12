@@ -69,7 +69,9 @@
 			type="com.kf.data.mybatis.entity.PdPedailyEventCrawler" />
 
 
-
+		<!-- -->
+		<typeAlias alias="NeeqInformationLawsCrawler"
+			type="com.kf.data.mybatis.entity.NeeqInformationLawsCrawler" />
 
 	</typeAliases>
 	<!--数据源配置 这块用 BD2数据库 -->
@@ -175,6 +177,10 @@
 		<!-- -->
 		<mapper resource="com/kf/data/mybatis/mapper/PdPedailyOrgCrawlerMapper.xml" />
 		<mapper resource="com/kf/data/mybatis/mapper/PdPedailyEventCrawlerMapper.xml" />
+		<!-- -->
+
+		<mapper
+			resource="com/kf/data/mybatis/mapper/NeeqInformationLawsCrawlerMapper.xml" />
 
 
 	</mappers>
