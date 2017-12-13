@@ -40,7 +40,7 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 		try {
 			String tableName = pdfCodeTable.getTableName();
 			Map<String, String> companyidMap = new HashMap<String, String>();
-			companyidMap.put("value", pdfReportLinks.getId() + "");
+			companyidMap.put("value", pdfReportLinks.getCompanyId() + "");
 			companyidMap.put("tableName", tableName);
 			companyidMap.put("property", "source_id");
 			// link
@@ -85,10 +85,9 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			begins.add("一、公司基本情况");
 			begins.add("一、公司基本情况");
 			begins.add("一、公司基本情况");
+			begins.add("一、公司基本情况");
 			begins.add("一、公司简介");
 			begins.add("一、简要情况");
-		
-	
 			// 存储结束位置
 			List<String> ends = new ArrayList<String>();
 			ends.add("二、公司股票基本情况");
@@ -97,6 +96,7 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			ends.add("二、股份挂牌情况");
 			ends.add("二、公司股份挂牌情况 ");
 			ends.add("二、股票代码、股票简称");
+			ends.add("二、公司股票基本情况");
 			ends.add("二、股票挂牌情况");
 			ends.add("二、股份代码、简称、挂牌日期");
 			List<String> result = new ArrayList<>();
@@ -104,7 +104,6 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			for (int i = 0; i < begins.size(); i++) {
 				String preText = begins.get(i);
 				String endText = ends.get(i);
-
 				if (document.toString().contains(preText) && document.toString().contains(endText)) {
 				} else {
 					continue;
@@ -224,13 +223,15 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 	}
 
 	public static String tagArrays[] = new String[] { "中文名称", "公司名称", "英文名称", "公司英文名称", "法定代表人", "企业类型", "注册资本", "设立日期",
-			"有限公司设立日期", "有限公司成立日期", "有限公司设立日", "变更为股份有限公司日期", "股份公司设立日期", "股份公司设立日", "股份公司成立日期", "住所", "住  所", "办公地址",
-			"邮编", "邮 编", "邮政编码", "统一社会信用代码", "组织机构代码", "董事会秘书", "信息披露负责人", "董事会秘书/信息披露负责人", "信息披露联系人", "联系电话", "电话号码",
-			"电话", "传真", "传真号码", "电子信箱", "电子邮箱", "互联网网址", "网址", "所属行业", "经营范围", "主营业务", "主要业务", "主营产品" };
+			"有限公司设立日期", "有限公司成立日期", "有限公司设立日", "变更为股份有限公司日期", "股份公司设立日期", "股份公司设立日", "股份公司成立日期", "住所", "办公地址", "邮编",
+			"邮政编码", "统一社会信用代码", "组织机构代码", "董事会秘书", "信息披露负责人", "董事会秘书/信息披露负责人", "信息披露联系人", "联系电话", "电话号码", "电话", "传真",
+			"传真号码", "电子信箱", "电子邮箱", "互联网网址", "互联网址", "网址", "所属行业", "经营范围", "主营业务", "主要业务", "主营产品" };
 
 	public static final int INDEX_NOT_FOUND = -1;
 
 	private void parserInfo(List<Map<String, String>> infoEntity, String value, String tableName) {
+		value = removeSpace(value);
+		System.out.println(value);
 		if (value.contains("中文名称")) {
 			fillInfoEntity(infoEntity, value, "中文名称", "cn_name");
 		} else if (value.contains("公司名称")) {
@@ -243,11 +244,9 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 		if (value.contains("法定代表人")) {
 			fillInfoEntity(infoEntity, value, "法定代表人", "legal_representative");
 		}
-
 		if (value.contains("企业类型")) {
 			fillInfoEntity(infoEntity, value, "企业类型", "type");
 		}
-
 		if (value.contains("注册资本")) {
 			fillInfoEntity(infoEntity, value, "注册资本", "reg_capital");
 		}
@@ -274,8 +273,6 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 
 		if (value.contains("住所")) {
 			fillInfoEntity(infoEntity, value, "住所", "address");
-		} else if (value.contains("住  所")) {
-			fillInfoEntity(infoEntity, value, "住  所", "address");
 		} else if (value.contains("办公地址")) {
 			fillInfoEntity(infoEntity, value, "办公地址", "address");
 		}
@@ -284,8 +281,6 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			fillInfoEntity(infoEntity, value, "邮编", "postcode");
 		} else if (value.contains("邮政编码")) {
 			fillInfoEntity(infoEntity, value, "邮政编码", "postcode");
-		} else if (value.contains("邮 编")) {
-			fillInfoEntity(infoEntity, value, "邮 编", "postcode");
 		}
 		if (value.contains("统一社会信用代码")) {
 			fillInfoEntity(infoEntity, value, "统一社会信用代码", "reg_num");
@@ -363,6 +358,9 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 		if (start != INDEX_NOT_FOUND) {
 			int end = str.length();
 			for (String string : tagArrays) {
+				if(string.equals(open)){
+					continue;
+				}
 				int min = str.indexOf(string, start + open.length());
 				if (end > min && min != INDEX_NOT_FOUND) {
 					end = min;
@@ -373,6 +371,18 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			}
 		}
 		return null;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(removeSpace("注册资本万元 深圳市福田区福华一路"));
+	}
+
+	public static String removeSpace(String sentence) {
+		sentence = sentence.replace(":", "");
+		sentence = sentence.replace("：", "");
+		sentence = sentence.replaceAll("[ | | |	| | |　]+(?=[\\u4e00-\\u9fa5]+)+", "");
+		return sentence;
+
 	}
 
 }

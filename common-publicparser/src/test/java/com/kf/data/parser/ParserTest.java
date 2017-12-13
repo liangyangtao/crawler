@@ -22,15 +22,14 @@ import com.kf.data.pdfparser.parser.KfPdfParser;
  * @version V1.0
  */
 public class ParserTest {
-	
-	
+
 	public static void main(String[] args) {
-		String url = "https://static.kaifengdata.com/neeq/2ab8b3621cf689292dae12a1bfff3eb0/395157.pdf.html";
+		String url = "https://static.kaifengdata.com/neeq/bec4abd88129c546073f9c0a59623128/2168391.pdf.html";
 		String chagelink = changeHanzi(url);
 		String html = Fetcher.getInstance().get(chagelink, "gbk");
 		Document document = Jsoup.parse(html);
 		document = new DocumentSimpler().simpleDocument(document);
-//		System.out.println(document);
+		// System.out.println(document);
 		PdfCodeTable pdfCodeTable = new PdfCodeTable();
 		pdfCodeTable.setPdfType("公转书_基本信息");
 		PdfReportLinks pdfReportLinks = new PdfReportLinks();

@@ -37,7 +37,11 @@ public class SeeyiiCrawler {
 		new SeeyiiCrawler().crawler();
 	}
 
+	/****
+	 * 程序入口
+	 */
 	public void crawler() {
+
 		WebDriver driver = createWebDrive();
 		try {
 			driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
@@ -51,29 +55,37 @@ public class SeeyiiCrawler {
 			for (int i = 0; i < chainLinkElements.size(); i++) {
 				Element element = chainLinkElements.get(i);
 				if (element.hasAttr("data-id")) {
-					String chainLink = element.text();
-					System.out.println(element.cssSelector());
-					// driver.findElement(By.xpath("//*[@id='mainChain']/div/div/svg/g["
-					// + (i + 1) + "]")).click();
-					WebElement chainButton = driver.findElement(By.cssSelector(element.cssSelector()));
-					((JavascriptExecutor) driver).executeScript("arguments[0].click();", chainButton);
+					String dataId = element.attr("data-id");
+					String dataName = element.attr("data-name");
+					String eParam = ParamsParser.getChainParams("id=" + dataId + "&name=" + dataName);
+					String chainUrl = "https://www.seeyii.com/v2/industryChainDetail.html?t=2&e=" + eParam;
 					String currenWindow = driver.getWindowHandle();
-					Set<String> allWindows = driver.getWindowHandles();
-					for (String string : allWindows) {
-						if (string.equals(currenWindow)) {
-							continue;
-						} else {
-							driver.switchTo().window(string);
-							try {
-								Thread.sleep(5000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
+					try {
+						JavascriptExecutor executor = (JavascriptExecutor) driver;
+						executor.executeScript("window.open('" + chainUrl + "')");
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						Set<String> allWindows = driver.getWindowHandles();
+						for (String string : allWindows) {
+							if (string.equals(currenWindow)) {
+								continue;
+							} else {
+								driver.switchTo().window(string);
+								if (driver.getCurrentUrl().equals(chainUrl)) {
+									break;
+								}
 							}
 						}
+						parserIndustry(driver, dataName, dataId);
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						driver.close();
+						driver.switchTo().window(currenWindow);
 					}
-					parserIndustry(driver, chainLink);
-					driver.close();
-					driver.switchTo().window(currenWindow);
 				}
 
 			}
@@ -94,7 +106,7 @@ public class SeeyiiCrawler {
 		String url = "https://www.seeyii.com/v2/login.html";
 		driver.get(url);
 		WebElement accountElement = driver.findElement(By.id("account"));
-		accountElement.sendKeys("18612114331");
+		accountElement.sendKeys("18515156630");
 		WebElement passwordElement = driver.findElement(By.id("pass"));
 		passwordElement.sendKeys("123456");
 		WebElement loginElement = driver.findElement(By.id("login"));
@@ -102,48 +114,130 @@ public class SeeyiiCrawler {
 
 	}
 
-	public void parserIndustry(WebDriver driver, String chainLink) {
+	/****
+	 * 
+	 * @param driver
+	 * @param chainLink
+	 * @param pdataId
+	 */
+	public void parserIndustry(WebDriver driver, String chainLink, String pdataId) {
 		Document document = Jsoup.parse(driver.getPageSource());
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			Elements industryLinkelEments = document.select("#chainMap > div > svg");
+			if (industryLinkelEments.size() > 0) {
+				map.put("content", industryLinkelEments.first().toString());
+				map.put("data_id", pdataId);
+				map.put("data_name", chainLink);
+				sendJson(map, "seeyii_chain_text");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		Elements industryLinkelEments = document.select("#chainMap > div > svg > g");
 		for (int i = 0; i < industryLinkelEments.size(); i++) {
 			Element element = industryLinkelEments.get(i);
-			Elements childElements = element.select("g");
-			if (childElements.size() == 2) {
-				Element industryElement = childElements.get(1);
-				String industryText = industryElement.text();
-				// driver.findElement(By.xpath("//*[@id=\"chainMap\"]/div/svg/g["
-				// + (i + 1) + "]")).click();
-				// driver.findElement(By.cssSelector(industryElement.cssSelector())).click();
-				WebElement industryButton = driver.findElement(By.cssSelector(element.cssSelector()));
-				((JavascriptExecutor) driver).executeScript("arguments[0].click();", industryButton);
-				String currenWindow = driver.getWindowHandle();
-				Set<String> allWindows = driver.getWindowHandles();
-				for (String string : allWindows) {
-					if (string.equals(currenWindow)) {
-						continue;
-					} else {
-						driver.switchTo().window(string);
+			Elements childElements = element.select(".industry-link");
+			if (childElements.size() > 0) {
+				Element industryElement = childElements.get(0);
+				if (industryElement.hasAttr("data-id")) {
+					String dataId = industryElement.attr("data-id");
+					String dataName = industryElement.attr("data-name");
+					String eParam = ParamsParser.getChainParams("id=" + dataId + "&name=" + dataName);
+					String industryUrl = "https://www.seeyii.com/v2/industryDetail.html?t=2&e=" + eParam;
+					String currenWindow = driver.getWindowHandle();
+					try {
+						JavascriptExecutor executor = (JavascriptExecutor) driver;
+						executor.executeScript("window.open('" + industryUrl + "')");
 						try {
 							Thread.sleep(5000);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-						if (driver.getCurrentUrl().equals("https://www.seeyii.com/v2/industryChain.html")) {
-							continue;
+						Set<String> allWindows = driver.getWindowHandles();
+						for (String string : allWindows) {
+							if (string.equals(currenWindow)) {
+								continue;
+							} else {
+								driver.switchTo().window(string);
+								if (driver.getCurrentUrl().equals(industryUrl)) {
+									break;
+								}
+							}
 						}
+						try {
+							driver.findElement(By.linkText("公司列表")).click();
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						parser3bCompany(driver, chainLink, dataName, dataId, pdataId);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						driver.close();
+						driver.switchTo().window(currenWindow);
 					}
 				}
-				parsercompany3b(driver, chainLink, industryText);
-				driver.close();
-				driver.switchTo().window(currenWindow);
-
 			}
 
 		}
 
 	}
 
-	private void parsercompany3b(WebDriver driver, String chainLink, String industryText) {
+	/****
+	 * 解析三板公司
+	 * 
+	 * @param driver
+	 * @param chainLink
+	 * @param dataName
+	 * @param dataId
+	 * @param pdataId
+	 */
+	public void parser3bCompany(WebDriver driver, String chainLink, String dataName, String dataId, String pdataId) {
+		parsercompany3b(driver, chainLink, dataName, dataId, pdataId);
+		while (true) {
+			String html = driver.getPageSource();
+			Document document = Jsoup.parse(html);
+			Elements b3Elements = document.select("#company3b");
+			if (b3Elements.size() > 0) {
+				Element mainElement = b3Elements.first();
+				Elements nextPageElements = mainElement.select(".next-page");
+				if (nextPageElements.size() > 0) {
+					Element nextPageBt = nextPageElements.first();
+					if (nextPageBt.classNames().contains("disabled")) {
+						break;
+					} else {
+						try {
+							driver.findElement(By.cssSelector(nextPageBt.cssSelector())).click();
+							Thread.sleep(5000);
+							parsercompany3b(driver, chainLink, dataName, dataId, pdataId);
+						} catch (Exception e) {
+							e.printStackTrace();
+							break;
+						}
+
+					}
+
+				} else {
+					break;
+				}
+
+			} else {
+				break;
+			}
+		}
+
+	}
+
+	public void parsercompany3b(WebDriver driver, String chainLink, String industryText, String dataId,
+			String pdataId) {
 		String html = driver.getPageSource();
 		Document document = Jsoup.parse(html);
 		Elements b3Elements = document.select("#company3b");
@@ -159,8 +253,9 @@ public class SeeyiiCrawler {
 				map.put("chain", chainLink);
 				map.put("industry", industryText);
 				map.put("stock_code", stock);
+				map.put("data_id", dataId);
+				map.put("chain_id", pdataId);
 				sendJson(map, "seeyii_chain");
-
 			}
 		}
 
