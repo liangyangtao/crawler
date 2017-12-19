@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-public class CompanyNameParser {
+public class CompanyNameParser extends BaseParser {
 
 	/****
 	 * 解析挂牌公司名称

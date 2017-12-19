@@ -49,6 +49,7 @@ public class SeeyiiCrawler {
 			// 登录
 			login(driver);
 			driver.get("https://www.seeyii.com/v2/industryChain.html");
+			Thread.sleep(5000);
 			String html = driver.getPageSource();
 			Document document = Jsoup.parse(html);
 			Elements chainLinkElements = document.select("#mainChain > div > div > svg > g");
@@ -201,6 +202,7 @@ public class SeeyiiCrawler {
 	 * @param pdataId
 	 */
 	public void parser3bCompany(WebDriver driver, String chainLink, String dataName, String dataId, String pdataId) {
+		parserIntroduction(driver, chainLink, dataName, dataId, pdataId);
 		parsercompany3b(driver, chainLink, dataName, dataId, pdataId);
 		while (true) {
 			String html = driver.getPageSource();
@@ -232,6 +234,24 @@ public class SeeyiiCrawler {
 			} else {
 				break;
 			}
+		}
+
+	}
+
+	public void parserIntroduction(WebDriver driver, String chainLink, String industryText, String dataId,
+			String pdataId) {
+		String html = driver.getPageSource();
+		Document document = Jsoup.parse(html);
+		Elements b3Elements = document.select(".summary-intro-content");
+		if (b3Elements.size() > 0) {
+			String introduction = b3Elements.get(0).text();
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("chain", chainLink);
+			map.put("industry", industryText);
+			map.put("introduction", introduction);
+			map.put("data_id", dataId);
+			map.put("chain_id", pdataId);
+			sendJson(map, "seeyii_chain_info");
 		}
 
 	}

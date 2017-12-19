@@ -9,9 +9,14 @@
 		<property name="beginningDelimiter" value="`" />
 		<property name="endingDelimiter" value="`" />
 		<!--数据库链接URL，用户名、密码 -->
+		<!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://10.24.193.86:3306/crawler?autoReconnect=true" 
+			userId="meidi" password="12qwaszx" /> -->
+
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://10.24.193.86:3306/crawler?autoReconnect=true"
-			userId="meidi" password="12qwaszx" />
+			connectionURL="jdbc:mysql://10.26.84.23:3306/neeq?autoReconnect=true"
+			userId="etler" password="iVqpEAs6" />
+
+
 		<!-- 生成模型的包名和位置 -->
 		<javaModelGenerator targetPackage="com.kf.data.mybatis.entity"
 			targetProject="common-mybatis\src\main\java">
@@ -26,62 +31,12 @@
 		</javaClientGenerator>
 
 
-		<table schema="crawler" tableName="neeq_information_laws"
-			domainObjectName="NeeqInformationLawsCrawler">
+		<table schema="crawler" tableName="neeq_company"
+			domainObjectName="NeeqCompanyOnline">
 			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
 				identity="true" type="post" />
 		</table>
 
-		<!-- <table schema="crawler" tableName="tyc_events_invest" domainObjectName="TycEventsInvestCrawler"> 
-			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" 
-			type="post" /> </table> <table schema="crawler" tableName="tyc_events_invest_investors" 
-			domainObjectName="TycEventsInvestInvestorsCrawler"> <generatedKey column="id" 
-			sqlStatement="SELECT LAST_INSERT_ID()" identity="true" type="post" /> </table> 
-			<table schema="crawler" tableName="tyc_company_sfpm" domainObjectName="TycCompanySfpmCrawler"> 
-			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" 
-			type="post" /> </table> <table schema="crawler" tableName="tyc_company_im_ex_port" 
-			domainObjectName="TycCompanyImExPortCrawler"> <generatedKey column="id" sqlStatement="SELECT 
-			LAST_INSERT_ID()" identity="true" type="post" /> </table> <table schema="crawler" 
-			tableName="tyc_company_commonstock" domainObjectName="TycCompanyCommonstockCrawler"> 
-			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" 
-			type="post" /> </table> <table schema="crawler" tableName="tyc_company_commonstock_change" 
-			domainObjectName="TycCompanyCommonstockChangeCrawler"> <generatedKey column="id" 
-			sqlStatement="SELECT LAST_INSERT_ID()" identity="true" type="post" /> </table> -->
-
-
-		<!-- <table schema="crawler" tableName="tyc_base_company" domainObjectName="TycBaseCompanyCrawler"> 
-			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" 
-			type="post" /> </table> <table schema="crawler" tableName="tyc_company_branch" 
-			domainObjectName="TycCompanyBranchCrawler"> <generatedKey column="id" sqlStatement="SELECT 
-			LAST_INSERT_ID()" identity="true" type="post" /> </table> <table schema="crawler" 
-			tableName="tyc_company_change" domainObjectName="TycCompanyChangeCrawler"> 
-			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" 
-			type="post" /> </table> <table schema="crawler" tableName="tyc_company_chattel_mortgage" 
-			domainObjectName="TycCompanyChattelMortgageCrawler"> <generatedKey column="id" 
-			sqlStatement="SELECT LAST_INSERT_ID()" identity="true" type="post" /> </table> 
-			<table schema="crawler" tableName="tyc_company_copyright" domainObjectName="TycCompanyCopyrightCrawler"> 
-			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" 
-			type="post" /> </table> <table schema="crawler" tableName="tyc_company_domain_record" 
-			domainObjectName="TycCompanyDomainRecordCrawler"> <generatedKey column="id" 
-			sqlStatement="SELECT LAST_INSERT_ID()" identity="true" type="post" /> </table> 
-			<table schema="crawler" tableName="tyc_company_equity_pledged" domainObjectName="TycCompanyEquityPledgedCrawler"> 
-			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" 
-			type="post" /> </table> <table schema="crawler" tableName="tyc_company_executive" 
-			domainObjectName="TycCompanyExecutiveCrawler"> <generatedKey column="id" 
-			sqlStatement="SELECT LAST_INSERT_ID()" identity="true" type="post" /> </table> 
-			<table schema="crawler" tableName="tyc_company_patent" domainObjectName="TycCompanyPatentCrawler"> 
-			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" 
-			type="post" /> </table> <table schema="crawler" tableName="tyc_company_recruitment" 
-			domainObjectName="TycCompanyRecruitmentCrawler"> <generatedKey column="id" 
-			sqlStatement="SELECT LAST_INSERT_ID()" identity="true" type="post" /> </table> 
-			<table schema="crawler" tableName="tyc_company_shareholders_contributive" 
-			domainObjectName="TycCompanyShareholdersContributiveCrawler"> <generatedKey 
-			column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" type="post" 
-			/> </table> <table schema="crawler" tableName="tyc_company_trademark" domainObjectName="TycCompanyTrademarkCrawler"> 
-			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()" identity="true" 
-			type="post" /> </table> <table schema="crawler" tableName="tyc_events_tender_bid" 
-			domainObjectName="TycEventsTenderBidCrawler"> <generatedKey column="id" sqlStatement="SELECT 
-			LAST_INSERT_ID()" identity="true" type="post" /> </table> -->
 
 
 

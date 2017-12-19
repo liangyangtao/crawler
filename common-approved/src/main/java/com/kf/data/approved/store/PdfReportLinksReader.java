@@ -24,13 +24,13 @@ public class PdfReportLinksReader {
 	 * 
 	 * @return
 	 */
-	public List<PdfReportLinks> readPdfLinkByRank(int rank) {
+	public List<PdfReportLinks> readPdfLinkByRank(int rank, String pdfType) {
 		SqlSession sqlSession = DynamicConnectionFactory.getInstanceSessionFactory("crawlerMysql").openSession();
 		List<PdfReportLinks> pdfReportLinks = null;
 		try {
 			PdfReportLinksMapper pdfReportLinksMapper = sqlSession.getMapper(PdfReportLinksMapper.class);
 			PdfReportLinksExample example = new PdfReportLinksExample();
-			example.or().andRankEqualTo(rank).andPdfTypeEqualTo("批准挂牌公司");
+			example.or().andRankEqualTo(rank).andPdfTypeEqualTo(pdfType);
 			example.setOrderByClause("id desc limit 100");
 			pdfReportLinks = pdfReportLinksMapper.selectByExample(example);
 			sqlSession.commit();

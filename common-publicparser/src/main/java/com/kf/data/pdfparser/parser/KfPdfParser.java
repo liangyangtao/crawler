@@ -118,7 +118,7 @@ public class KfPdfParser {
 				resultMap = publicStaffEducationParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			} else if (pdfCodeTable.getPdfType().equals("公转书_特许经营权")) {
 				resultMap = publicMajorClientParser.getResult(pdfCodeTable, pdfReportLinks, document);
-			} else if (pdfCodeTable.getPdfType().equals("公转书_基本信息")) {
+			} else if (pdfCodeTable.getPdfType().equals("公转书_公司基本信息")) {
 				resultMap = publicCompanyInfoParser.getResult(pdfCodeTable, pdfReportLinks, document);
 			}
 

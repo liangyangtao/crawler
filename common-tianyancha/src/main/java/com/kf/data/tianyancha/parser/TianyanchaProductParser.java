@@ -63,7 +63,7 @@ public class TianyanchaProductParser extends TianyanchaBasePaser {
 								break;
 							}
 							WebElement nextPageBt = driver.findElement(
-									By.xpath("//*[@id=\"_container_product\"]/div/div[last()]/ul/li[last()]/a"));
+									By.xpath("//*[@id=\"_container_product\"]/div/div/div[last()]/ul/li[last()]/a"));
 							((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextPageBt);
 							try {
 								Thread.sleep(5000);

@@ -2,7 +2,6 @@ package com.kf.data.pdfparser.parser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -79,140 +78,81 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			List<List<Map<String, String>>> infoList = new ArrayList<List<Map<String, String>>>();
 			// 存储开始位置
 			List<String> begins = new ArrayList<String>();
-			begins.add("一、公司概况");
-			begins.add("一、基本情况");
-			begins.add("一、基本情况");
-			begins.add("一、公司基本情况");
-			begins.add("一、公司基本情况");
-			begins.add("一、公司基本情况");
-			begins.add("一、公司基本情况");
-			begins.add("一、公司简介");
-			begins.add("一、简要情况");
-			// 存储结束位置
-			List<String> ends = new ArrayList<String>();
-			ends.add("二、公司股票基本情况");
-			ends.add("二、股票挂牌情况");
-			ends.add("二、股份挂牌情况");
-			ends.add("二、股份挂牌情况");
-			ends.add("二、公司股份挂牌情况 ");
-			ends.add("二、股票代码、股票简称");
-			ends.add("二、公司股票基本情况");
-			ends.add("二、股票挂牌情况");
-			ends.add("二、股份代码、简称、挂牌日期");
-			List<String> result = new ArrayList<>();
+			begins.add("公司概况");
+			begins.add("公司基本情况");
+			begins.add("基本情况");
+			begins.add("公司简介");
+			begins.add("简要情况");
 			Elements pElements = document.select("div").first().children();
-			for (int i = 0; i < begins.size(); i++) {
-				String preText = begins.get(i);
-				String endText = ends.get(i);
-				if (document.toString().contains(preText) && document.toString().contains(endText)) {
-				} else {
-					continue;
-				}
-				int preIndex = 0;
-				int endIndex = pElements.size();
-				Map<Integer, Integer> indexs = new HashMap<Integer, Integer>();
-				for (int j = 0; j < pElements.size(); j++) {
-					Element pElement = pElements.get(j);
-					if (pElement.tagName().equals("p")) {
-						String pText = pElement.text();
-						pText = pText.replace("  ", "");
-						pText = pText.replace(" ", "");
-						pText = pText.replace("	", "");
-						pText = pText.replace(" ", "");
-						if (pText.contains(".......")) {
-							continue;
-						}
-						if (pText.length() > 100) {
-							continue;
-						}
-						if (pText.contains(endText)) {
+			int preIndex = 0;
+			int endIndex = pElements.size();
+			String preReg = null;
+			Map<Integer, Integer> indexs = new HashMap<Integer, Integer>();
+			for (int j = 0; j < pElements.size(); j++) {
+				Element pElement = pElements.get(j);
+				if (pElement.tagName().equals("p")) {
+					String pText = pElement.text();
+					pText = pText.replace("  ", "");
+					pText = pText.replace(" ", "");
+					pText = pText.replace("	", "");
+					pText = pText.replace(" ", "");
+					if (pText.contains(".......")) {
+						continue;
+					}
+					if (pText.length() > 100) {
+						continue;
+					}
+					if (preReg != null) {
+						if (pText.contains(preReg)) {
 							if (preIndex == 0) {
 								continue;
 							}
 							if (j > endIndex && endIndex > preIndex) {
-								continue;
+								break;
 							}
 							endIndex = j;
 							indexs.put(preIndex, endIndex);
 						}
-						if (pText.equals(preText)) {
-							preIndex = j;
-						} else if (pText.equals("、" + preText)) {
-							preIndex = j;
-						} else if (pText.contains(preText)) {
-							for (String string : titleTags) {
-								if (pText.contains(string)) {
-									if (preIndex < endIndex) {
-										preIndex = j;
-										break;
-									}
+					} else {
+						for (String preText : begins) {
+							if (pText.contains(preText)) {
+								if (pText.length() >= preText.length() + 8) {
+									continue;
 								}
-
+								preIndex = j;
+								preReg = "二、";
+								if (preReg != null) {
+									break;
+								}
 							}
 						}
 					}
 				}
-				StringBuffer sb = new StringBuffer();
-				Set<Integer> preIndexs = indexs.keySet();
-				for (Integer preIn : preIndexs) {
-					int endIn = indexs.get(preIn);
-					for (int j = preIn + 1; j < endIn; j++) {
-						Element childElement = pElements.get(j);
-						sb.append(childElement.text());
-					}
-				}
-				if (sb.toString().length() > 0) {
-					result.add(sb.toString());
+			}
+			StringBuffer sb = new StringBuffer();
+			Set<Integer> preIndexs = indexs.keySet();
+			for (Integer preIn : preIndexs) {
+				int endIn = indexs.get(preIn);
+				for (int j = preIn + 1; j < endIn; j++) {
+					Element childElement = pElements.get(j);
+					sb.append(childElement.text());
 				}
 			}
-			// 多个规则循环结束 进行比较
-			if (result.size() > 0) {
-				String value = result.get(0);
-				int valueCount = Collections.frequency(result, value);
-				for (String string : result) {
-					int strCount = Collections.frequency(result, string);
-					if (value.contains(string)) {
-						value = string;
-						if (strCount > valueCount) {
-							valueCount = strCount;
-						}
-					} else {
-						if (strCount > valueCount) {
-							value = string;
-							valueCount = strCount;
-						}
-					}
+			if (sb.length() > 30) {
+				parserInfo(infoEntity, sb.toString(), tableName);
+				infoEntity.add(companyidMap);
+				// link
+				infoEntity.add(linkMap);
+				// pdfType
+				infoEntity.add(pdfTypeMap);
+				// 时间
+				infoEntity.add(timeMap);
+				// noticeId
+				infoEntity.add(noticeIdMap);
+				infoEntity.add(reportDateMap);
+				infoList.add(infoEntity);
+			}
 
-				}
-				// 如果都比不出来 就取最小的那个
-				if (valueCount == 1) {
-					for (String string : result) {
-						if (string.length() < value.length()) {
-							value = string;
-						}
-					}
-				}
-				if (value.length() > 30) {
-					// Map<String, String> resultInfoMap = new HashMap<String,
-					// String>();
-					// resultInfoMap.put("value", value == null ? "" : value);
-					// resultInfoMap.put("tableName", tableName);
-					// resultInfoMap.put("property", "value");
-					// infoEntity.add(resultInfoMap);
-					parserInfo(infoEntity, value, tableName);
-					infoEntity.add(companyidMap);
-					// link
-					infoEntity.add(linkMap);
-					// pdfType
-					infoEntity.add(pdfTypeMap);
-					// 时间
-					infoEntity.add(timeMap);
-					// noticeId
-					infoEntity.add(noticeIdMap);
-					infoEntity.add(reportDateMap);
-					infoList.add(infoEntity);
-				}
-			}
 			resultMap.put("state", "ok");
 			resultMap.put("info", infoList);
 		} catch (Exception e) {
@@ -222,11 +162,16 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 		return resultMap;
 	}
 
-	public static String tagArrays[] = new String[] { "中文名称", "公司名称", "英文名称", "公司英文名称", "法定代表人", "企业类型", "注册资本", "设立日期",
-			"有限公司设立日期", "有限公司成立日期", "有限公司设立日", "变更为股份有限公司日期", "股份公司设立日期", "股份公司设立日", "股份公司成立日期", "住所", "办公地址", "邮编",
-			"邮政编码", "统一社会信用代码", "组织机构代码", "董事会秘书", "信息披露负责人", "董事会秘书/信息披露负责人", "信息披露联系人", "联系电话", "电话号码", "电话", "传真",
-			"传真号码", "电子信箱", "电子邮箱", "互联网网址", "互联网址", "网址", "所属行业", "经营范围", "主营业务", "主要业务", "主营产品" };
+	public static String tagArrays[] = new String[] { "中文名称", "公司名称", "英文名称", "法人代表", "法定代表人", "企业类型", "注册资本", "设立日期",
+			"成立日期", "注册日期", "有限公司设立时间", "有限公司设立日期", "有限公司成立日期", "有限公司设立日", "整体变更为股份公司日期", "整体变更设立股份公司日期", "变更为股份有限公司日期",
+			"股份公司设立日期", "股份公司设立时期", "股份公司设立时间", "股份公司设立日", "股份公司成立日期", "公司住所", "住所", "办公地址", "注册地址", "注册地", "邮编",
+			"邮政编码", "社会信用代码", "社会统一信用代码", "统一社会信用代码", "注册号/社会统一信用代码", "注册号", "营业执照注册号", "组织机构代码", "董事会秘书", "信息披露负责人",
+			"信息披露人", "董事会秘书/信息披露负责人", "信息披露事务负责人", "信息披露联系人", "联系电话", "电话号码", "电话", "传真", "传真号码", "公司邮箱", "电子信箱",
+			"电子邮箱", "E-mail地址", "email", "e-mail地址", "e-mail", "邮箱", "互联网网址", "互联网址", "互联网地址", "公司网址", "网址", "网站",
+			"公司网站", "所属行业", "经营范围", "主营业务", "主要业务", "主营产品", "转让方式", "营业执照号", "实收资本", "营业期限" };
 
+	// 整体变更为股份公司日期
+	// 2010年 01月 04日股份公司设立时期2015年 09月 2日营业期限2010年 01月 04日至长期
 	public static final int INDEX_NOT_FOUND = -1;
 
 	private void parserInfo(List<Map<String, String>> infoEntity, String value, String tableName) {
@@ -237,12 +182,13 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 		} else if (value.contains("公司名称")) {
 			fillInfoEntity(infoEntity, value, "公司名称", "cn_name");
 		}
-
 		if (value.contains("英文名称")) {
 			fillInfoEntity(infoEntity, value, "英文名称", "en_name");
 		}
 		if (value.contains("法定代表人")) {
 			fillInfoEntity(infoEntity, value, "法定代表人", "legal_representative");
+		} else if (value.contains("法人代表")) {
+			fillInfoEntity(infoEntity, value, "法人代表", "legal_representative");
 		}
 		if (value.contains("企业类型")) {
 			fillInfoEntity(infoEntity, value, "企业类型", "type");
@@ -251,7 +197,9 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			fillInfoEntity(infoEntity, value, "注册资本", "reg_capital");
 		}
 
-		if (value.contains("有限公司设立日期")) {
+		if (value.contains("有限公司设立时间")) {
+			fillInfoEntity(infoEntity, value, "有限公司设立时间", "limit_com_date");
+		} else if (value.contains("有限公司设立日期")) {
 			fillInfoEntity(infoEntity, value, "有限公司设立日期", "limit_com_date");
 		} else if (value.contains("有限公司成立日期")) {
 			fillInfoEntity(infoEntity, value, "有限公司成立日期", "limit_com_date");
@@ -259,6 +207,10 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			fillInfoEntity(infoEntity, value, "有限公司设立日", "limit_com_date");
 		} else if (value.contains("设立日期")) {
 			fillInfoEntity(infoEntity, value, "设立日期", "limit_com_date");
+		} else if (value.contains("成立日期")) {
+			fillInfoEntity(infoEntity, value, "成立日期", "limit_com_date");
+		} else if (value.contains("注册日期")) {
+			fillInfoEntity(infoEntity, value, "注册日期", "limit_com_date");
 		}
 
 		if (value.contains("变更为股份有限公司日期")) {
@@ -269,12 +221,27 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			fillInfoEntity(infoEntity, value, "股份公司设立日期", "stock_com_date");
 		} else if (value.contains("股份公司成立日")) {
 			fillInfoEntity(infoEntity, value, "股份公司设立日", "stock_com_date");
+		} else if (value.contains("股份公司设立时间")) {
+			fillInfoEntity(infoEntity, value, "股份公司设立时间", "stock_com_date");
+		} else if (value.contains("整体变更设立股份公司日期")) {
+			fillInfoEntity(infoEntity, value, "整体变更设立股份公司日期", "stock_com_date");
+		} else if (value.contains("股份公司设立时期")) {
+			fillInfoEntity(infoEntity, value, "股份公司设立时期", "stock_com_date");
+		} else if (value.contains("整体变更为股份公司日期")) {
+			fillInfoEntity(infoEntity, value, "整体变更为股份公司日期", "stock_com_date");
 		}
 
-		if (value.contains("住所")) {
+		// 公司住所
+		if (value.contains("公司住所")) {
+			fillInfoEntity(infoEntity, value, "公司住所", "address");
+		} else if (value.contains("住所")) {
 			fillInfoEntity(infoEntity, value, "住所", "address");
 		} else if (value.contains("办公地址")) {
 			fillInfoEntity(infoEntity, value, "办公地址", "address");
+		} else if (value.contains("注册地址")) {
+			fillInfoEntity(infoEntity, value, "注册地址", "address");
+		} else if (value.contains("注册地")) {
+			fillInfoEntity(infoEntity, value, "注册地", "address");
 		}
 
 		if (value.contains("邮编")) {
@@ -284,7 +251,20 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 		}
 		if (value.contains("统一社会信用代码")) {
 			fillInfoEntity(infoEntity, value, "统一社会信用代码", "reg_num");
+		} else if (value.contains("注册号/社会统一信用代码")) {
+			fillInfoEntity(infoEntity, value, "注册号/社会统一信用代码", "reg_num");
+		} else if (value.contains("注册号")) {
+			fillInfoEntity(infoEntity, value, "注册号", "reg_num");
+		} else if (value.contains("社会统一信用代码")) {
+			fillInfoEntity(infoEntity, value, "社会统一信用代码", "reg_num");
+		} else if (value.contains("社会信用代码")) {
+			fillInfoEntity(infoEntity, value, "社会信用代码", "reg_num");
+		} else if (value.contains("营业执照号")) {
+			fillInfoEntity(infoEntity, value, "营业执照号", "reg_num");
+		} else if (value.contains("营业执照注册号")) {
+			fillInfoEntity(infoEntity, value, "营业执照注册号", "reg_num");
 		}
+
 		if (value.contains("组织机构代码")) {
 			fillInfoEntity(infoEntity, value, "组织机构代码", "org_num");
 		}
@@ -298,6 +278,10 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			fillInfoEntity(infoEntity, value, "董事会秘书/信息披露负责人", "discloser");
 		} else if (value.contains("信息披露联系人")) {
 			fillInfoEntity(infoEntity, value, "信息披露联系人", "discloser");
+		} else if (value.contains("信息披露事务负责人")) {
+			fillInfoEntity(infoEntity, value, "信息披露事务负责人", "discloser");
+		} else if (value.contains("信息披露人")) {
+			fillInfoEntity(infoEntity, value, "信息披露人", "discloser");
 		}
 
 		if (value.contains("联系电话")) {
@@ -316,12 +300,34 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 			fillInfoEntity(infoEntity, value, "电子信箱", "email");
 		} else if (value.contains("电子邮箱")) {
 			fillInfoEntity(infoEntity, value, "电子邮箱", "email");
+		} else if (value.contains("E-mail地址")) {
+			fillInfoEntity(infoEntity, value, "E-mail地址", "email");
+		} else if (value.contains("e-mail地址")) {
+			fillInfoEntity(infoEntity, value, "e-mail地址", "email");
+		} else if (value.contains("e-mail")) {
+			fillInfoEntity(infoEntity, value, "e-mail", "email");
+		} else if (value.contains("公司邮箱")) {
+			fillInfoEntity(infoEntity, value, "公司邮箱", "email");
+		} else if (value.contains("邮箱")) {
+			fillInfoEntity(infoEntity, value, "邮箱", "email");
 		}
+		//
+		// "互联网网址", "互联网址", "互联网地址", "公司网址", "网址", "网站", "公司网站"
 		if (value.contains("互联网网址")) {
 			fillInfoEntity(infoEntity, value, "互联网网址", "website");
+		}
+		if (value.contains("互联网址")) {
+			fillInfoEntity(infoEntity, value, "互联网址", "website");
 		} else if (value.contains("网址")) {
 			fillInfoEntity(infoEntity, value, "网址", "website");
+		} else if (value.contains("互联网地址")) {
+			fillInfoEntity(infoEntity, value, "互联网地址", "website");
+		} else if (value.contains("网站")) {
+			fillInfoEntity(infoEntity, value, "网站", "website");
+		} else if (value.contains("公司网站")) {
+			fillInfoEntity(infoEntity, value, "公司网站", "website");
 		}
+
 		if (value.contains("所属行业")) {
 			fillInfoEntity(infoEntity, value, "所属行业", "industry_name");
 		}
@@ -342,6 +348,7 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 	public void fillInfoEntity(List<Map<String, String>> infoEntity, String value, String open, String property) {
 		if (value.contains(open)) {
 			String temp = substringBetween(value, open);
+			temp = temp.trim();
 			Map<String, String> resultInfoMap = new HashMap<String, String>();
 			resultInfoMap.put("value", temp);
 			resultInfoMap.put("tableName", "pdf_public_company_info");
@@ -358,7 +365,7 @@ public class PublicCompanyInfoParser extends PublicBaseParser {
 		if (start != INDEX_NOT_FOUND) {
 			int end = str.length();
 			for (String string : tagArrays) {
-				if(string.equals(open)){
+				if (string.equals(open)) {
 					continue;
 				}
 				int min = str.indexOf(string, start + open.length());
