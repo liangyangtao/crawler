@@ -73,6 +73,19 @@
 		<typeAlias alias="NeeqInformationLawsCrawler"
 			type="com.kf.data.mybatis.entity.NeeqInformationLawsCrawler" />
 
+
+		<!-- online -->
+		<typeAlias alias="NeeqCompanyMainBusinessOnline"
+			type="com.kf.data.mybatis.entity.NeeqCompanyMainBusinessOnline" />
+		<typeAlias alias="NeeqCompanyOnline"
+			type="com.kf.data.mybatis.entity.NeeqCompanyOnline" />
+		<typeAlias alias="NeeqIpoDetectOnline"
+			type="com.kf.data.mybatis.entity.NeeqIpoDetectOnline" />
+		<typeAlias alias="NeeqCompanyChoiceLayerOnline"
+			type="com.kf.data.mybatis.entity.NeeqCompanyChoiceLayerOnline" />
+		<!-- online end -->
+
+
 	</typeAliases>
 	<!--数据源配置 这块用 BD2数据库 -->
 	<environments default="localMysql">
@@ -181,7 +194,14 @@
 
 		<mapper
 			resource="com/kf/data/mybatis/mapper/NeeqInformationLawsCrawlerMapper.xml" />
-
+		<!-- online -->
+		<mapper
+			resource="com/kf/data/mybatis/mapper/NeeqCompanyMainBusinessOnlineMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/NeeqCompanyOnlineMapper.xml" />
+		<mapper resource="com/kf/data/mybatis/mapper/NeeqIpoDetectOnlineMapper.xml" />
+		<mapper
+			resource="com/kf/data/mybatis/mapper/NeeqCompanyChoiceLayerOnlineMapper.xml" />
+		<!-- online end -->
 
 	</mappers>
 </configuration> 

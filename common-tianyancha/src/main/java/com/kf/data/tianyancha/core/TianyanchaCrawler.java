@@ -299,202 +299,202 @@ public class TianyanchaCrawler {
 
 			/********************************************************************************************/
 			// 基本信息
-//			companyName = tianyanchaCompanyParser.paseNode(document, companyId);
+			companyName = tianyanchaCompanyParser.paseNode(document, companyId);
 			// 主要人员 高管
-//			tianyanchaStaffParser.paseNode(document, companyName, companyId);
+			tianyanchaStaffParser.paseNode(document, companyName, companyId);
 			// 股东信息
-//			tianyanchaHolderParser.paseNode(document, companyName, companyId);
+			tianyanchaHolderParser.paseNode(document, companyName, companyId);
 
 			Map<String, Integer> zhibiaoNums = new HashMap<String, Integer>();
 
 			zhibiaoNumCrawler.fillZhibiaoNums(zhibiaoNums, document);
 
-//			if (zhibiaoNums.get("investAbroadCount") != null && zhibiaoNums.get("investAbroadCount") > 0) {
-//				// 对外投资
-//				tianyanchaInvestOutSideParser.investAbroadParser(document, driver, companyName, companyId);
-//			}
-//			if (zhibiaoNums.get("changeCount") != null && zhibiaoNums.get("changeCount") > 0) {
-//				// 变更记录
-//				tianyanchaChangeParser.changeParser(document, driver, companyName, companyId);
-//
-//			}
-//			if (zhibiaoNums.get("reportCount") != null && zhibiaoNums.get("reportCount") > 0) {
-//				// 年报
-//				tianyanchaYearReportParser.yearPortParser(document, companyName, companyId, driver);
-//			}
-//
-//			if (zhibiaoNums.get("branchCount") != null && zhibiaoNums.get("branchCount") > 0) {
-//				// 分支机构
-//				tianyanchaBranchParser.branchParser(document, driver, companyName, companyId);
-//
-//			}
+			if (zhibiaoNums.get("investAbroadCount") != null && zhibiaoNums.get("investAbroadCount") > 0) {
+				// 对外投资
+				tianyanchaInvestOutSideParser.investAbroadParser(document, driver, companyName, companyId);
+			}
+			if (zhibiaoNums.get("changeCount") != null && zhibiaoNums.get("changeCount") > 0) {
+				// 变更记录
+				tianyanchaChangeParser.changeParser(document, driver, companyName, companyId);
+
+			}
+			if (zhibiaoNums.get("reportCount") != null && zhibiaoNums.get("reportCount") > 0) {
+				// 年报
+				tianyanchaYearReportParser.yearPortParser(document, companyName, companyId, driver);
+			}
+
+			if (zhibiaoNums.get("branchCount") != null && zhibiaoNums.get("branchCount") > 0) {
+				// 分支机构
+				tianyanchaBranchParser.branchParser(document, driver, companyName, companyId);
+
+			}
 			/******************************************************************************/
-//			if (zhibiaoNums.get("rongziCount") != null && zhibiaoNums.get("rongziCount") > 0) {
-//				// 融资历史
-//				tianyanchaRongziParser.rongziParser(document, driver, companyName, companyId);
-//			}
-//
-//			if (zhibiaoNums.get("coreTeamCount") != null && zhibiaoNums.get("coreTeamCount") > 0) {
-//				// 核心团队
-//				tianyanchaCoreTeamParser.coreTeamParser(document, driver, companyName, companyId);
-//			}
-//
-//			if (zhibiaoNums.get("businessCount") != null && zhibiaoNums.get("businessCount") > 0) {
-//				// 企业业务
-//				tianyanchaBusinessParser.businessParser(document, driver, companyName, companyId);
-//			}
-//
-//			if (zhibiaoNums.get("investCount") != null && zhibiaoNums.get("investCount") > 0) {
-//				// 投资事件
-//				tianyanchaInvestParser.investParser(document, driver, companyName, companyId);
-//			}
-//			if (zhibiaoNums.get("competitorsCount") != null && zhibiaoNums.get("competitorsCount") > 0) {
-//				// 竞品信息
-//				tianyanchaCompetitorsParser.competitorsParser(document, driver, companyName, companyId);
-//			}
+			if (zhibiaoNums.get("rongziCount") != null && zhibiaoNums.get("rongziCount") > 0) {
+				// 融资历史
+				tianyanchaRongziParser.rongziParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("coreTeamCount") != null && zhibiaoNums.get("coreTeamCount") > 0) {
+				// 核心团队
+				tianyanchaCoreTeamParser.coreTeamParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("businessCount") != null && zhibiaoNums.get("businessCount") > 0) {
+				// 企业业务
+				tianyanchaBusinessParser.businessParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("investCount") != null && zhibiaoNums.get("investCount") > 0) {
+				// 投资事件
+				tianyanchaInvestParser.investParser(document, driver, companyName, companyId);
+			}
+			if (zhibiaoNums.get("competitorsCount") != null && zhibiaoNums.get("competitorsCount") > 0) {
+				// 竞品信息
+				tianyanchaCompetitorsParser.competitorsParser(document, driver, companyName, companyId);
+			}
 			/********************************************************************************/
 			if (zhibiaoNums.get("caseCount") != null && zhibiaoNums.get("caseCount") > 0) {
 				// 法律诉讼
 				tianyanchaCaseParser.caseParser(document, driver, companyName, companyId);
 			}
-//			if (zhibiaoNums.get("caseNoticeCount") != null && zhibiaoNums.get("caseNoticeCount") > 0) {
-//				// 法院公告
-//				tianyanchaCaseNoticeParser.caseNoticeParser(document, driver, companyName, companyId);
-//			}
-//			if (zhibiaoNums.get("shixinCount") != null && zhibiaoNums.get("shixinCount") > 0) {
-//				// 失信人
-//				tianyanchaShixinParser.shixinParser(document, driver, companyName, companyId);
-//			}
-//			if (zhibiaoNums.get("zhixingCount") != null && zhibiaoNums.get("zhixingCount") > 0) {
-//				// 被执行人
-//				tianyanchaZhixingParser.zhixingParser(document, driver, companyName, companyId);
-//			}
-//
-//			if (zhibiaoNums.get("announcementCount") != null && zhibiaoNums.get("announcementCount") > 0) {
-//				// 开庭公告
-//				tianyanchaAnnouncementParser.announcementParser(document, driver, companyName, companyId);
-//			}
-//
-//			/********************************************************************************/
-//			if (zhibiaoNums.get("abnormalCount") != null && zhibiaoNums.get("abnormalCount") > 0) {
-//				// 经营异常
-//				tianyanchaAbnormalOperationParser.abnormalOperationParser(document, driver, companyName, companyId);
-//			}
-//			if (zhibiaoNums.get("admPenaltyCount") != null && zhibiaoNums.get("admPenaltyCount") > 0) {
-//				// 行政处罚
-//				tianyanchaAdmPenaltyParser.admPenaltyParser(document, driver, companyName, companyId);
-//			}
-//
-//			// 严重违法
-//			// illegalCount
-//
-//			if (zhibiaoNums.get("equityCount") != null && zhibiaoNums.get("equityCount") > 0) {
-//				// 股权出质
-//				tianyanchaEquityParser.equityParser(document, driver, companyName, companyId);
-//			}
-//
-//			if (zhibiaoNums.get("mortgageCount") != null && zhibiaoNums.get("mortgageCount") > 0) {
-//				// 动产抵押
-//				tianyanchaMortgageParser.mortgageParser(document, driver, companyName, companyId);
-//
-//			}
-//
-//			if (zhibiaoNums.get("taxArrearsCount") != null && zhibiaoNums.get("taxArrearsCount") > 0) {
-//				// 欠税公告
-//				tianyanchaTaxArrearsParser.taxArrearsParser(document, driver, companyName, companyId);
-//
-//			}
-//
-//			if (zhibiaoNums.get("sfpmCount") != null && zhibiaoNums.get("sfpmCount") > 0) {
-//				// 司法拍卖
-//				tianyanchaSfpmParser.sfpmParser(document, driver, companyName, companyId);
-//
-//			}
-//
-//			/********************************************************************************/
-//			if (zhibiaoNums.get("eventsTenderBidCount") != null && zhibiaoNums.get("eventsTenderBidCount") > 0) {
-//				// 招投标
-//				tianyanchaEventsTenderBidParser.eventsTenderBidParser(document, driver, companyName, companyId);
-//
-//			}
-//			// 债券信息
-//			if (zhibiaoNums.get("bondCount") != null && zhibiaoNums.get("bondCount") > 0) {
-//				// 债券信息
-//				tianyanchaBondParser.bondParser(document, driver, companyName, companyId);
-//			}
-//
-//			// 购地信息
-//			if (zhibiaoNums.get("taxRatingCount") != null && zhibiaoNums.get("taxRatingCount") > 0) {
-//				// 税务评级
-//				tianyanchaTaxRatingParser.taxRatingParser(document, driver, companyName, companyId);
-//			}
-//
-//			if (zhibiaoNums.get("recruitCount") != null && zhibiaoNums.get("recruitCount") > 0) {
-//				// 招聘
-//				tianyanchaRecruitParser.recruitParser(document, driver, companyName, companyId);
-//			}
-//
-//			if (zhibiaoNums.get("checkCount") != null && zhibiaoNums.get("checkCount") > 0) {
-//				// 抽查检查
-//				tianyanchaCheckParser.checkParser(document, driver, companyName, companyId);
-//			}
-//
-//			if (zhibiaoNums.get("productCount") != null && zhibiaoNums.get("productCount") > 0) {
-//				// 产品信息
-//				tianyanchaProductParser.productParser(document, driver, companyName, companyId);
-//			}
-//
-//			if (zhibiaoNums.get("imExPortCount") != null && zhibiaoNums.get("imExPortCount") > 0) {
-//				tianyanchaImExPortParser.imExPortParser(document, driver, companyName, companyId);
-//				// 进出口信息
-//			}
-//
-//			if (zhibiaoNums.get("certificateCount") != null && zhibiaoNums.get("certificateCount") > 0) {
-//				tianyanchaCertificateParser.certificateParser(document, driver, companyName, companyId);
-//				// 资质证书
-//			}
-//
-//			if (zhibiaoNums.get("wechatCount") != null && zhibiaoNums.get("wechatCount") > 0) {
-//				// 微信公众号
-//				tianyanchaWechatParser.wechatParser(document, driver, companyName, companyId);
-//			}
-//
-//			/********************************************************************************/
-//
-//			if (zhibiaoNums.get("tmCount") != null && zhibiaoNums.get("tmCount") > 0) {
-//				// 商标信息 网页
-//				tianyanchaTmParser.tmParser(document, driver, companyName, companyId);
-//			}
-//
-//			if (zhibiaoNums.get("patentCount") != null && zhibiaoNums.get("patentCount") > 0) {
-//				tianyanchaPatentParser.patentParser(document, driver, companyName, companyId);
-//				// 专利
-//			}
-//
-//			if (zhibiaoNums.get("softCopyrightCount") != null && zhibiaoNums.get("softCopyrightCount") > 0) {
-//				tianyanchaSoftCopyrightParser.softCopyrightParser(document, driver, companyName, companyId);
-//				// 软件著作权
-//			}
-//
-//			if (zhibiaoNums.get("cpoyRightWorksCount") != null && zhibiaoNums.get("cpoyRightWorksCount") > 0) {
-//				// 作品著作权
-//				tianyanchaCpoyRightWorksParser.cpoyRightWorksParser(document, driver, companyName, companyId);
-//
-//			}
-//			if (zhibiaoNums.get("icpCount") != null && zhibiaoNums.get("icpCount") > 0) {
-//				// 网站备案
-//				tianyanchaIcpParser.ipcParser(document, driver, companyName, companyId);
-//
-//			}
-//			/*********************************************************************************/
-//			if (zhibiaoNums.get("commonstockCount") != null && zhibiaoNums.get("commonstockCount") > 0) {
-//				// 股本结构
-//				tianyanchaCommonstockParser.commonstockParser(document, driver, companyName, companyId);
-//			}
-//			if (zhibiaoNums.get("commonstockChangeCount") != null && zhibiaoNums.get("commonstockChangeCount") > 0) {
-//				tianyanchaCommonstockChangeParser.commonstockChangeParser(document, driver, companyName, companyId);
-//				// 股本变动
-//			}
+			if (zhibiaoNums.get("caseNoticeCount") != null && zhibiaoNums.get("caseNoticeCount") > 0) {
+				// 法院公告
+				tianyanchaCaseNoticeParser.caseNoticeParser(document, driver, companyName, companyId);
+			}
+			if (zhibiaoNums.get("shixinCount") != null && zhibiaoNums.get("shixinCount") > 0) {
+				// 失信人
+				tianyanchaShixinParser.shixinParser(document, driver, companyName, companyId);
+			}
+			if (zhibiaoNums.get("zhixingCount") != null && zhibiaoNums.get("zhixingCount") > 0) {
+				// 被执行人
+				tianyanchaZhixingParser.zhixingParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("announcementCount") != null && zhibiaoNums.get("announcementCount") > 0) {
+				// 开庭公告
+				tianyanchaAnnouncementParser.announcementParser(document, driver, companyName, companyId);
+			}
+
+			/********************************************************************************/
+			if (zhibiaoNums.get("abnormalCount") != null && zhibiaoNums.get("abnormalCount") > 0) {
+				// 经营异常
+				tianyanchaAbnormalOperationParser.abnormalOperationParser(document, driver, companyName, companyId);
+			}
+			if (zhibiaoNums.get("admPenaltyCount") != null && zhibiaoNums.get("admPenaltyCount") > 0) {
+				// 行政处罚
+				tianyanchaAdmPenaltyParser.admPenaltyParser(document, driver, companyName, companyId);
+			}
+
+			// 严重违法
+			// illegalCount
+
+			if (zhibiaoNums.get("equityCount") != null && zhibiaoNums.get("equityCount") > 0) {
+				// 股权出质
+				tianyanchaEquityParser.equityParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("mortgageCount") != null && zhibiaoNums.get("mortgageCount") > 0) {
+				// 动产抵押
+				tianyanchaMortgageParser.mortgageParser(document, driver, companyName, companyId);
+
+			}
+
+			if (zhibiaoNums.get("taxArrearsCount") != null && zhibiaoNums.get("taxArrearsCount") > 0) {
+				// 欠税公告
+				tianyanchaTaxArrearsParser.taxArrearsParser(document, driver, companyName, companyId);
+
+			}
+
+			if (zhibiaoNums.get("sfpmCount") != null && zhibiaoNums.get("sfpmCount") > 0) {
+				// 司法拍卖
+				tianyanchaSfpmParser.sfpmParser(document, driver, companyName, companyId);
+
+			}
+
+			/********************************************************************************/
+			if (zhibiaoNums.get("eventsTenderBidCount") != null && zhibiaoNums.get("eventsTenderBidCount") > 0) {
+				// 招投标
+				tianyanchaEventsTenderBidParser.eventsTenderBidParser(document, driver, companyName, companyId);
+
+			}
+			// 债券信息
+			if (zhibiaoNums.get("bondCount") != null && zhibiaoNums.get("bondCount") > 0) {
+				// 债券信息
+				tianyanchaBondParser.bondParser(document, driver, companyName, companyId);
+			}
+
+			// 购地信息
+			if (zhibiaoNums.get("taxRatingCount") != null && zhibiaoNums.get("taxRatingCount") > 0) {
+				// 税务评级
+				tianyanchaTaxRatingParser.taxRatingParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("recruitCount") != null && zhibiaoNums.get("recruitCount") > 0) {
+				// 招聘
+				tianyanchaRecruitParser.recruitParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("checkCount") != null && zhibiaoNums.get("checkCount") > 0) {
+				// 抽查检查
+				tianyanchaCheckParser.checkParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("productCount") != null && zhibiaoNums.get("productCount") > 0) {
+				// 产品信息
+				tianyanchaProductParser.productParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("imExPortCount") != null && zhibiaoNums.get("imExPortCount") > 0) {
+				tianyanchaImExPortParser.imExPortParser(document, driver, companyName, companyId);
+				// 进出口信息
+			}
+
+			if (zhibiaoNums.get("certificateCount") != null && zhibiaoNums.get("certificateCount") > 0) {
+				tianyanchaCertificateParser.certificateParser(document, driver, companyName, companyId);
+				// 资质证书
+			}
+
+			if (zhibiaoNums.get("wechatCount") != null && zhibiaoNums.get("wechatCount") > 0) {
+				// 微信公众号
+				tianyanchaWechatParser.wechatParser(document, driver, companyName, companyId);
+			}
+
+			/********************************************************************************/
+
+			if (zhibiaoNums.get("tmCount") != null && zhibiaoNums.get("tmCount") > 0) {
+				// 商标信息 网页
+				tianyanchaTmParser.tmParser(document, driver, companyName, companyId);
+			}
+
+			if (zhibiaoNums.get("patentCount") != null && zhibiaoNums.get("patentCount") > 0) {
+				tianyanchaPatentParser.patentParser(document, driver, companyName, companyId);
+				// 专利
+			}
+
+			if (zhibiaoNums.get("softCopyrightCount") != null && zhibiaoNums.get("softCopyrightCount") > 0) {
+				tianyanchaSoftCopyrightParser.softCopyrightParser(document, driver, companyName, companyId);
+				// 软件著作权
+			}
+
+			if (zhibiaoNums.get("cpoyRightWorksCount") != null && zhibiaoNums.get("cpoyRightWorksCount") > 0) {
+				// 作品著作权
+				tianyanchaCpoyRightWorksParser.cpoyRightWorksParser(document, driver, companyName, companyId);
+
+			}
+			if (zhibiaoNums.get("icpCount") != null && zhibiaoNums.get("icpCount") > 0) {
+				// 网站备案
+				tianyanchaIcpParser.ipcParser(document, driver, companyName, companyId);
+
+			}
+			/*********************************************************************************/
+			if (zhibiaoNums.get("commonstockCount") != null && zhibiaoNums.get("commonstockCount") > 0) {
+				// 股本结构
+				tianyanchaCommonstockParser.commonstockParser(document, driver, companyName, companyId);
+			}
+			if (zhibiaoNums.get("commonstockChangeCount") != null && zhibiaoNums.get("commonstockChangeCount") > 0) {
+				tianyanchaCommonstockChangeParser.commonstockChangeParser(document, driver, companyName, companyId);
+				// 股本变动
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} catch (Throwable t) {

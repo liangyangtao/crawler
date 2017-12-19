@@ -1,7 +1,5 @@
 package com.kf.data.approved.quartz;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,13 +11,10 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.kf.data.approved.parser.CompanyNameParser;
 import com.kf.data.approved.sender.SendMail;
 import com.kf.data.approved.store.PdfReportLinksReader;
 import com.kf.data.fetcher.Fetcher;
-import com.kf.data.fetcher.tools.KfConstant;
 import com.kf.data.mybatis.entity.PdfReportLinks;
 
 /****
@@ -32,7 +27,7 @@ import com.kf.data.mybatis.entity.PdfReportLinks;
  * @version V1.0
  */
 @DisallowConcurrentExecution
-public class ParserJob implements Job {
+public class ParserJob extends BaseJob implements Job {
 
 	PdfReportLinksReader pdfReportLinksReader = new PdfReportLinksReader();
 
@@ -49,7 +44,7 @@ public class ParserJob implements Job {
 	}
 
 	public void doparser() {
-		List<PdfReportLinks> pdfReportLinks = pdfReportLinksReader.readPdfLinkByRank(0);
+		List<PdfReportLinks> pdfReportLinks = pdfReportLinksReader.readPdfLinkByRank(0, "批准挂牌公司");
 		for (PdfReportLinks pdfReportLink : pdfReportLinks) {
 			try {
 				Map<String, Object> map = new HashMap<String, Object>();
@@ -86,57 +81,6 @@ public class ParserJob implements Job {
 
 		}
 
-	}
-
-	/***
-	 * 
-	 * 
-	 * @param object
-	 * @param type
-	 */
-	public void sendJson(Object object, String type) {
-		String url = KfConstant.saveJsonIp;
-		Map<String, String> params = new HashMap<String, String>();
-		Gson gson = new GsonBuilder().create();
-		params.put("json", gson.toJson(object));
-		params.put("type", type);
-		Fetcher.getInstance().postSave(url, params, null, "utf-8");
-	}
-
-	public String changeHanzi(String url) {
-		char[] tp = url.toCharArray();
-		String now = "";
-		for (char ch : tp) {
-			if (ch >= 0x4E00 && ch <= 0x9FA5) {
-				try {
-					now += URLEncoder.encode(ch + "", "utf-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-			} else if (ch == '[') {
-				try {
-					now += URLEncoder.encode(ch + "", "utf-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-			} else if (ch == ']') {
-				try {
-					now += URLEncoder.encode(ch + "", "utf-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-			} else if (ch == ' ') {
-				try {
-					now += URLEncoder.encode(ch + "", "utf-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-			} else {
-				now += ch;
-			}
-
-		}
-		return now;
 	}
 
 }

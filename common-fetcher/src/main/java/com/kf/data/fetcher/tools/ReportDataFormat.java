@@ -109,11 +109,13 @@ public class ReportDataFormat {
 			return null;
 		}
 		try {
+			data = replacekong(data);
 			data = data.replace("，", "");
 			data = data.replace(",", "");
 			data = data.replace(" ", "");
 			data = data.replace(" ", "");
 			data = data.replace("%", "");
+			data = data.replace("％", "");
 			data = data.replace("。", ".");
 			data = data.replace("．", ".");
 			data = data.replace(" ", "");
@@ -134,6 +136,8 @@ public class ReportDataFormat {
 			data = data.replace("（注2）", "");
 			data = data.replace("￥", "");
 			data = data.replace("无", "");
+			data = data.replace("【注】", "");
+			data = data.replace("―", "");
 			// ￥180万元（人民币）
 			data = replacekong(data);
 			if (data.equals("-")) {
@@ -163,6 +167,49 @@ public class ReportDataFormat {
 		return source;
 	}
 
+	static char kongChar[] = new char[] { ' ', ' ', ' ', '	', ' ', ' ', '　' };
+
+	/***
+	 * tr
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public String trimStr(String source) {
+		char val[] = source.toCharArray();
+		int len = val.length;
+		int st = 0;
+		while (st < len) {
+			boolean iskong = false;
+			for (char temp : kongChar) {
+				if (val[st] == temp) {
+					iskong = true;
+					break;
+				}
+			}
+
+			if (!iskong) {
+				break;
+			}
+			st++;
+		}
+		while (len > 0) {
+			boolean iskong = false;
+			for (char temp : kongChar) {
+				if (val[len - 1] == temp) {
+					iskong = true;
+					break;
+				}
+			}
+			if (!iskong) {
+				break;
+			}
+			len--;
+
+		}
+		return source.substring(st, len);
+	}
+
 	/****
 	 * 格式化字符型的数据
 	 * 
@@ -174,28 +221,31 @@ public class ReportDataFormat {
 			return "";
 		}
 		try {
-			data = data.replace("，", "");
-			data = data.replace(",", "");
-			data = data.replace("%", "");
+			data = data.replace("，", ",");
 			data = data.replace("。", ".");
 			data = data.replace("．", ".");
 			data = data.replace("‐", "-");
-			data = data.replace("一", "-");
 			data = data.replace("‐", "-");
 			data = data.replace("‐", "-");
 			data = data.replace("‐", "-");
-			data = data.replace("一", "-");
 			data = data.replace("-", "-");
 			data = data.replace("-", "-");
 			data = data.replace("-", "-");
-			data = data.replace("：", "");
+			data = data.replace("：", ":");
 			data = data.replace("_", "");
+			data = data.replace("―", "-");
+			data = data.replace("；", ";");
+			// data = data.replace("�", "");
 			if (data.equals("-")) {
-				data = data.replace("-", "");
+				data = "";
+			}
+			if (data.equals("---")) {
+				data = "";
 			}
 			if (data.endsWith("-")) {
 				data = data.replace("-", "");
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			data = "";
@@ -286,39 +336,6 @@ public class ReportDataFormat {
 
 		return result;
 
-	}
-
-	public static void main(String[] args) {
-		// String age = "1969年12月13日";
-		// System.out.println(age.isEmpty() || age.matches("\\d{1,3}") ||
-		// age.matches("\\d{4}年\\d{1,2}月\\d{1,2}日")
-		// || age.matches("\\d{4}年\\d{1,2}月"));
-		// System.out.println( intValueChange("-"));
-		// System.out.println(12000000.00 > 100d);
-
-		// BigDecimal bigdataValue = null;
-		// String numberValue = "140.431002";
-		// bigdataValue = new BigDecimal(numberValue);
-		// System.out.println(bigUnitChange("9840000万"));
-		// BigDecimal dataValue = new BigDecimal("-260160.74");
-		// System.out.println(dataValue.multiply(new BigDecimal(
-		// "2916508.39")).setScale(2, BigDecimal.ROUND_HALF_UP));
-
-		// try {
-		// BigDecimal dataValue = new BigDecimal("176061347.16");
-		// // a*100
-		// BigDecimal multiplyTemp = dataValue.multiply(new BigDecimal(100));
-		// // / b;
-		// BigDecimal divideTemp = multiplyTemp.divide(new
-		// BigDecimal("1468220.00"),4,BigDecimal.ROUND_HALF_UP);
-		// double result = divideTemp.subtract(new
-		// BigDecimal(100)).doubleValue();
-		// System.out.println(result);
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		String reg = "[\\u4e00-\\u9fa5]+";
-		System.out.println("502".matches(reg));
 	}
 
 }
