@@ -109,7 +109,7 @@ public class BaseParser {
 			data = data.replace("￥", "");
 			data = data.replace("无", "");
 			data = data.replace("【注】", "");
-
+			data = data.replace("约", "");
 			data = replacekong(data);
 			if (data.equals("-")) {
 				data = data.replace("-", "");
