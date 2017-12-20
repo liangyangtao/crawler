@@ -11,7 +11,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import com.kf.data.fetcher.tools.UUIDTools;
 import com.kf.data.mybatis.entity.TycEventsInvestCrawler;
+import com.kf.data.mybatis.entity.TycEventsInvestInvestorsCrawler;
 
 /***
  * 
@@ -104,6 +106,8 @@ public class TianyanchaInvestParser extends TianyanchaBasePaser {
 			Elements nodes = contentNodes.first().select(".companyInfo-table > tbody > tr");
 			for (Element element : nodes) {
 				try {
+
+					String uuid = UUIDTools.getUUID();
 					Elements tdElements = element.select("td");
 					String area = tdElements.get(5).text().trim();
 					String business = tdElements.get(7).text().trim();
@@ -117,11 +121,12 @@ public class TianyanchaInvestParser extends TianyanchaBasePaser {
 					}
 					String step = tdElements.get(1).text().trim();
 					String product = tdElements.get(4).text().trim();
-					
+
 					TycEventsInvestCrawler tycEventsInvestCrawler = new TycEventsInvestCrawler();
 					tycEventsInvestCrawler.setArea(area);
 					tycEventsInvestCrawler.setBusiness(business);
-					tycEventsInvestCrawler.setCompanyId(companyId);
+					// 将company id 变成 event id 进行关联
+					tycEventsInvestCrawler.setCompanyId(uuid);
 					tycEventsInvestCrawler.setCompanyName(companyName);
 					tycEventsInvestCrawler.setCreatedAt(new Date());
 					tycEventsInvestCrawler.setDate(date);
@@ -133,6 +138,26 @@ public class TianyanchaInvestParser extends TianyanchaBasePaser {
 					tycEventsInvestCrawler.setStep(step);
 					tycEventsInvestCrawler.setUpdatedAt(new Date());
 					sendJson(tycEventsInvestCrawler, "tyc_events_invest");
+					try {
+						Element investorElement = tdElements.get(3);
+						Elements divElements = investorElement.select("div");
+						for (Element divElement : divElements) {
+							try {
+								String eventName = divElement.text();
+								TycEventsInvestInvestorsCrawler tycEventsInvestInvestorsCrawler = new TycEventsInvestInvestorsCrawler();
+								tycEventsInvestInvestorsCrawler.setEventId(uuid);
+								tycEventsInvestInvestorsCrawler.setEventName(companyName);
+								tycEventsInvestInvestorsCrawler.setInvestorName(eventName);
+								tycEventsInvestInvestorsCrawler.setCreatedAt(new Date());
+								tycEventsInvestInvestorsCrawler.setUpdatedAt(new Date());
+								sendJson(tycEventsInvestInvestorsCrawler, "tyc_events_invest_investors");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 
 				} catch (Exception e) {
 					e.printStackTrace();

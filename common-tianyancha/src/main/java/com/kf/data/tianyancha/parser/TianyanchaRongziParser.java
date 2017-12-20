@@ -11,7 +11,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import com.kf.data.fetcher.tools.UUIDTools;
 import com.kf.data.mybatis.entity.TycCompanyFinancingCrawler;
+import com.kf.data.mybatis.entity.TycEventsInvestInvestorsCrawler;
 
 /***
  * 
@@ -104,6 +106,8 @@ public class TianyanchaRongziParser extends TianyanchaBasePaser {
 			Elements nodes = contentNodes.first().select(".companyInfo-table > tbody > tr");
 			for (Element element : nodes) {
 				try {
+					//
+					String uuid = UUIDTools.getUUID();
 					Elements tdElements = element.select("td");
 					String date = tdElements.get(0).text();
 					String step = tdElements.get(1).text();
@@ -114,7 +118,8 @@ public class TianyanchaRongziParser extends TianyanchaBasePaser {
 					String source = tdElements.get(6).text();
 					TycCompanyFinancingCrawler tycCompanyFinancingCrawler = new TycCompanyFinancingCrawler();
 					tycCompanyFinancingCrawler.setAmount(investmentAmount);
-					tycCompanyFinancingCrawler.setCompanyId(companyId);
+					// 将company id 变成 event id 进行关联
+					tycCompanyFinancingCrawler.setCompanyId(uuid);
 					tycCompanyFinancingCrawler.setCompanyName(companyName);
 					tycCompanyFinancingCrawler.setCreatedAt(new Date());
 					tycCompanyFinancingCrawler.setFinancDate(date);
@@ -126,6 +131,22 @@ public class TianyanchaRongziParser extends TianyanchaBasePaser {
 					tycCompanyFinancingCrawler.setUpdatedAt(new Date());
 					tycCompanyFinancingCrawler.setValuation(valuation);
 					sendJson(tycCompanyFinancingCrawler, "tyc_company_financing");
+					try {
+						try {
+							TycEventsInvestInvestorsCrawler tycEventsInvestInvestorsCrawler = new TycEventsInvestInvestorsCrawler();
+							tycEventsInvestInvestorsCrawler.setEventId(uuid);
+							tycEventsInvestInvestorsCrawler.setEventName(companyName);
+							tycEventsInvestInvestorsCrawler.setInvestorName(investorName);
+							tycEventsInvestInvestorsCrawler.setCreatedAt(new Date());
+							tycEventsInvestInvestorsCrawler.setUpdatedAt(new Date());
+							sendJson(tycEventsInvestInvestorsCrawler, "tyc_events_invest_investors");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 
 				} catch (Exception e) {
 					e.printStackTrace();

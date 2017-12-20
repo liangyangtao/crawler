@@ -47,6 +47,7 @@ import com.kf.data.mybatis.entity.TycCompanyTrademarkCrawler;
 import com.kf.data.mybatis.entity.TycCompanyWechatCrawler;
 import com.kf.data.mybatis.entity.TycCompanyZhixingCrawler;
 import com.kf.data.mybatis.entity.TycEventsInvestCrawler;
+import com.kf.data.mybatis.entity.TycEventsInvestInvestorsCrawler;
 import com.kf.data.mybatis.entity.TycEventsTenderBidCrawler;
 import com.kf.data.mybatis.mapper.SqlAdapterMapper;
 import com.kf.data.mybatis.mapper.TycBaseCompanyCrawlerMapper;
@@ -86,6 +87,7 @@ import com.kf.data.mybatis.mapper.TycCompanyTrademarkCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyWechatCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycCompanyZhixingCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycEventsInvestCrawlerMapper;
+import com.kf.data.mybatis.mapper.TycEventsInvestInvestorsCrawlerMapper;
 import com.kf.data.mybatis.mapper.TycEventsTenderBidCrawlerMapper;
 import com.kf.data.web.service.SaveJsonObjectService;
 
@@ -157,9 +159,8 @@ public class SaveJsonObjectServiceImpl implements SaveJsonObjectService {
 	@Autowired
 	TycCompanyWechatCrawlerMapper tycCompanyWechatCrawlerMapper;
 
-	// @Autowired
-	// TycEventsInvestInvestorsCrawlerMapper
-	// tycEventsInvestInvestorsCrawlerMapper;
+	@Autowired
+	TycEventsInvestInvestorsCrawlerMapper tycEventsInvestInvestorsCrawlerMapper;
 
 	// 投资事件
 	@Autowired
@@ -411,6 +412,11 @@ public class SaveJsonObjectServiceImpl implements SaveJsonObjectService {
 				TycEventsTenderBidCrawler tycEventsTenderBidCrawler = gson.fromJson(json,
 						TycEventsTenderBidCrawler.class);
 				tycEventsTenderBidCrawlerMapper.insertSelective(tycEventsTenderBidCrawler);
+			} else if (type.equals("tyc_events_invest_investors")) {
+				// 债券信息
+				TycEventsInvestInvestorsCrawler tycEventsInvestInvestorsCrawler = gson.fromJson(json,
+						TycEventsInvestInvestorsCrawler.class);
+				tycEventsInvestInvestorsCrawlerMapper.insertSelective(tycEventsInvestInvestorsCrawler);
 			} else if (type.equals("tyc_company_bond")) {
 				// 债券信息
 				TycCompanyBoundCrawler tycCompanyBoundCrawler = gson.fromJson(json, TycCompanyBoundCrawler.class);
