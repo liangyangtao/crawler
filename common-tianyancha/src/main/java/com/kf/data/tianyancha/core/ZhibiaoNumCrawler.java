@@ -127,13 +127,13 @@ public class ZhibiaoNumCrawler {
 					if (text.isEmpty()) {
 						text = "0";
 					}
-//					zhibiaoNums.put("zyryCount", Integer.parseInt(text));
+					// zhibiaoNums.put("zyryCount", Integer.parseInt(text));
 				} else if (text.contains("股东信息")) {
 					text = text.replace("股东信息", "");
 					if (text.isEmpty()) {
 						text = "0";
 					}
-//					zhibiaoNums.put("gdxxCount", Integer.parseInt(text));
+					// zhibiaoNums.put("gdxxCount", Integer.parseInt(text));
 				} else if (text.contains("对外投资")) {
 					text = text.replace("对外投资", "");
 					if (text.isEmpty()) {
@@ -148,6 +148,12 @@ public class ZhibiaoNumCrawler {
 					zhibiaoNums.put("changeCount", Integer.parseInt(text));
 				} else if (text.contains("企业年报")) {
 					text = text.replace("企业年报", "");
+					if (text.isEmpty()) {
+						text = "0";
+					}
+					zhibiaoNums.put("reportCount", Integer.parseInt(text));
+				} else if (text.contains("公司年报")) {
+					text = text.replace("公司年报", "");
 					if (text.isEmpty()) {
 						text = "0";
 					}
@@ -199,25 +205,25 @@ public class ZhibiaoNumCrawler {
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					 zhibiaoNums.put("caseNoticeCount", Integer.parseInt(text));
+					zhibiaoNums.put("caseNoticeCount", Integer.parseInt(text));
 				} else if (text.contains("失信人")) {
-					 text = text.replace("失信人", "");
+					text = text.replace("失信人", "");
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					 zhibiaoNums.put("shixinCount", Integer.parseInt(text));
+					zhibiaoNums.put("shixinCount", Integer.parseInt(text));
 				} else if (text.contains("被执行人")) {
-					 text = text.replace("被执行人", "");
+					text = text.replace("被执行人", "");
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					 zhibiaoNums.put("zhixingCount", Integer.parseInt(text));
+					zhibiaoNums.put("zhixingCount", Integer.parseInt(text));
 				} else if (text.contains("开庭公告")) {
-					 text = text.replace("开庭公告", "");
+					text = text.replace("开庭公告", "");
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					 zhibiaoNums.put("announcementCount", Integer.parseInt(text));
+					zhibiaoNums.put("announcementCount", Integer.parseInt(text));
 				} else if (text.contains("经营异常")) {
 					text = text.replace("经营异常", "");
 					if (text.isEmpty()) {
@@ -267,17 +273,17 @@ public class ZhibiaoNumCrawler {
 					}
 					zhibiaoNums.put("eventsTenderBidCount", Integer.parseInt(text));
 				} else if (text.contains("债券信息")) {
-					 text = text.replace("债券信息", "");
+					text = text.replace("债券信息", "");
 					if (text.isEmpty()) {
 						text = "0";
 					}
-					 zhibiaoNums.put("bondCount", Integer.parseInt(text));
+					zhibiaoNums.put("bondCount", Integer.parseInt(text));
 				} else if (text.contains("购地信息")) {
 					text = text.replace("购地信息", "");
 					if (text.isEmpty()) {
 						text = "0";
 					}
-//					zhibiaoNums.put("", Integer.parseInt(text));
+					// zhibiaoNums.put("", Integer.parseInt(text));
 				} else if (text.contains("税务评级")) {
 					text = text.replace("税务评级", "");
 					if (text.isEmpty()) {

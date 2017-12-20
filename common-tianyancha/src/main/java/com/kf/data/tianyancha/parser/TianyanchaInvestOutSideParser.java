@@ -139,8 +139,8 @@ public class TianyanchaInvestOutSideParser extends TianyanchaBasePaser {
 						try {
 							TycEventsInvestInvestorsCrawler tycEventsInvestInvestorsCrawler = new TycEventsInvestInvestorsCrawler();
 							tycEventsInvestInvestorsCrawler.setEventId(uuid);
-							tycEventsInvestInvestorsCrawler.setEventName(companyName);
-							tycEventsInvestInvestorsCrawler.setInvestorName(investCompanyName);
+							tycEventsInvestInvestorsCrawler.setEventName(investCompanyName);
+							tycEventsInvestInvestorsCrawler.setInvestorName(companyName);
 							tycEventsInvestInvestorsCrawler.setCreatedAt(new Date());
 							tycEventsInvestInvestorsCrawler.setUpdatedAt(new Date());
 							sendJson(tycEventsInvestInvestorsCrawler, "tyc_events_invest_investors");

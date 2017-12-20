@@ -135,8 +135,8 @@ public class TianyanchaRongziParser extends TianyanchaBasePaser {
 						try {
 							TycEventsInvestInvestorsCrawler tycEventsInvestInvestorsCrawler = new TycEventsInvestInvestorsCrawler();
 							tycEventsInvestInvestorsCrawler.setEventId(uuid);
-							tycEventsInvestInvestorsCrawler.setEventName(investorName);
-							tycEventsInvestInvestorsCrawler.setInvestorName(companyName);
+							tycEventsInvestInvestorsCrawler.setEventName(companyName);
+							tycEventsInvestInvestorsCrawler.setInvestorName(investorName);
 							tycEventsInvestInvestorsCrawler.setCreatedAt(new Date());
 							tycEventsInvestInvestorsCrawler.setUpdatedAt(new Date());
 							sendJson(tycEventsInvestInvestorsCrawler, "tyc_events_invest_investors");
