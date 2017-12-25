@@ -114,7 +114,15 @@ public class TianyanchaRongziParser extends TianyanchaBasePaser {
 					String valuation = tdElements.get(2).text();
 					String investmentAmount = tdElements.get(3).text();
 					String investRatio = tdElements.get(4).text();
-					String investorName = tdElements.get(5).text();
+
+					// String investorName = tdElements.get(5).text();
+
+					StringBuffer investorName = new StringBuffer();
+					Elements spanElements = tdElements.get(5).select("span");
+					for (Element spanElement : spanElements) {
+						investorName.append(spanElement.text() + ",");
+					}
+
 					String source = tdElements.get(6).text();
 					TycCompanyFinancingCrawler tycCompanyFinancingCrawler = new TycCompanyFinancingCrawler();
 					tycCompanyFinancingCrawler.setAmount(investmentAmount);
@@ -123,7 +131,10 @@ public class TianyanchaRongziParser extends TianyanchaBasePaser {
 					tycCompanyFinancingCrawler.setCompanyName(companyName);
 					tycCompanyFinancingCrawler.setCreatedAt(new Date());
 					tycCompanyFinancingCrawler.setFinancDate(date);
-					tycCompanyFinancingCrawler.setInvestors(investorName);
+					if (investorName.length() > 0) {
+						String investorName1 = investorName.substring(0, investorName.length() - 1);
+						tycCompanyFinancingCrawler.setInvestors(investorName1);
+					}
 					tycCompanyFinancingCrawler.setProportion(investRatio);
 					tycCompanyFinancingCrawler.setRound(step);
 					tycCompanyFinancingCrawler.setSource(source);
@@ -132,16 +143,19 @@ public class TianyanchaRongziParser extends TianyanchaBasePaser {
 					tycCompanyFinancingCrawler.setValuation(valuation);
 					sendJson(tycCompanyFinancingCrawler, "tyc_company_financing");
 					try {
-						try {
-							TycEventsInvestInvestorsCrawler tycEventsInvestInvestorsCrawler = new TycEventsInvestInvestorsCrawler();
-							tycEventsInvestInvestorsCrawler.setEventId(uuid);
-							tycEventsInvestInvestorsCrawler.setEventName(companyName);
-							tycEventsInvestInvestorsCrawler.setInvestorName(investorName);
-							tycEventsInvestInvestorsCrawler.setCreatedAt(new Date());
-							tycEventsInvestInvestorsCrawler.setUpdatedAt(new Date());
-							sendJson(tycEventsInvestInvestorsCrawler, "tyc_events_invest_investors");
-						} catch (Exception e) {
-							e.printStackTrace();
+						for (Element spanElement : spanElements) {
+							try {
+								String investorName1 = spanElement.text();
+								TycEventsInvestInvestorsCrawler tycEventsInvestInvestorsCrawler = new TycEventsInvestInvestorsCrawler();
+								tycEventsInvestInvestorsCrawler.setEventId(uuid);
+								tycEventsInvestInvestorsCrawler.setEventName(companyName);
+								tycEventsInvestInvestorsCrawler.setInvestorName(investorName1);
+								tycEventsInvestInvestorsCrawler.setCreatedAt(new Date());
+								tycEventsInvestInvestorsCrawler.setUpdatedAt(new Date());
+								sendJson(tycEventsInvestInvestorsCrawler, "tyc_events_invest_investors");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 
 					} catch (Exception e) {
