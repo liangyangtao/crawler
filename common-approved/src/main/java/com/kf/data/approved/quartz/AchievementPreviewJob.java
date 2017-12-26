@@ -42,6 +42,12 @@ public class AchievementPreviewJob extends BaseJob implements Job {
 		List<PdfReportLinks> pdfReportLinks = pdfReportLinksReader.readPdfLinkByRank(0, "业绩预告");
 		for (PdfReportLinks pdfReportLink : pdfReportLinks) {
 			try {
+				if (pdfReportLink.getTitle().contains("半年")) {
+					continue;
+				}
+				if (pdfReportLink.getTitle().contains("月")) {
+					continue;
+				}
 				String html = null;
 				String chagelink = changeHanzi(pdfReportLink.getLink());
 				if (chagelink.endsWith("/")) {

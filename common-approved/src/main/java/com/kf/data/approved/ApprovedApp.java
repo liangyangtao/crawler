@@ -30,7 +30,7 @@ public class ApprovedApp {
 			SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 			Scheduler scheduler = schedulerFactory.getScheduler();
 			// 补充准挂牌公司名称
-			// companyNameJob(scheduler);
+//			companyNameJob(scheduler);
 			// 解析业绩预告
 			achievementPreviewJob(scheduler);
 

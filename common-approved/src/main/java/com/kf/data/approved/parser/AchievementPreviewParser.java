@@ -17,6 +17,7 @@ import com.kf.data.approved.store.NeeqCompanyChoiceLayerOnlineReader;
 import com.kf.data.approved.store.NeeqCompanyMainBusinessOnlineReader;
 import com.kf.data.approved.store.NeeqCompanyOnlineReader;
 import com.kf.data.approved.store.NeeqIpoDetectOnlineReader;
+import com.kf.data.fetcher.tools.UUIDTools;
 import com.kf.data.mybatis.entity.NeeqCompanyChoiceLayerOnline;
 import com.kf.data.mybatis.entity.NeeqCompanyMainBusinessOnline;
 import com.kf.data.mybatis.entity.NeeqCompanyOnline;
@@ -52,10 +53,11 @@ public class AchievementPreviewParser extends BaseParser {
 
 		// 1     公告编号：2017-083
 		if (reason != null) {
-			reason = reason.replaceAll("1[  | |	| ]*公告编号：\\d{4}-\\d{3}", "");
+			reason = reason.replaceAll("1公告编号：\\d{4}-\\d{3}", "");
+			reason = reason.replaceAll("1[  | |	| | ]*公告编号：\\d{4}-\\d{3}", "");
+			reason = reason.replaceAll("1[  | |	| | ]*公告编号：\\d{4}一\\d{3}", "");
 			reason = reason.replaceAll("公告编号：\\d{4}-\\d{3}", "");
 			reason = reason.replaceAll("公告编号：\\d{4}一\\d{3}", "");
-
 		}
 		Elements tables = document.select("table");
 		for (Element table : tables) {
@@ -123,7 +125,9 @@ public class AchievementPreviewParser extends BaseParser {
 		shareholder_net_profit_pre = formatMoneyValue(shareholder_net_profit_pre);
 		income_radio = formatRadioValue(income_radio);
 		shareholder_net_profit_radio = formatRadioValue(shareholder_net_profit_radio);
-		period = replacekong(period);
+		if (period != null) {
+			period = replacekong(period);
+		}
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("company_name", pdfReportLink.getCompanyName());
@@ -178,14 +182,20 @@ public class AchievementPreviewParser extends BaseParser {
 			String title = pdfReportLink.getCompanyName() + "（" + pdfReportLink.getCompanyId() + "）" + year
 					+ "年年度业绩预告出炉 净利润最高" + radioType + radio;
 
-			String source = "全国中小企业股份转让系统";
+			// String source = "全国中小企业股份转让系统";
 
-			String subtitle = pdfReportLink.getPublishDate() + "，" + pdfReportLink.getCompanyName() + "（"
-					+ pdfReportLink.getCompanyId() + "）发布公告，公司预计" + year + "年全年营业收入为" + income + "，同比增长" + income_radio
-					+ "，预计归属于挂牌公司股东的净利润为" + shareholder_net_profit + "，同比增长" + shareholder_net_profit_radio;
+			String subtitle = null;
 
+			subtitle = pdfReportLink.getPublishDate() + "，" + pdfReportLink.getCompanyName() + "（"
+					+ pdfReportLink.getCompanyId() + "）发布公告，";
+			if (income != null && income_radio != null) {
+				subtitle = subtitle + "公司预计" + year + "年全年营业收入为" + income + "，同比增长" + income_radio + "，";
+			}
+			if (shareholder_net_profit != null) {
+				subtitle = subtitle + "预计归属于挂牌公司股东的净利润为" + shareholder_net_profit + "，同比增长"
+						+ shareholder_net_profit_radio;
+			}
 			String business = null;
-
 			List<NeeqCompanyMainBusinessOnline> neeqCompanyMainBusinessOnlines = neeqCompanyMainBusinessOnlineReader
 					.readNeeqCompanyMainBusinessByCode(pdfReportLink.getCompanyId() + "");
 			if (neeqCompanyMainBusinessOnlines.size() > 0) {
@@ -225,36 +235,73 @@ public class AchievementPreviewParser extends BaseParser {
 			}
 
 			StringBuffer textBuffer = new StringBuffer();
-			// if(title!=null){
-			// textBuffer.append("<h1>" + title + "</h1>");
-			// }
-			// if(source!=null){
-			// textBuffer.append("<h2>" + source + "</h2>");
-			// }
-
 			if (subtitle != null) {
-				textBuffer.append("<p>" + subtitle + "</p>");
+				subtitle = subtitle.trim();
+				if (subtitle.endsWith("。")) {
+					textBuffer.append("<p>" + subtitle + "</p>");
+				} else {
+					textBuffer.append("<p>" + subtitle + "。</p>");
+				}
 			}
 			if (business != null) {
-				textBuffer.append("<p>" + business + "</p>");
+				business = business.trim();
+
+				if (business.endsWith("。")) {
+					textBuffer.append("<p>" + business + "</p>");
+				} else {
+					textBuffer.append("<p>" + business + "。</p>");
+				}
 			}
 			if (showReason != null) {
-				textBuffer.append("<p>" + showReason + "</p>");
+				showReason = showReason.trim();
+				if (showReason.endsWith("。")) {
+					textBuffer.append("<p>" + showReason + "</p>");
+				} else {
+					textBuffer.append("<p>" + showReason + "。</p>");
+				}
 			}
 
 			if (choiceLayer != null) {
-				textBuffer.append("<p>" + choiceLayer + "</p>");
+				choiceLayer = choiceLayer.trim();
+				if (choiceLayer.endsWith("。")) {
+					textBuffer.append("<p>" + choiceLayer + "</p>");
+				} else {
+					textBuffer.append("<p>" + choiceLayer + "。</p>");
+				}
 			}
 			if (ipo != null) {
-				textBuffer.append("<p>" + ipo + "</p>");
+				ipo = ipo.trim();
+				if (ipo.endsWith("。")) {
+					textBuffer.append("<p>" + ipo + "</p>");
+				} else {
+					textBuffer.append("<p>" + ipo + "。</p>");
+				}
+
 			}
+			// Map<String, Object> map = new HashMap<String, Object>();
+			// map.put("title", title);
+			// map.put("source", source);
+			// map.put("text", textBuffer.toString());
+			// map.put("stockcode", pdfReportLink.getCompanyId() + "");
+			// map.put("publish_date", pdfReportLink.getPublishDate());
+			// sendJson(map, "pdf_company_achievement_preview_text");
+			String uuid = UUIDTools.getUUID();
 			Map<String, Object> map = new HashMap<String, Object>();
+			String text = textBuffer.toString();
+			text = text.replace("	", " ");
+			text = text.replace("　", " ");
+			map.put("author", "三板慧");
+			map.put("content", text);
+			map.put("publishDate", pdfReportLink.getPublishDate());
+			map.put("source", "全国中小企业股份转让系统");
+			map.put("itext", "");
 			map.put("title", title);
-			map.put("source", source);
-			map.put("text", textBuffer.toString());
-			map.put("stockcode", pdfReportLink.getCompanyId() + "");
-			map.put("publish_date", pdfReportLink.getPublishDate());
-			sendJson(map, "pdf_company_achievement_preview_text");
+			map.put("type", "机器新闻");
+			map.put("url", uuid);
+			map.put("createtime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			map.put("crawler_source", "全国中小企业股份转让系统");
+			map.put("uuid", uuid);
+			sendJson(map, "cnfol_news");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -299,22 +346,22 @@ public class AchievementPreviewParser extends BaseParser {
 	}
 
 	public static void main(String[] args) {
-		// String text = "：计期间 2017 年 1 月 1 日至 2017 年 6 月 30 日";
-		// String regEx = "[^：|间|:]+?日.+?日";
-		// Pattern pattern = Pattern.compile(regEx);
-		// Matcher matcher = pattern.matcher(text);
-		// while (matcher.find()) {
-		// String string = matcher.group();
-		// System.out.println(string);
-		// }
+		String text = "六、非经常性损益占净利润比重较高的风险报告期内，公司的非经常性损益对净利润的影响较大。2015 年、2016 年，公司非经常性损益分别为 2,851,826.08 元、13,597,430.80 元，公司合并净利润分别为 284,219.74 元、14,161,132.09 元，非经常性损益占当期的净利润比例较大。非经常性损益对公司的经营业绩影响较大，主要系投资收益、同一控制下企业合并被合并方合并前净利润、子公司处置收益、计入当期损益政府补助金额较大导致。未来公司是否还将继续取得政府补助与政府补助政策密切相关，存在不确定性。公司经营业绩对非经常性损益依赖程度较高，存在非经常性损益占净利润比较高的风险。七、子公司租赁房屋存在潜在权属纠纷的风险公司子公司上海益钢仓储有限公司向上海宝钢物流有限公司租赁的仓库位于长江路 255 号地块上，经查询该地块的房地产权证，未发现房屋信息，且出租方上海宝钢物流有限公司未能提供相关证明材料，因房屋建成时间较早，已无法取得相关产权凭证及转让资料，上述房屋产权权属存在一定瑕疵和潜在风险。但上述仓库占长江路 255 号地块的面积约 13%，经测算上述仓库 2016 年全年取得的收入为人民币 204.14 万元，占公司当期总营业收入的 0.54%。若未来上述房产一旦发生权属纠纷导致公司无法继续使用，对公司业务的不利影响较小，且益钢仓储的仓库存储方式较为简单，内部无需大型建设即可使用，公司寻找替代仓库较为容易。虽然益钢仓储向上海宝钢物流有限公司租赁的位于长江路 255 号地块的仓库的产权权属存在一定瑕疵，但上述风险对公司持续经营的不利影响很小。 ";
+		String regEx = "[^风险].+?(?=风险)";
+		Pattern pattern = Pattern.compile(regEx);
+		Matcher matcher = pattern.matcher(text);
+		while (matcher.find()) {
+			String string = matcher.group();
+			System.out.println(string);
+		}
 		// System.out.println("sdfds.223".lastIndexOf("."));
-		String data = "-aasdfds2.3d";
+		// String data = "-aasdfds2.3d";
 		// if (data.lastIndexOf(".") > 0) {
 		// String temp = data.substring(0, data.lastIndexOf("."));
 		// temp = temp.replace(".", "");
 		// data = temp + data.substring(data.lastIndexOf("."));
 		// }
-		System.out.println(data.length() - data.lastIndexOf("."));
+		// System.out.println(data.length() - data.lastIndexOf("."));
 	}
 
 }

@@ -127,6 +127,9 @@ public class BaseParser {
 
 	public static String formatRadioValue(String data) {
 		try {
+			if (data == null) {
+				return data;
+			}
 			data = formatNumberValue(data);
 			data = data.replace("，", ".");
 			data = data.replace(",", ".");
@@ -145,6 +148,9 @@ public class BaseParser {
 	}
 
 	public static String formatMoneyValue(String data) {
+		if (data == null) {
+			return data;
+		}
 		try {
 			data = formatNumberValue(data);
 			data = data.replace("，", ".");
