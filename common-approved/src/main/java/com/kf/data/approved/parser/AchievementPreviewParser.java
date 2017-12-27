@@ -17,6 +17,7 @@ import com.kf.data.approved.store.NeeqCompanyChoiceLayerOnlineReader;
 import com.kf.data.approved.store.NeeqCompanyMainBusinessOnlineReader;
 import com.kf.data.approved.store.NeeqCompanyOnlineReader;
 import com.kf.data.approved.store.NeeqIpoDetectOnlineReader;
+import com.kf.data.fetcher.tools.ReportDataFormat;
 import com.kf.data.fetcher.tools.UUIDTools;
 import com.kf.data.mybatis.entity.NeeqCompanyChoiceLayerOnline;
 import com.kf.data.mybatis.entity.NeeqCompanyMainBusinessOnline;
@@ -39,6 +40,7 @@ public class AchievementPreviewParser extends BaseParser {
 	NeeqCompanyChoiceLayerOnlineReader neeqCompanyChoiceLayerOnlineReader = new NeeqCompanyChoiceLayerOnlineReader();
 	NeeqCompanyOnlineReader neeqCompanyOnlineReader = new NeeqCompanyOnlineReader();
 	NeeqIpoDetectOnlineReader neeqIpoDetectOnlineReader = new NeeqIpoDetectOnlineReader();
+	ReportDataFormat reportDataFormat = new ReportDataFormat();
 
 	public void parserContent(String html, PdfReportLinks pdfReportLink) {
 		String income = null;
@@ -236,7 +238,7 @@ public class AchievementPreviewParser extends BaseParser {
 
 			StringBuffer textBuffer = new StringBuffer();
 			if (subtitle != null) {
-				subtitle = subtitle.trim();
+				subtitle = reportDataFormat.trimStr(subtitle);
 				if (subtitle.endsWith("。")) {
 					textBuffer.append("<p>" + subtitle + "</p>");
 				} else {
@@ -244,7 +246,7 @@ public class AchievementPreviewParser extends BaseParser {
 				}
 			}
 			if (business != null) {
-				business = business.trim();
+				business = reportDataFormat.trimStr(business);
 
 				if (business.endsWith("。")) {
 					textBuffer.append("<p>" + business + "</p>");
@@ -253,7 +255,7 @@ public class AchievementPreviewParser extends BaseParser {
 				}
 			}
 			if (showReason != null) {
-				showReason = showReason.trim();
+				showReason = reportDataFormat.trimStr(showReason);
 				if (showReason.endsWith("。")) {
 					textBuffer.append("<p>" + showReason + "</p>");
 				} else {
@@ -262,7 +264,7 @@ public class AchievementPreviewParser extends BaseParser {
 			}
 
 			if (choiceLayer != null) {
-				choiceLayer = choiceLayer.trim();
+				choiceLayer = reportDataFormat.trimStr(choiceLayer);
 				if (choiceLayer.endsWith("。")) {
 					textBuffer.append("<p>" + choiceLayer + "</p>");
 				} else {
@@ -270,7 +272,7 @@ public class AchievementPreviewParser extends BaseParser {
 				}
 			}
 			if (ipo != null) {
-				ipo = ipo.trim();
+				ipo = reportDataFormat.trimStr(ipo);
 				if (ipo.endsWith("。")) {
 					textBuffer.append("<p>" + ipo + "</p>");
 				} else {
@@ -290,18 +292,19 @@ public class AchievementPreviewParser extends BaseParser {
 			String text = textBuffer.toString();
 			text = text.replace("	", " ");
 			text = text.replace("　", " ");
-			map.put("author", "三板慧");
+			map.put("author", "");
 			map.put("content", text);
 			map.put("publishDate", pdfReportLink.getPublishDate());
-			map.put("source", "全国中小企业股份转让系统");
+			map.put("source", "三板慧");
 			map.put("itext", "");
 			map.put("title", title);
 			map.put("type", "机器新闻");
 			map.put("url", uuid);
 			map.put("createtime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-			map.put("crawler_source", "全国中小企业股份转让系统");
+			map.put("crawler_source", "三板慧");
 			map.put("uuid", uuid);
-			sendJson(map, "cnfol_news");
+			System.out.println(text);
+//			sendJson(map, "cnfol_news");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

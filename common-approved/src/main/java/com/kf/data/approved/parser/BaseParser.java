@@ -213,6 +213,19 @@ public class BaseParser {
 					String temp = data.substring(0, data.lastIndexOf("."));
 					temp = temp.replace(".", "");
 					data = temp + data.substring(data.lastIndexOf("."));
+					if (data.endsWith("(万)")) {
+						if (data.length() - data.indexOf(".") > 6) {
+							data = data.replace(".", "");
+						}
+					} else if (data.endsWith("万")) {
+						if (data.length() - data.indexOf(".") > 4) {
+							data = data.replace(".", "");
+						}
+					} else {
+						if (data.length() - data.indexOf(".") > 3) {
+							data = data.replace(".", "");
+						}
+					}
 				}
 			}
 
