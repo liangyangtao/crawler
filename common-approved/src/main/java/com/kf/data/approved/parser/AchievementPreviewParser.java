@@ -304,7 +304,7 @@ public class AchievementPreviewParser extends BaseParser {
 			map.put("crawler_source", "三板慧");
 			map.put("uuid", uuid);
 			System.out.println(text);
-//			sendJson(map, "cnfol_news");
+			sendJson(map, "cnfol_news");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
