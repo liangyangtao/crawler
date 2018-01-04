@@ -30,7 +30,7 @@ public class ApprovedApp {
 			SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 			Scheduler scheduler = schedulerFactory.getScheduler();
 			// 补充准挂牌公司名称
-//			companyNameJob(scheduler);
+			companyNameJob(scheduler);
 			// 解析业绩预告
 			achievementPreviewJob(scheduler);
 
@@ -56,7 +56,7 @@ public class ApprovedApp {
 	// 业绩预告
 	public static void achievementPreviewJob(Scheduler scheduler) {
 		try {
-			CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("1/5 * * * * ?");
+			CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("1 */5 * * * ?");
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger2", "group2")
 					.withSchedule(scheduleBuilder).build();
 			JobDetail job = JobBuilder.newJob(AchievementPreviewJob.class).withIdentity("job2", "group2").build();

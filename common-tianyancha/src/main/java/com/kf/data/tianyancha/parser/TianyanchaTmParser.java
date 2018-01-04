@@ -118,28 +118,26 @@ public class TianyanchaTmParser extends TianyanchaBasePaser {
 
 					TycCompanyTrademarkCrawler tycCompanyTrademarkCrawler = new TycCompanyTrademarkCrawler();
 
-					String trademark_type = tdElements.get(4).text();
-
 					String application_date = tdElements.get(0).text();
 					application_date = application_date.replace("-", "");
-					String trademark_status = null;
-					try {
-						trademark_status = tdElements.get(5).text();
-					} catch (Exception e) {
-					}
-					String registration_number = tdElements.get(3).text();
+
+					String trademark_img_url = tdElements.get(1).select("img").first().attr("src");
+
 					String trademark_name = null;
 					try {
 						trademark_name = tdElements.get(2).text();
 					} catch (Exception e) {
 					}
-					String trademark_img_url = tdElements.get(1).select("img").first().attr("src");
-//					String kfImgUrl = new AliOssSender().uploadObject(trademark_img_url);
-//					if (kfImgUrl.startsWith("https://") || kfImgUrl.startsWith("http://")) {
-//
-//					} else {
-//						kfImgUrl = "https:" + kfImgUrl;
-//					}
+
+					String registration_number = tdElements.get(3).text();
+
+					String trademark_type = tdElements.get(4).text();
+
+					String trademark_status = null;
+					try {
+						trademark_status = tdElements.get(5).text();
+					} catch (Exception e) {
+					}
 					tycCompanyTrademarkCrawler.setCreatedAt(new Date());
 					tycCompanyTrademarkCrawler.setCompanyId(companyId);
 					tycCompanyTrademarkCrawler.setCompanyName(companyName);

@@ -9,12 +9,12 @@
 		<property name="beginningDelimiter" value="`" />
 		<property name="endingDelimiter" value="`" />
 		<!--数据库链接URL，用户名、密码 -->
-		<!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://10.24.193.86:3306/crawler?autoReconnect=true" 
-			userId="meidi" password="12qwaszx" /> -->
-
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://10.26.84.23:3306/neeq?autoReconnect=true"
-			userId="etler" password="iVqpEAs6" />
+			connectionURL="jdbc:mysql://10.24.193.86:3306/crawler?autoReconnect=true"
+			userId="meidi" password="12qwaszx" />
+
+		<!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://10.26.84.23:3306/neeq?autoReconnect=true" 
+			userId="etler" password="iVqpEAs6" /> -->
 
 
 		<!-- 生成模型的包名和位置 -->
@@ -31,8 +31,8 @@
 		</javaClientGenerator>
 
 
-		<table schema="crawler" tableName="neeq_company"
-			domainObjectName="NeeqCompanyOnline">
+		<table schema="crawler" tableName="tyc_company_ishnte"
+			domainObjectName="TycCompanyIshnteCrawler">
 			<generatedKey column="id" sqlStatement="SELECT LAST_INSERT_ID()"
 				identity="true" type="post" />
 		</table>

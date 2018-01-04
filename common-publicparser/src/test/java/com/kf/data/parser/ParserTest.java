@@ -24,14 +24,14 @@ import com.kf.data.pdfparser.parser.KfPdfParser;
 public class ParserTest {
 
 	public static void main(String[] args) {
-		String url = "https://static.kaifengdata.com/neeq/bec4abd88129c546073f9c0a59623128/2168391.pdf.html";
+		String url = "https://static.kaifengdata.com/neeq/13a38de0b34dca72f1caa95446c20ba3/[%E4%B8%B4%E6%97%B6%E6%8A%A5%E5%91%8A]%E6%B3%B0%E4%B8%80%E8%82%A1%E4%BB%BD_%E5%85%AC%E5%BC%80%E8%BD%AC%E8%AE%A9%E8%AF%B4%E6%98%8E%E4%B9%A6.pdf.html";
 		String chagelink = changeHanzi(url);
 		String html = Fetcher.getInstance().get(chagelink, "gbk");
 		Document document = Jsoup.parse(html);
 		document = new DocumentSimpler().simpleDocument(document);
 		// System.out.println(document);
 		PdfCodeTable pdfCodeTable = new PdfCodeTable();
-		pdfCodeTable.setPdfType("公转书_公司基本信息");
+		pdfCodeTable.setPdfType("公转书_主要客户");
 		PdfReportLinks pdfReportLinks = new PdfReportLinks();
 		pdfReportLinks.setLink(url);
 		System.out.println(new KfPdfParser().parserPdfHtmlByPdfTypeAndLink(pdfCodeTable, pdfReportLinks, document));

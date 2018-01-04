@@ -1,6 +1,8 @@
 package com.kf.data.tianyancha.parser;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
@@ -80,6 +82,26 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 					companyHisname = hisNameElements.first().text();
 					tycBaseCompanyCrawler.setCompanyHisName(companyHisname);
 				}
+				// 是否高新企业
+				Elements tagElements = headerElement.select(".f14.mt10");
+				if (tagElements.size() > 0) {
+					String temp = tagElements.first().text();
+					if (temp.contains("高新企业")) {
+						try {
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("company_id", companyID);
+							map.put("ishnte", 1);
+							map.put("remark", companyName);
+							sendJson(map, "tyc_company_ishnte");
+							logger.info("保存数据");
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+
+					}
+
+				}
+
 				Elements inBlockElements = headerElement.select(".in-block.vertical-top:not(.sec-c3)");
 				for (Element element : inBlockElements) {
 					if (element.text().contains("地址：")) {
@@ -114,7 +136,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 					} else {
 						companyDetail = secElements.first().text();
 					}
-					companyDetail =companyDetail.replace("详情", "");
+					companyDetail = companyDetail.replace("详情", "");
 					tycBaseCompanyCrawler.setCompanyAbout(companyDetail);
 				}
 
