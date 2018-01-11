@@ -10,6 +10,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.kf.data.approved.quartz.AchievementPreviewJob;
+import com.kf.data.approved.quartz.AcquisitionJob;
 import com.kf.data.approved.quartz.ParserJob;
 import com.kf.data.fetcher.tools.KfConstant;
 
@@ -30,10 +31,11 @@ public class ApprovedApp {
 			SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 			Scheduler scheduler = schedulerFactory.getScheduler();
 			// 补充准挂牌公司名称
-			companyNameJob(scheduler);
+//			companyNameJob(scheduler);
 			// 解析业绩预告
-			achievementPreviewJob(scheduler);
-
+//			achievementPreviewJob(scheduler);
+			// 解析收购报告
+			acquisitionJob(scheduler);
 			scheduler.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,6 +62,19 @@ public class ApprovedApp {
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger2", "group2")
 					.withSchedule(scheduleBuilder).build();
 			JobDetail job = JobBuilder.newJob(AchievementPreviewJob.class).withIdentity("job2", "group2").build();
+			scheduler.scheduleJob(job, trigger);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// 收购报告
+	public static void acquisitionJob(Scheduler scheduler) {
+		try {
+			CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("1/5 * * * * ?");
+			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger3", "group3")
+					.withSchedule(scheduleBuilder).build();
+			JobDetail job = JobBuilder.newJob(AcquisitionJob.class).withIdentity("job3", "group3").build();
 			scheduler.scheduleJob(job, trigger);
 		} catch (Exception e) {
 			e.printStackTrace();

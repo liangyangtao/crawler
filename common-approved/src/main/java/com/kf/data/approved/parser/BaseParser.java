@@ -2,8 +2,14 @@ package com.kf.data.approved.parser;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,6 +17,16 @@ import com.kf.data.fetcher.Fetcher;
 import com.kf.data.fetcher.tools.KfConstant;
 
 public class BaseParser {
+
+	/***
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public String formatDate(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return sdf.format(date);
+	}
 
 	/***
 	 * 
@@ -63,7 +79,7 @@ public class BaseParser {
 		return now;
 	}
 
-	public static String replacekong(String source) {
+	public String replacekong(String source) {
 		source = source.replace("  ", "");
 		source = source.replace(" ", "");
 		source = source.replace("	", "");
@@ -82,13 +98,12 @@ public class BaseParser {
 	 * @param data
 	 * @return
 	 */
-	public static String formatNumberValue(String data) {
+	public String formatNumberValue(String data) {
 		if (data == null) {
 			return null;
 		}
 		try {
 			data = replacekong(data);
-
 			data = data.replace("‐", "-");
 			data = data.replace("一", "-");
 			data = data.replace("‐", "-");
@@ -99,7 +114,6 @@ public class BaseParser {
 			data = data.replace("--", "-");
 			data = data.replace("_", "-");
 			data = data.replace("―", "-");
-
 			data = data.replace("股", "");
 			data = data.replace("年", "");
 			data = data.replace("人", "");
@@ -125,7 +139,7 @@ public class BaseParser {
 		return data;
 	}
 
-	public static String formatRadioValue(String data) {
+	public String formatRadioValue(String data) {
 		try {
 			if (data == null) {
 				return data;
@@ -147,7 +161,7 @@ public class BaseParser {
 
 	}
 
-	public static String formatMoneyValue(String data) {
+	public String formatMoneyValue(String data) {
 		if (data == null) {
 			return data;
 		}
@@ -234,6 +248,57 @@ public class BaseParser {
 		}
 		return data;
 
+	}
+
+	public List<String> getStrByReg(String pre, String end, String content) {
+		content = replacekong(content);
+		List<String> results = new ArrayList<String>();
+		end = end.replace("(", "\\(");
+		end = end.replace(")", "\\)");
+		end = end.replace("|", "\\|");
+		end = end.replace("[", "\\[");
+		end = end.replace("]", "\\]");
+		end = end.replace("?", "\\?");
+		end = end.replace("!", "\\!");
+		end = end.replace(".", "\\.");
+		end = end.replace("*", "\\*");
+		end = replacekong(end);
+		////////////////////////////////
+		pre = pre.replace("(", "\\(");
+		pre = pre.replace(")", "\\)");
+		pre = pre.replace("|", "\\|");
+		pre = pre.replace("[", "\\[");
+		pre = pre.replace("]", "\\]");
+		pre = pre.replace("?", "\\?");
+		pre = pre.replace("!", "\\!");
+		pre = pre.replace(".", "\\.");
+		pre = pre.replace("*", "\\*");
+		pre = replacekong(pre);
+		String regEx = pre + "((?!" + pre + "|" + end + ").)+(?=" + end + ")";
+		Pattern pattern = Pattern.compile(regEx);
+		Matcher matcher = pattern.matcher(content);
+		while (matcher.find()) {
+			String string = matcher.group();
+			string = string.replace(pre, "");
+			string = string.replace(end, "");
+			string = string.trim();
+			results.add(string);
+		}
+		return results;
+	}
+
+	public String getNum(String string) {
+		StringBuffer sb = new StringBuffer();
+		char[] aa = string.toCharArray();
+		for (char c : aa) {
+			if (Character.isDigit(c)) {
+				sb.append(c);
+			}
+			if (c == '万') {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
 	}
 
 }
