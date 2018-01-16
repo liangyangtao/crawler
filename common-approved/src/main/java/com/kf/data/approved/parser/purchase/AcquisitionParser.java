@@ -43,8 +43,6 @@ public class AcquisitionParser extends BaseParser {
 	PurchaseProfitParser purchaseProfitParser = new PurchaseProfitParser();
 
 	PurchaseLiabilitiesParser purchaseLiabilitiesParser = new PurchaseLiabilitiesParser();
-	
-	
 
 	public void parserAcquisition(String html, PdfReportLinks pdfReportLink) {
 
@@ -272,7 +270,7 @@ public class AcquisitionParser extends BaseParser {
 		// 关联销售
 		List<Map<String, Object>> clients = purchaseMajorClientParser.paserMajorClient(document);
 		for (Map<String, Object> map : clients) {
-			// map.put("stock_code", pdfReportLink.getCompanyId() + "");
+			map.put("stock_code", pdfReportLink.getCompanyId() + "");
 			map.put("report_date", pdfReportLink.getPublishDate());
 			map.put("link", pdfReportLink.getLink());
 			sendJson(map, "purchase_major_client");
@@ -281,7 +279,7 @@ public class AcquisitionParser extends BaseParser {
 		// 关联购买
 		List<Map<String, Object>> supplies = purchaseMajorSupplierParser.paserMajorSupplier(document);
 		for (Map<String, Object> map : supplies) {
-			// map.put("stock_code", pdfReportLink.getCompanyId() + "");
+			map.put("stock_code", pdfReportLink.getCompanyId() + "");
 			map.put("report_date", pdfReportLink.getPublishDate());
 			map.put("link", pdfReportLink.getLink());
 			sendJson(map, "purchase_major_supplier");
@@ -296,10 +294,11 @@ public class AcquisitionParser extends BaseParser {
 			sendJson(map, "purchase_trade_detail");
 		}
 
+		String acquirerName = parserAcquirerNm(text);
 		// 现金表
 		List<Map<String, Object>> cases = purchaseCaseParser.getCaseResult(document);
 		for (Map<String, Object> map : cases) {
-			map.put("stock_code", pdfReportLink.getCompanyId() + "");
+			map.put("company_name", acquirerName);
 			map.put("report_date", pdfReportLink.getPublishDate());
 			map.put("link", pdfReportLink.getLink());
 			sendJson(map, "purchase_cash");
@@ -309,7 +308,7 @@ public class AcquisitionParser extends BaseParser {
 		List<Map<String, Object>> liabilities = purchaseLiabilitiesParser.getLiabilitiesResult(document);
 
 		for (Map<String, Object> map : liabilities) {
-			map.put("stock_code", pdfReportLink.getCompanyId() + "");
+			map.put("company_name", acquirerName);
 			map.put("report_date", pdfReportLink.getPublishDate());
 			map.put("link", pdfReportLink.getLink());
 			sendJson(map, "purchase_liabilities");
@@ -318,7 +317,7 @@ public class AcquisitionParser extends BaseParser {
 		// 利润表
 		List<Map<String, Object>> profits = purchaseProfitParser.getProfitResult(document);
 		for (Map<String, Object> map : profits) {
-			map.put("stock_code", pdfReportLink.getCompanyId() + "");
+			map.put("company_name", acquirerName);
 			map.put("report_date", pdfReportLink.getPublishDate());
 			map.put("link", pdfReportLink.getLink());
 			sendJson(map, "purchase_profit");
@@ -487,11 +486,11 @@ public class AcquisitionParser extends BaseParser {
 	 */
 	public String parserAcquiredNm(String text) {
 		// 被收购方
-		List<String> acquiredNms = getStrByReg("公司名称", "挂牌地点", text);
-		acquiredNms.addAll(getStrByReg("公司名称", "股票挂牌地点", text));
-		acquiredNms.addAll(getStrByReg("公司名称", "上市地点", text));
-		acquiredNms.addAll(getStrByReg("公司名称", "英文名称", text));
-		acquiredNms.addAll(getStrByReg("公司名称", "挂牌公司地点", text));
+		List<String> acquiredNms = getStrByReg("公司名称：", "挂牌地点", text);
+		acquiredNms.addAll(getStrByReg("公司名称：", "股票挂牌地点", text));
+		acquiredNms.addAll(getStrByReg("公司名称：", "上市地点", text));
+		acquiredNms.addAll(getStrByReg("公司名称：", "英文名称", text));
+		acquiredNms.addAll(getStrByReg("公司名称：", "挂牌公司地点", text));
 
 		String result = null;
 		if (acquiredNms.size() > 0) {
@@ -506,6 +505,54 @@ public class AcquisitionParser extends BaseParser {
 				}
 				string = string.replace("：", "");
 				if (result.length() > string.length()) {
+					result = string;
+				}
+
+			}
+		}
+		return result;
+
+	}
+
+	/****
+	 * 收购方
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public String parserAcquirerNm(String text) {
+		// 收购方
+		List<String> acquiredNms = getStrByReg("收购人名称：", "住所", text);
+		acquiredNms.addAll(getStrByReg("收购人：", "注册地址", text));
+		acquiredNms.addAll(getStrByReg("收购人：", "地址", text));
+		acquiredNms.addAll(getStrByReg("收购人：", "住所", text));
+		acquiredNms.addAll(getStrByReg("收购人：", "收购人通讯地址", text));
+		acquiredNms.addAll(getStrByReg("收购人：", "通讯地址", text));
+		acquiredNms.addAll(getStrByReg("收购方：", "注册地址", text));
+		acquiredNms.addAll(getStrByReg("收购方：", "地址", text));
+		acquiredNms.addAll(getStrByReg("收购方：", "住所", text));
+		acquiredNms.addAll(getStrByReg("收购方：", "通讯地址", text));
+		acquiredNms.addAll(getStrByReg("收购方：", "被收购方：", text));
+		acquiredNms.addAll(getStrByReg("收购人基本情况公司名称", "公司类型", text));
+		acquiredNms.addAll(getStrByReg("收购人基本情况公司名称", "统一社会信用代码", text));
+
+		String result = null;
+		if (acquiredNms.size() > 0) {
+			result = acquiredNms.get(0);
+			result = result.replace("：", "");
+			
+			for (String string : acquiredNms) {
+				if (string.contains("%") || string.contains("，") || string.contains("。") || string.contains("、")) {
+					continue;
+				}
+				if (string.length() > 100 || string.length() < 6) {
+					continue;
+				}
+				string = string.replace("：", "");
+				string = string.replace(":", "");
+				string = string.replaceAll("\\d+", "");
+				if (result.length() > string.length()) {
+
 					result = string;
 				}
 

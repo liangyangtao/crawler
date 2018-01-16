@@ -121,8 +121,9 @@ public class TianyanchaCoreTeamParser extends TianyanchaBasePaser {
 					}
 					String record = null;
 					Elements recordElements = element.select(".team-right > ul");
+
 					if (recordElements.size() > 0) {
-						record = recordElements.first().text();
+						record = recordElements.first().toString();
 					}
 					TycCompanyCoreTeamCrawler tycCompanyCoreTeamCrawler = new TycCompanyCoreTeamCrawler();
 					tycCompanyCoreTeamCrawler.setCompanyId(companyId);
