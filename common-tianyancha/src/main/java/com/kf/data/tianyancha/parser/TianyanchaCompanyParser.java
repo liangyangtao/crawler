@@ -38,7 +38,10 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 	 * @param companyID
 	 * @return
 	 */
-	public String paseNode(Document document, String companyID) {
+	public String paseNode(Document document, String companyID, String registeredCapital, String registrationDate) {
+		if (registrationDate != null) {
+			registrationDate = registrationDate.replace("-", "");
+		}
 
 		String companyName = null;
 		try {
@@ -148,8 +151,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 			 * chuzi
 			 */
 			String legalRepresentative = null;
-			String registeredCapital = null;
-			String registrationDate = null;
+
 			String registrationDateMachine = null;
 			// Date dtSetupCorp = null;
 			String operatingStatus = null;
@@ -169,11 +171,13 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 						legalRepresentative = legalRepresentativeElement.text();
 					}
 					Element registeredCapitalElement = element.select("td").get(1);
-					registeredCapital = registeredCapitalElement
-							.select("div:nth-child(1) > div:nth-child(2) > div:nth-child(1)").text().trim();
-					registrationDate = registeredCapitalElement
-							.select("div:nth-child(2) > div:nth-child(2) > div:nth-child(1)").text().trim();
-					registrationDate = registrationDate.replace("-", "");
+					// registeredCapital = registeredCapitalElement
+					// .select("div:nth-child(1) > div:nth-child(2) >
+					// div:nth-child(1)").text().trim();
+					// registrationDate = registeredCapitalElement
+					// .select("div:nth-child(2) > div:nth-child(2) >
+					// div:nth-child(1)").text().trim();
+					// registrationDate = registrationDate.replace("-", "");
 					operatingStatus = registeredCapitalElement
 							.select("div:nth-child(3) > div:nth-child(2) > div:nth-child(1)").text().trim();
 
@@ -223,7 +227,7 @@ public class TianyanchaCompanyParser extends TianyanchaBasePaser {
 								organizationCode = trElement.select("td").get(3).text().trim();
 							} else if (element.text().startsWith("统一信用代码")) {
 								creditCode = trElement.select("td").get(1).text().trim();
-							} else if (element.text().startsWith("企业类型")) {
+							} else if (element.text().startsWith("企业类型") || element.text().startsWith("公司类型")) {
 								companyType = trElement.select("td").get(3).text().trim();
 							} else if (element.text().startsWith("纳税人识别号")) {
 								taxpayerNum = trElement.select("td").get(1).text().trim();

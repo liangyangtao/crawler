@@ -227,9 +227,25 @@ public class TianyanchaCrawler {
 			}
 
 			Document listDocument = Jsoup.parse(html);
-			Elements aElements = listDocument.select(
-					"div.search_result_single:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)");
+			Elements aElements = listDocument
+					.select("div.search_result_single:nth-child(1) > div:nth-child(2) > div:nth-child(2)");
+
+			String registrationDate= null;
+			String registeredCapital = null;
 			if (aElements.size() > 0) {
+				Element companyElement = aElements.get(0);
+				Elements searchRowElements = companyElement.select("div.title");
+				for (Element element : searchRowElements) {
+					String text = element.text();
+					if (text.contains("法定代表人：")) {
+//						value = text.replace("法定代表人：", "");
+					} else if (text.contains("注册资本：")) {
+						registeredCapital = text.replace("注册资本：", "");
+					} else if (text.contains("注册时间：")) {
+						registrationDate = text.replace("注册时间：", "");
+					}
+				}
+
 			} else {
 				logger.info(companyName + "没有搜索到结果异常");
 				return;
@@ -299,7 +315,7 @@ public class TianyanchaCrawler {
 
 			/********************************************************************************************/
 			// 基本信息
-			companyName = tianyanchaCompanyParser.paseNode(document, companyId);
+			companyName = tianyanchaCompanyParser.paseNode(document, companyId, registeredCapital,registrationDate);
 			// 主要人员 高管
 			tianyanchaStaffParser.paseNode(document, companyName, companyId);
 			// 股东信息
