@@ -2,11 +2,9 @@ package com.kf.data.fetcher.tools;
 
 import java.io.File;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 /**
  * @Title: KfConstant.java
@@ -19,6 +17,22 @@ import org.w3c.dom.NodeList;
 public class KfConstant {
 
 	public static String serverIp = "";
+	public static String esClusterName = "";
+	public static int esPort = 9300;
+	public static String esUrl = "";
+	public static String esIndexName = "";
+	public static String esDataType = "";
+
+	public static String saveJsonIp = "";
+
+	public static String minaServerIp = "";
+
+	public static String emsHost = "";
+	public static String emsPort = "";
+	public static String emsUsername = "";
+	public static String emsPassword = "";
+	public static String emsFromAddress = "";
+	public static String emsReciver = "";
 
 	public KfConstant() {
 		super();
@@ -28,16 +42,25 @@ public class KfConstant {
 	public static void init() {
 		try {
 			String path = KfConstant.class.getClassLoader().getResource("").toURI().getPath();
+			File file = new File(path + File.separator + "serverip.xml");
+			SAXReader saxReader = new SAXReader();
+			Document document = saxReader.read(file);
+			Element rootElement = document.getRootElement();
+			serverIp = rootElement.elementTextTrim("serverip");
+			esClusterName = rootElement.elementTextTrim("esClusterName").trim();
+			esPort = Integer.parseInt(rootElement.elementTextTrim("esPort").trim());
+			esUrl = rootElement.elementTextTrim("esUrl").trim();
+			esIndexName = rootElement.elementTextTrim("esIndexName").trim();
+			esDataType = rootElement.elementTextTrim("esDataType").trim();
+			saveJsonIp = rootElement.elementTextTrim("saveJsonIp");
+			minaServerIp = rootElement.elementTextTrim("minaServerIp");
+			emsHost = rootElement.elementTextTrim("emsHost");
+			emsPort = rootElement.elementTextTrim("emsPort");
+			emsUsername = rootElement.elementTextTrim("emsUsername");
+			emsPassword = rootElement.elementTextTrim("emsPassword");
+			emsFromAddress = rootElement.elementTextTrim("emsFromAddress");
+			emsReciver = rootElement.elementTextTrim("emsReciver");
 
-			File f = new File(path + File.separator + "serverip.xml");
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(f);
-
-			NodeList serverNode = doc.getElementsByTagName("root");
-			for (int i = 0; i < serverNode.getLength(); i++) {
-				serverIp = doc.getElementsByTagName("serverip").item(i).getFirstChild().getNodeValue();
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

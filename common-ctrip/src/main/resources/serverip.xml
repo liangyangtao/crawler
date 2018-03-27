@@ -1,0 +1,20 @@
+<root>
+	<!-- 获取公司名称 -->
+	<serverip>http://101.201.111.214:8097/company/getCtrip</serverip>
+	<saveJsonIp>http://101.201.223.55:8334/kf-store-api/saveJson</saveJsonIp>
+	<minaServerIp>127.0.0.1</minaServerIp>
+	<!-- es -->
+	<esClusterName>kaifengdata</esClusterName>
+	<esPort>9300</esPort>
+	<esUrl>10.27.32.236</esUrl>
+	<esIndexName>crawler_pdflink</esIndexName>
+	<esDataType>pdfLink</esDataType>
+	<!-- 邮箱 -->
+	<emsHost>smtp.exmail.qq.com</emsHost>
+	<emsPort>465</emsPort>
+	<emsUsername>liangyt@kaifengdata.com</emsUsername>
+	<emsPassword>Kfsj2017</emsPassword>
+	<emsFromAddress>liangyt@kaifengdata.com</emsFromAddress>
+	<emsReciver>liangyt@kaifengdata.com,diaomc@kaifengdata.com</emsReciver>
+
+</root>
